@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Go4Lunch</string>
+
+    // SIGN IN
+    <string name="facebook_app_id">216158303118265</string>
+    <string name="fb_login_protocol_scheme">fb216158303118265</string>
+    <string name="facebook_sign_in_button_text">sign in with Facebook</string>
+    <string name="google_sign_in_button_text">sign in with Google</string>
+    <string name="auth_error">Authentication Failed</string>
+    <string name="google_sign_in_error">Google sign in failed</string>
+    <string name="facebook_sign_in_error">Facebook sign in failed</string>
 </resources>

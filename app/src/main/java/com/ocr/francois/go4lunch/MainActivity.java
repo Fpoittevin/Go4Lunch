@@ -19,6 +19,9 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserInfo;
 import com.ocr.francois.go4lunch.ui.base.BaseActivity;
+import com.ocr.francois.go4lunch.ui.listView.ListViewFragment;
+import com.ocr.francois.go4lunch.ui.mapView.MapViewFragment;
+import com.ocr.francois.go4lunch.ui.workmates.WorkmatesFragment;
 
 import java.util.List;
 
@@ -35,6 +38,10 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.activity_main_navigation_view)
     NavigationView navigationView;
 
+    private MapViewFragment mapViewFragment;
+    private ListViewFragment listViewFragment;
+    private WorkmatesFragment workmatesFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +52,9 @@ public class MainActivity extends BaseActivity {
         configureToolBar();
         configureDrawerLayout();
         configureNavigationView();
+
+        mapViewFragment = MapViewFragment.newInstance();
+        displayFragment(mapViewFragment);
     }
 
     private void configureBottomNavigationView() {
@@ -53,22 +63,37 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment fragmentToDisplay;
+
                 switch (item.getItemId()) {
                     case R.id.bottom_navigation_menu_map_button:
-                        //fragmentToDisplay = MapViewFragment.newInstance();
-                        break;
+                        if(mapViewFragment == null) {
+                            mapViewFragment = MapViewFragment.newInstance();
+                        }
+                        return displayFragment(mapViewFragment);
                     case R.id.bottom_navigation_menu_list_button:
-                        //fragmentToDisplay = ListViewFragment.newInstance();
-                        break;
+                        if(listViewFragment == null) {
+                            listViewFragment = ListViewFragment.newInstance();
+                        }
+                        return displayFragment(listViewFragment);
                     case R.id.bottom_navigation_menu_workmates_button:
-                        //fragmentToDisplay = WorkmatesFragment.newInstance();
-                        break;
+                        if(workmatesFragment == null) {
+                            workmatesFragment = WorkmatesFragment.newInstance();
+                        }
+                        return displayFragment(workmatesFragment);
                 }
 
-                //return displayFragment();
-                return true;
+                return false;
             }
         });
+    }
+
+    private boolean displayFragment(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.activity_main_frame_layout, fragment)
+                .commit();
+        return true;
     }
 
     private void configureToolBar() {

@@ -20,4 +20,7 @@
     <string name="map_button_title">Map View</string>
     <string name="list_button_title">List View</string>
     <string name="workmates_button_title">Workmates</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

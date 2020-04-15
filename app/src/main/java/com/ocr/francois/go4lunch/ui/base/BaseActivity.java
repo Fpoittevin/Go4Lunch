@@ -36,20 +36,20 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void showProgressBar(int resId) {
         ProgressBar progressBar = findViewById(resId);
-        if(progressBar != null) {
+        if (progressBar != null) {
             progressBar.setVisibility(View.VISIBLE);
         }
     }
 
     protected void hideProgressBar(int resId) {
         ProgressBar progressBar = findViewById(resId);
-        if(progressBar != null) {
+        if (progressBar != null) {
             progressBar.setVisibility(View.INVISIBLE);
         }
     }
 
     protected void authVerification() {
-        if(FirebaseAuth.getInstance().getCurrentUser() == null) {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Intent signInIntent = new Intent(this, SignInActivity.class);
             startActivity(signInIntent);
         }

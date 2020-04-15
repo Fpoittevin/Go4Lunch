@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/drawer_menu_lunch_button"
+        android:icon="@drawable/ic_local_dining_white_24dp"
+        android:title="@string/lunch_button_title"/>
+    <item
+        android:id="@+id/drawer_menu_settings_button"
+        android:icon="@drawable/ic_settings_white_24dp"
+        android:title="@string/settings_button_title"/>
+    <item
+        android:id="@+id/drawer_menu_logout_button"
+        android:icon="@drawable/ic_power_settings_new_white_24dp"
+        android:title="@string/log_out_button_title"/>
+</menu>

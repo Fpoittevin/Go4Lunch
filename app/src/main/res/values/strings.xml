@@ -9,4 +9,15 @@
     <string name="auth_error">Authentication Failed</string>
     <string name="google_sign_in_error">Google sign in failed</string>
     <string name="facebook_sign_in_error">Facebook sign in failed</string>
+
+    //titles buttons menus
+    <string name="search_button_title">search</string>
+    <string name="lunch_button_title">your lunch</string>
+    <string name="settings_button_title">settings</string>
+    <string name="log_out_button_title">log out</string>
+    <string name="navigation_drawer_open">open</string>
+    <string name="navigation_drawer_close">close</string>
+    <string name="map_button_title">Map View</string>
+    <string name="list_button_title">List View</string>
+    <string name="workmates_button_title">Workmates</string>
 </resources>

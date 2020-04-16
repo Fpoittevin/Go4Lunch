@@ -7,9 +7,11 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.ui.signin.SignInActivity;
 
 import butterknife.ButterKnife;
@@ -53,5 +55,13 @@ public abstract class BaseActivity extends AppCompatActivity {
             Intent signInIntent = new Intent(this, SignInActivity.class);
             startActivity(signInIntent);
         }
+    }
+
+    protected boolean displayFragment(int layout, Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(layout, fragment)
+                .commit();
+        return true;
     }
 }

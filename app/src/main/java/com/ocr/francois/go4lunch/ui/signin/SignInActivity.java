@@ -19,7 +19,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.ocr.francois.go4lunch.MainActivity;
+import com.ocr.francois.go4lunch.ui.MainActivity;
 import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.ui.base.BaseActivity;
 

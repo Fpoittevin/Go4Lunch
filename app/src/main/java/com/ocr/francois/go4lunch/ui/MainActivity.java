@@ -1,12 +1,16 @@
-package com.ocr.francois.go4lunch;
+package com.ocr.francois.go4lunch.ui;
 
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -18,16 +22,18 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserInfo;
+import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.ui.base.BaseActivity;
 import com.ocr.francois.go4lunch.ui.listView.ListViewFragment;
 import com.ocr.francois.go4lunch.ui.mapView.MapViewFragment;
 import com.ocr.francois.go4lunch.ui.workmates.WorkmatesFragment;
+import com.ocr.francois.go4lunch.utils.LocationTracker;
 
 import java.util.List;
 
 import butterknife.BindView;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements LocationListener {
 
     @BindView(R.id.activity_main_toolbar)
     MaterialToolbar toolbar;
@@ -41,6 +47,7 @@ public class MainActivity extends BaseActivity {
     private MapViewFragment mapViewFragment;
     private ListViewFragment listViewFragment;
     private WorkmatesFragment workmatesFragment;
+    private int frameLayoutId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +60,19 @@ public class MainActivity extends BaseActivity {
         configureDrawerLayout();
         configureNavigationView();
 
+        frameLayoutId = R.id.activity_main_frame_layout;
+
         mapViewFragment = MapViewFragment.newInstance();
-        displayFragment(mapViewFragment);
+        displayFragment(frameLayoutId, mapViewFragment);
+
+        LocationTracker locationTracker = new LocationTracker(this);
+        locationTracker.getLocation().observe(this, new Observer<Location>() {
+            @Override
+            public void onChanged(Location location) {
+                Log.d("location : ", String.valueOf(location.getLatitude()) + String.valueOf(location.getLongitude()));
+            }
+        });
+
     }
 
     private void configureBottomNavigationView() {
@@ -63,37 +81,28 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment fragmentToDisplay;
 
                 switch (item.getItemId()) {
                     case R.id.bottom_navigation_menu_map_button:
-                        if(mapViewFragment == null) {
+                        if (mapViewFragment == null) {
                             mapViewFragment = MapViewFragment.newInstance();
                         }
-                        return displayFragment(mapViewFragment);
+                        return displayFragment(frameLayoutId, mapViewFragment);
                     case R.id.bottom_navigation_menu_list_button:
-                        if(listViewFragment == null) {
+                        if (listViewFragment == null) {
                             listViewFragment = ListViewFragment.newInstance();
                         }
-                        return displayFragment(listViewFragment);
+                        return displayFragment(frameLayoutId, listViewFragment);
                     case R.id.bottom_navigation_menu_workmates_button:
-                        if(workmatesFragment == null) {
+                        if (workmatesFragment == null) {
                             workmatesFragment = WorkmatesFragment.newInstance();
                         }
-                        return displayFragment(workmatesFragment);
+                        return displayFragment(frameLayoutId, workmatesFragment);
                 }
 
                 return false;
             }
         });
-    }
-
-    private boolean displayFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.activity_main_frame_layout, fragment)
-                .commit();
-        return true;
     }
 
     private void configureToolBar() {
@@ -155,5 +164,25 @@ public class MainActivity extends BaseActivity {
     @Override
     protected int getLayout() {
         return R.layout.activity_main;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }

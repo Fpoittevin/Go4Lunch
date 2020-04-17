@@ -37,6 +37,7 @@ public class RestaurantRepository {
 
                 if (response.body() != null) {
                     restaurants.setValue(response.body().getRestaurants());
+                    Log.d("getRETAURANTS", "onResponse: not null");
                 }
             }
 

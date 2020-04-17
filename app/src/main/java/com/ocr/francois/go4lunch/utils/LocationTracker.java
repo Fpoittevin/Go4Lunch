@@ -24,10 +24,15 @@ public class LocationTracker implements OnSuccessListener<Location> {
     private MutableLiveData<Location> location;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
+    private LocationRequest locationRequest;
 
     public LocationTracker(Context context) {
         this.context = context;
         this.location = new MutableLiveData<>();
+        this.locationRequest = new LocationRequest()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(30 * 1000)
+                .setFastestInterval(2 * 1000);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
         locationCallback = new LocationCallback() {
@@ -70,14 +75,13 @@ public class LocationTracker implements OnSuccessListener<Location> {
         setLocation(location);
     }
 
-    private void startLocationUpdates() {
-        LocationRequest locationRequest = new LocationRequest()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(30 * 1000)
-                .setFastestInterval(2 * 1000);
-
+    public void startLocationUpdates() {
         fusedLocationClient.requestLocationUpdates(locationRequest,
                 locationCallback,
                 Looper.getMainLooper());
+    }
+
+    public void stopLocationUpdates() {
+        fusedLocationClient.removeLocationUpdates(locationCallback);
     }
 }

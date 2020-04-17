@@ -23,7 +23,7 @@ import com.ocr.francois.go4lunch.injection.Injection;
 import com.ocr.francois.go4lunch.injection.ViewModelFactory;
 import com.ocr.francois.go4lunch.models.Restaurant;
 import com.ocr.francois.go4lunch.utils.LocationTracker;
-import com.ocr.francois.go4lunch.viewmodels.RestaurantViewModel;
+import com.ocr.francois.go4lunch.ui.viewmodels.RestaurantViewModel;
 
 import java.util.List;
 
@@ -102,7 +102,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onChanged(Location newLocation) {
                 if (newLocation != null) {
-                    if(currentLocation == null || Math.round(newLocation.distanceTo(currentLocation)) < 30) {
+                    if(currentLocation == null || Math.round(newLocation.distanceTo(currentLocation)) < 100) {
 
                         currentLocation = newLocation;
                         LatLng latLngLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());

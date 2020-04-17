@@ -1,4 +1,4 @@
-package com.ocr.francois.go4lunch.viewmodels;
+package com.ocr.francois.go4lunch.ui.viewmodels;
 
 import android.location.Location;
 

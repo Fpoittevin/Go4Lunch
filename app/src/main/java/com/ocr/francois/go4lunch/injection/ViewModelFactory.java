@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.ocr.francois.go4lunch.repositories.RestaurantRepository;
-import com.ocr.francois.go4lunch.viewmodels.RestaurantViewModel;
+import com.ocr.francois.go4lunch.ui.viewmodels.RestaurantViewModel;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
 

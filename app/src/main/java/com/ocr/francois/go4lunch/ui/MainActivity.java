@@ -1,15 +1,17 @@
 package com.ocr.francois.go4lunch.ui;
 
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -17,6 +19,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -29,11 +35,13 @@ import com.ocr.francois.go4lunch.ui.mapView.MapViewFragment;
 import com.ocr.francois.go4lunch.ui.workmates.WorkmatesFragment;
 import com.ocr.francois.go4lunch.utils.LocationTracker;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 
-public class MainActivity extends BaseActivity implements LocationListener {
+public class MainActivity extends BaseActivity implements LocationListener, SearchView.OnQueryTextListener {
 
     @BindView(R.id.activity_main_toolbar)
     MaterialToolbar toolbar;
@@ -184,5 +192,17 @@ public class MainActivity extends BaseActivity implements LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        Log.d("LE TEXTE ::::::::", query);
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        Log.d("LE TEXTE ::::::::", newText);
+        return false;
     }
 }

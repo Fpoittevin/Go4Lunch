@@ -24,17 +24,17 @@ import butterknife.ButterKnife;
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder> {
 
     private List<Restaurant> restaurants;
+    private Context context;
 
-    public RestaurantAdapter(List<Restaurant> restaurants) {
+    public RestaurantAdapter(Context context, List<Restaurant> restaurants) {
+        this.context = context;
         this.restaurants = restaurants;
     }
 
     @NonNull
     @Override
     public RestaurantViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-
         View view = inflater.inflate(R.layout.fragment_list_view_restaurant_item, parent, false);
 
         return new RestaurantViewHolder(view);

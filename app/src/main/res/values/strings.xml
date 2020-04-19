@@ -21,5 +21,8 @@
     <string name="list_button_title">List View</string>
     <string name="workmates_button_title">Workmates</string>
 
+    <string name="is_eating_at">is eating at</string>
+    <string name="hasnt_decided_yet">hasn\'t decided yet</string>
+
     <string name="need_location_permissions_message">Go4Lunch need your location to work</string>
 </resources>

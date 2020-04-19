@@ -77,7 +77,7 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
         locationTracker.getLocation().observe(this, new Observer<Location>() {
             @Override
             public void onChanged(Location location) {
-                Log.d("location : ", String.valueOf(location.getLatitude()) + String.valueOf(location.getLongitude()));
+                Log.d("location : ", String.valueOf(location.getLatitude()) + location.getLongitude());
             }
         });
 

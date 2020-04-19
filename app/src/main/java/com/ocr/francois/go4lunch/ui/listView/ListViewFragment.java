@@ -21,8 +21,8 @@ import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.injection.Injection;
 import com.ocr.francois.go4lunch.injection.ViewModelFactory;
 import com.ocr.francois.go4lunch.models.Restaurant;
-import com.ocr.francois.go4lunch.utils.LocationTracker;
 import com.ocr.francois.go4lunch.ui.viewmodels.RestaurantViewModel;
+import com.ocr.francois.go4lunch.utils.LocationTracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +95,7 @@ public class ListViewFragment extends Fragment {
 
     private void configureRecyclerView() {
         restaurants = new ArrayList<>();
-        restaurantAdapter = new RestaurantAdapter(restaurants);
+        restaurantAdapter = new RestaurantAdapter(getContext(), restaurants);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setAdapter(restaurantAdapter);
         recyclerView.setLayoutManager(layoutManager);

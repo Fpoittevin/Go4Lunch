@@ -13,14 +13,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--<meta-data
+        <activity android:name=".ui.restaurantDetails.RestaurantDetailsActivity"></activity>
+        <!--
+        <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />-->
+            android:value="@string/facebook_app_id" />
+        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE" />
 
-        <activity android:name=".ui.signin.SignInActivity"></activity>
+        <activity android:name=".ui.signin.SignInActivity" />
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

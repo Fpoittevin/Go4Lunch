@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.models.User;
+import com.ocr.francois.go4lunch.utils.DateTool;
 
 import java.util.List;
 
@@ -69,6 +70,13 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.Work
         void updateUi(Context context, User user) {
 
             String textToDisplay = user.getUserName() + " " + context.getResources().getString(R.string.hasnt_decided_yet);
+
+            if (user.getLunchTimestamp() != null && user.getLunchTimestamp().compareTo(DateTool.getTodayMidnightTimestamp()) == 1) {
+                if (user.getLunchRestaurantName() != null) {
+                    textToDisplay = user.getUserName() + " " + context.getResources().getString(R.string.is_eating_at) + " " + user.getLunchRestaurantName();
+                }
+            }
+
             userNameTextView.setText(textToDisplay);
 
             if (user.getUrlPicture() != null) {

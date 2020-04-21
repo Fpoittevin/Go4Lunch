@@ -1,23 +1,21 @@
 package com.ocr.francois.go4lunch.injection;
 
-import android.content.Context;
-
 import com.ocr.francois.go4lunch.repositories.RestaurantRepository;
 import com.ocr.francois.go4lunch.repositories.UserRepository;
 
 public class Injection {
 
-    public static RestaurantRepository provideRestaurantRepository(Context context) {
+    public static RestaurantRepository provideRestaurantRepository() {
         return new RestaurantRepository();
     }
 
-    public static UserRepository provideUserRepository(Context context) {
+    public static UserRepository provideUserRepository() {
         return new UserRepository();
     }
 
-    public static ViewModelFactory provideViewModelFactory(Context context) {
-        RestaurantRepository restaurantRepository = provideRestaurantRepository(context);
-        UserRepository userRepository = provideUserRepository(context);
+    public static ViewModelFactory provideViewModelFactory() {
+        RestaurantRepository restaurantRepository = provideRestaurantRepository();
+        UserRepository userRepository = provideUserRepository();
 
         return new ViewModelFactory(restaurantRepository, userRepository);
     }

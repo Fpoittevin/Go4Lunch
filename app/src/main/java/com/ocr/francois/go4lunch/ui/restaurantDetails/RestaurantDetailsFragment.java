@@ -83,7 +83,7 @@ public class RestaurantDetailsFragment extends Fragment {
     }
 
     private void configureViewModel() {
-        ViewModelFactory viewModelFactory = Injection.provideViewModelFactory(getContext());
+        ViewModelFactory viewModelFactory = Injection.provideViewModelFactory();
         restaurantViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(RestaurantViewModel.class);
         restaurantViewModel.getRestaurant(placeId).observe(this, new Observer<Restaurant>() {
             @Override

@@ -2,6 +2,8 @@ package com.ocr.francois.go4lunch.models;
 
 import androidx.annotation.Nullable;
 
+import com.google.firebase.Timestamp;
+
 import java.util.List;
 
 public class User {
@@ -10,12 +12,19 @@ public class User {
     private String userName;
     @Nullable private String urlPicture;
 
+    @Nullable private String lunchRestaurantPlaceId;
+    @Nullable private String lunchRestaurantName;
+    @Nullable private Timestamp lunchTimestamp;
+
     public User() {}
 
-    public User(String id, String userName, String urlPicture) {
+    public User(String id, String userName, @Nullable String urlPicture, @Nullable String lunchRestaurantPlaceId, @Nullable String lunchRestaurantName, @Nullable Timestamp lunchTimestamp) {
         this.id = id;
         this.userName = userName;
         this.urlPicture = urlPicture;
+        this.lunchRestaurantPlaceId = lunchRestaurantPlaceId;
+        this.lunchRestaurantName = lunchRestaurantName;
+        this.lunchTimestamp = lunchTimestamp;
     }
 
     public String getId() {
@@ -42,14 +51,30 @@ public class User {
         this.urlPicture = urlPicture;
     }
 
-    public boolean choseARestaurant(List<Lunch> lunches) {
+    @Nullable
+    public String getLunchRestaurantPlaceId() {
+        return lunchRestaurantPlaceId;
+    }
 
-        for(int i = 0; i < lunches.size(); i++) {
-            if(lunches.get(i).getUserId().equals(getId())) {
-                return true;
-            }
+    public void setLunchRestaurantPlaceId(@Nullable String lunchRestaurantPlaceId) {
+        this.lunchRestaurantPlaceId = lunchRestaurantPlaceId;
+    }
 
-        }
-        return false;
+    @Nullable
+    public String getLunchRestaurantName() {
+        return lunchRestaurantName;
+    }
+
+    public void setLunchRestaurantName(@Nullable String lunchRestaurantName) {
+        this.lunchRestaurantName = lunchRestaurantName;
+    }
+
+    @Nullable
+    public Timestamp getLunchTimestamp() {
+        return lunchTimestamp;
+    }
+
+    public void setLunchTimestamp(@Nullable Timestamp lunchTimestamp) {
+        this.lunchTimestamp = lunchTimestamp;
     }
 }

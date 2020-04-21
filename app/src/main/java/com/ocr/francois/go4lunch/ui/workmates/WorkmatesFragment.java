@@ -61,7 +61,7 @@ public class WorkmatesFragment extends Fragment {
     }
 
     private void configureViewModels() {
-        ViewModelFactory viewModelFactory = Injection.provideViewModelFactory(getContext());
+        ViewModelFactory viewModelFactory = Injection.provideViewModelFactory();
 
         userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
         userViewModel.getWorkmates().observe(this, new Observer<List<User>>() {

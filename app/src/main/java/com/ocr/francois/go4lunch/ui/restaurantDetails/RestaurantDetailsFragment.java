@@ -98,7 +98,7 @@ public class RestaurantDetailsFragment extends Fragment {
     private void updateUi() {
         restaurantNameTextView.setText(restaurant.getName());
 
-        if (!restaurant.getPhotos().isEmpty()) {
+        if (restaurant.getPhotos() != null && !restaurant.getPhotos().isEmpty()) {
             Photo photo = restaurant.getPhotos().get(0);
             String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&key=AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE&photoreference=" + photo.getPhotoReference();
             Glide

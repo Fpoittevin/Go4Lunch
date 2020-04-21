@@ -37,7 +37,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class MainActivity extends BaseActivity implements LocationListener, SearchView.OnQueryTextListener, RestaurantAdapter.RestaurantItemClickCallback {
+public class MainActivity extends BaseActivity implements LocationListener, SearchView.OnQueryTextListener, RestaurantAdapter.RestaurantItemClickCallback, MapViewFragment.MarkerClickCallback {
 
     @BindView(R.id.activity_main_toolbar)
     MaterialToolbar toolbar;
@@ -67,6 +67,7 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
         frameLayoutId = R.id.activity_main_frame_layout;
 
         mapViewFragment = MapViewFragment.newInstance();
+        mapViewFragment.setMarkerClickCallback(this);
         displayFragment(frameLayoutId, mapViewFragment);
 
         LocationTracker locationTracker = new LocationTracker(this);
@@ -205,12 +206,17 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
     @Override
     public void onRestaurantItemClick(Restaurant restaurant) {
 
-        startRestaurantDetailActivity(restaurant);
+        startRestaurantDetailActivity(restaurant.getPlaceId());
     }
 
-    private void startRestaurantDetailActivity(Restaurant restaurant) {
+    @Override
+    public void onMarkerClickCallback(String placeId) {
+        startRestaurantDetailActivity(placeId);
+    }
+
+    private void startRestaurantDetailActivity(String placeId) {
         Intent restaurantDetailsIntent = new Intent(MainActivity.this, RestaurantDetailsActivity.class);
-        restaurantDetailsIntent.putExtra("placeId", restaurant.getPlaceId());
+        restaurantDetailsIntent.putExtra("placeId", placeId);
         startActivity(restaurantDetailsIntent);
     }
 }

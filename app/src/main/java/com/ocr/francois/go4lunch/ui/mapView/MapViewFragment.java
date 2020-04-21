@@ -32,12 +32,13 @@ import java.util.List;
  * Use the {@link MapViewFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapViewFragment extends Fragment implements OnMapReadyCallback {
+public class MapViewFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private RestaurantViewModel restaurantViewModel;
     private GoogleMap map;
     private Location currentLocation = null;
     private LocationTracker locationTracker;
+    private MarkerClickCallback markerClickCallback;
 
     public MapViewFragment() {
         // Required empty public constructor
@@ -45,6 +46,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
     public static MapViewFragment newInstance() {
         return new MapViewFragment();
+    }
+
+    public void setMarkerClickCallback(MarkerClickCallback callback) {
+        this.markerClickCallback = callback;
     }
 
     @Override
@@ -134,6 +139,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             LatLng latLng = new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng());
             markerOptions.position(latLng);
             Marker marker = map.addMarker(markerOptions);
+
+            marker.setTag(restaurant.getPlaceId());
             map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         }
     }
@@ -142,5 +149,16 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
 
         this.map = googleMap;
+        map.setOnMarkerClickListener(this);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        markerClickCallback.onMarkerClickCallback((String)marker.getTag());
+        return false;
+    }
+
+    public interface MarkerClickCallback {
+        void onMarkerClickCallback(String placeId);
     }
 }

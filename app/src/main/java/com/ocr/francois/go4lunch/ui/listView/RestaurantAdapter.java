@@ -1,6 +1,7 @@
 package com.ocr.francois.go4lunch.ui.listView;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +26,12 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
 
     private List<Restaurant> restaurants;
     private Context context;
+    private RestaurantItemClickCallback restaurantItemClickCallback;
 
-    public RestaurantAdapter(Context context, List<Restaurant> restaurants) {
+    public RestaurantAdapter(Context context, List<Restaurant> restaurants, RestaurantItemClickCallback restaurantItemClickCallback) {
         this.context = context;
         this.restaurants = restaurants;
+        this.restaurantItemClickCallback = restaurantItemClickCallback;
     }
 
     @NonNull
@@ -45,11 +48,22 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
 
         Restaurant restaurant = restaurants.get(position);
         holder.updateUi(restaurant);
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                restaurantItemClickCallback.onRestaurantItemClick(restaurant);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return restaurants.size();
+    }
+
+    public interface RestaurantItemClickCallback {
+        void onRestaurantItemClick(Restaurant restaurant);
     }
 
     static class RestaurantViewHolder extends RecyclerView.ViewHolder {
@@ -60,7 +74,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         TextView addressTextView;
         @BindView(R.id.fragment_list_view_restaurant_item_photo_image_view)
         ImageView photoImageView;
-        private View view;
+        protected View view;
 
         RestaurantViewHolder(@NonNull View itemView) {
             super(itemView);

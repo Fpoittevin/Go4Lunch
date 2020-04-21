@@ -95,7 +95,7 @@ public class ListViewFragment extends Fragment {
 
     private void configureRecyclerView() {
         restaurants = new ArrayList<>();
-        restaurantAdapter = new RestaurantAdapter(getContext(), restaurants);
+        restaurantAdapter = new RestaurantAdapter(getContext(), restaurants, (RestaurantAdapter.RestaurantItemClickCallback) getActivity());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setAdapter(restaurantAdapter);
         recyclerView.setLayoutManager(layoutManager);

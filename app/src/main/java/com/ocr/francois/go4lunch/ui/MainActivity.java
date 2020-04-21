@@ -5,7 +5,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
 
@@ -19,29 +18,26 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserInfo;
 import com.ocr.francois.go4lunch.R;
+import com.ocr.francois.go4lunch.models.Restaurant;
 import com.ocr.francois.go4lunch.ui.base.BaseActivity;
 import com.ocr.francois.go4lunch.ui.listView.ListViewFragment;
+import com.ocr.francois.go4lunch.ui.listView.RestaurantAdapter;
 import com.ocr.francois.go4lunch.ui.mapView.MapViewFragment;
+import com.ocr.francois.go4lunch.ui.restaurantDetails.RestaurantDetailsActivity;
 import com.ocr.francois.go4lunch.ui.workmates.WorkmatesFragment;
 import com.ocr.francois.go4lunch.utils.LocationTracker;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 
-public class MainActivity extends BaseActivity implements LocationListener, SearchView.OnQueryTextListener {
+public class MainActivity extends BaseActivity implements LocationListener, SearchView.OnQueryTextListener, RestaurantAdapter.RestaurantItemClickCallback {
 
     @BindView(R.id.activity_main_toolbar)
     MaterialToolbar toolbar;
@@ -204,5 +200,17 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
     public boolean onQueryTextChange(String newText) {
         Log.d("LE TEXTE ::::::::", newText);
         return false;
+    }
+
+    @Override
+    public void onRestaurantItemClick(Restaurant restaurant) {
+
+        startRestaurantDetailActivity(restaurant);
+    }
+
+    private void startRestaurantDetailActivity(Restaurant restaurant) {
+        Intent restaurantDetailsIntent = new Intent(MainActivity.this, RestaurantDetailsActivity.class);
+        restaurantDetailsIntent.putExtra("placeId", restaurant.getPlaceId());
+        startActivity(restaurantDetailsIntent);
     }
 }

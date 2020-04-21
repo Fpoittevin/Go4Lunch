@@ -6,4 +6,6 @@
 
     <color name="colorGoogleSignIn">#DF4930</color>
     <color name="colorFacebookSignIn">#507BC0</color>
+
+    <color name="colorWhite">#FFFFFF</color>
 </resources>

@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.ocr.francois.go4lunch.api.PlacesService;
+import com.ocr.francois.go4lunch.models.GoogleDetailResult;
 import com.ocr.francois.go4lunch.models.GoogleSearchResults;
 import com.ocr.francois.go4lunch.models.Restaurant;
 
@@ -48,5 +49,30 @@ public class RestaurantRepository {
             }
         });
         return restaurants;
+    }
+
+    public MutableLiveData<Restaurant> getRestaurant(String placeId) {
+
+        MutableLiveData<Restaurant> restaurant = new MutableLiveData<>();
+        Call<GoogleDetailResult> call = placesService.getPlaceDetails(placeId);
+
+        call.enqueue(new Callback<GoogleDetailResult>() {
+            @Override
+            public void onResponse(Call<GoogleDetailResult> call, Response<GoogleDetailResult> response) {
+
+                if (response.body() != null) {
+                    Log.d("repo", "onResponse: " + response);
+                    restaurant.setValue(response.body().getRestaurant());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GoogleDetailResult> call, Throwable t) {
+
+                Log.d("repo", "onFailure: ");
+            }
+        });
+
+        return restaurant;
     }
 }

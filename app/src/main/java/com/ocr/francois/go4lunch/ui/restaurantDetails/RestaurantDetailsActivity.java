@@ -1,7 +1,5 @@
 package com.ocr.francois.go4lunch.ui.restaurantDetails;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
@@ -19,7 +17,12 @@ public class RestaurantDetailsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        displayFragment(R.id.activity_restaurant_details_frame_layout, RestaurantDetailsFragment.newInstance());
+        String placeId = getIntent().getStringExtra("placeId");
+
+        Bundle bundle = new Bundle();
+        bundle.putString("placeId", placeId);
+
+        displayFragment(R.id.activity_restaurant_details_frame_layout, RestaurantDetailsFragment.newInstance(placeId));
     }
 
     @Override

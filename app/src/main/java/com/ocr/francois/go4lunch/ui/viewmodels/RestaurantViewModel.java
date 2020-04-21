@@ -21,4 +21,8 @@ public class RestaurantViewModel extends ViewModel {
     public MutableLiveData<List<Restaurant>> getRestaurants(Location location, int radius) {
         return restaurantRepository.getRestaurants(location, radius);
     }
+
+    public MutableLiveData<Restaurant> getRestaurant(String placeId) {
+        return restaurantRepository.getRestaurant(placeId);
+    }
 }

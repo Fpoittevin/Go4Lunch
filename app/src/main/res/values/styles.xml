@@ -20,4 +20,10 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="FragmentRestaurantDetailsButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:layout_margin">10dp</item>
+    </style>
 </resources>

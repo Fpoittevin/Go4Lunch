@@ -52,6 +52,12 @@ public class Restaurant {
     @SerializedName("photos")
     @Expose
     private List<Photo> photos = null;
+    @SerializedName("website")
+    @Expose
+    private String website;
+    @SerializedName("international_phone_number")
+    @Expose
+    private String internationalPhoneNumber;
 
     public Geometry getGeometry() {
         return geometry;
@@ -173,4 +179,19 @@ public class Restaurant {
         this.photos = photos;
     }
 
+    public String getInternationalPhoneNumber() {
+        return internationalPhoneNumber;
+    }
+
+    public void setInternationalPhoneNumber(String internationalPhoneNumber) {
+        this.internationalPhoneNumber = internationalPhoneNumber;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
 }

@@ -3,6 +3,7 @@ package com.ocr.francois.go4lunch.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Restaurant {
@@ -58,6 +59,8 @@ public class Restaurant {
     @SerializedName("international_phone_number")
     @Expose
     private String internationalPhoneNumber;
+
+    private List<User> users = new ArrayList<>();
 
     public Geometry getGeometry() {
         return geometry;
@@ -193,5 +196,9 @@ public class Restaurant {
 
     public void setWebsite(String website) {
         this.website = website;
+    }
+
+    public List<User> getUsers() {
+        return users;
     }
 }

@@ -5,11 +5,12 @@ import com.ocr.francois.go4lunch.repositories.UserRepository;
 
 public class Injection {
 
-    public static RestaurantRepository provideRestaurantRepository() {
+    private static RestaurantRepository provideRestaurantRepository() {
         return new RestaurantRepository();
     }
 
-    public static UserRepository provideUserRepository() {
+    private static UserRepository provideUserRepository() {
+
         return new UserRepository();
     }
 

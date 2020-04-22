@@ -60,7 +60,7 @@ public class Restaurant {
     @Expose
     private String internationalPhoneNumber;
 
-    private List<User> users = new ArrayList<>();
+    private List<User> participants = new ArrayList<>();
 
     public Geometry getGeometry() {
         return geometry;
@@ -198,7 +198,15 @@ public class Restaurant {
         this.website = website;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public List<User> getParticipants() {
+        return participants;
+    }
+    public void setParticipants(List<User> participants) {
+        this.participants = participants;
+    }
+    public void addParticipant(User user) {
+        if(!participants.contains(user)) {
+            participants.add(user);
+        }
     }
 }

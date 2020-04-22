@@ -40,28 +40,40 @@ public class LunchViewModel extends ViewModel {
         return userRepository.getUsers();
     }
 
-    protected int getNumbersOfUsersByRestaurant(String placeId, List<User> users) {
+    public int getNumbersOfUsersByRestaurant(Restaurant restaurant, List<User> users) {
 
-        return getWorkmatesByRestaurant(placeId, users, false, null).size();
+        return getWorkmatesByRestaurant(restaurant, users, false, null).size();
     }
 
-    protected List<User> getWorkmatesByRestaurant(String placeId, List<User> users, Boolean includeCurrentUser, @Nullable String currentUserId) {
+    public List<User> getWorkmatesByRestaurant(Restaurant restaurant, List<User> users, Boolean includeCurrentUser, @Nullable String currentUserId) {
 
         List<User> workmatesByRestaurant = new ArrayList<>();
 
-        for (int i = 0; i < users.size(); i++) {
+        if (users != null && !users.isEmpty()) {
+            for (User user : users) {
 
-            User user = users.get(i);
+                if (user.getLunchRestaurantPlaceId() != null && user.getLunchRestaurantPlaceId().equals(restaurant.getPlaceId())) {
 
-            if (user.getLunchRestaurantPlaceId() != null && user.getLunchRestaurantPlaceId().equals(placeId)) {
-
-                if (!includeCurrentUser && user.getId().equals(currentUserId)) {
-                    continue;
+                    if (!includeCurrentUser && user.getId().equals(currentUserId)) {
+                        continue;
+                    }
+                    workmatesByRestaurant.add(user);
                 }
-                workmatesByRestaurant.add(user);
             }
         }
-
         return workmatesByRestaurant;
+    }
+
+    public void addParticipantInRestaurant(Restaurant restaurant, List<User> users) {
+        restaurant.getParticipants().clear();
+        restaurant.setParticipants(getWorkmatesByRestaurant(restaurant, users, true, null));
+    }
+
+    public void addParticipantsInAllRestaurants(List<Restaurant> restaurants, List<User> users) {
+        if (restaurants != null && !restaurants.isEmpty()) {
+            for (Restaurant restaurant : restaurants) {
+                addParticipantInRestaurant(restaurant, users);
+            }
+        }
     }
 }

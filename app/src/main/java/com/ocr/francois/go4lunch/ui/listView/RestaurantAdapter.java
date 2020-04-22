@@ -72,6 +72,8 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         TextView nameTextView;
         @BindView(R.id.fragment_list_view_restaurant_item_address_text_view)
         TextView addressTextView;
+        @BindView(R.id.fragment_list_view_restaurant_item_participants_number_text_view)
+        TextView participantsNumberTextView;
         @BindView(R.id.fragment_list_view_restaurant_item_photo_image_view)
         ImageView photoImageView;
         protected View view;
@@ -85,6 +87,8 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         void updateUi(Restaurant restaurant) {
             nameTextView.setText(restaurant.getName());
             addressTextView.setText(restaurant.getVicinity().replaceAll(", ", "\n"));
+
+            participantsNumberTextView.setText(String.valueOf(restaurant.getParticipants().size()));
 
             if (restaurant.getPhotos() != null) {
                 if (!restaurant.getPhotos().isEmpty()) {

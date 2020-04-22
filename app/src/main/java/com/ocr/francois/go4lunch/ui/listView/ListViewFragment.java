@@ -10,19 +10,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ocr.francois.go4lunch.R;
-import com.ocr.francois.go4lunch.injection.Injection;
-import com.ocr.francois.go4lunch.injection.ViewModelFactory;
 import com.ocr.francois.go4lunch.models.Restaurant;
-import com.ocr.francois.go4lunch.ui.viewmodels.RestaurantViewModel;
-import com.ocr.francois.go4lunch.utils.LocationTracker;
+import com.ocr.francois.go4lunch.models.User;
+import com.ocr.francois.go4lunch.ui.base.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,29 +27,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class ListViewFragment extends Fragment {
-
-    @BindView(R.id.fragment_list_view_recycler_view)
-    RecyclerView recyclerView;
-    private RestaurantViewModel restaurantViewModel;
-    private Location currentLocation = null;
-    private LocationTracker locationTracker;
-    private RestaurantAdapter restaurantAdapter;
-    private List<Restaurant> restaurants;
+public class ListViewFragment extends BaseFragment {
 
     static int AUTOCOMPLETE_REQUEST_CODE = 123;
-
-    public ListViewFragment() {
-        // Required empty public constructor
-    }
+    @BindView(R.id.fragment_list_view_recycler_view)
+    RecyclerView recyclerView;
+    private RestaurantAdapter restaurantAdapter;
 
     public static ListViewFragment newInstance() {
         return new ListViewFragment();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -63,7 +45,7 @@ public class ListViewFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list_view, container, false);
 
         ButterKnife.bind(this, view);
-        configureViewModel();
+        configureLunchViewModel();
         configureLocationTracker();
         configureRecyclerView();
 
@@ -76,21 +58,13 @@ public class ListViewFragment extends Fragment {
     public void onStart() {
         super.onStart();
         observeLocation();
+        getUsers();
     }
+
     @Override
     public void onPause() {
         super.onPause();
         locationTracker.stopLocationUpdates();
-    }
-
-    private void configureViewModel() {
-
-        ViewModelFactory viewModelFactory = Injection.provideViewModelFactory();
-        restaurantViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(RestaurantViewModel.class);
-    }
-
-    private void configureLocationTracker() {
-        locationTracker = new LocationTracker(getContext());
     }
 
     private void configureRecyclerView() {
@@ -109,8 +83,7 @@ public class ListViewFragment extends Fragment {
             @Override
             public void onChanged(Location newLocation) {
                 if (newLocation != null) {
-                    if(currentLocation == null || Math.round(newLocation.distanceTo(currentLocation)) < 100) {
-
+                    if (currentLocation == null || Math.round(newLocation.distanceTo(currentLocation)) < 100) {
                         currentLocation = newLocation;
 
                         getRestaurants();
@@ -121,13 +94,24 @@ public class ListViewFragment extends Fragment {
     }
 
     private void getRestaurants() {
-        restaurantViewModel.getRestaurants(currentLocation, 2000).observe(this, new Observer<List<Restaurant>>() {
+        lunchViewModel.getRestaurants(currentLocation, 2000).observe(this, new Observer<List<Restaurant>>() {
             @Override
-            public void onChanged(List<Restaurant> restaurantsList) {
+            public void onChanged(List<Restaurant> restaurants) {
                 if (restaurants != null) {
-                    restaurants.addAll(restaurantsList);
+                    setRestaurants(restaurants);
                     restaurantAdapter.notifyDataSetChanged();
                 }
+            }
+        });
+    }
+
+    private void getUsers() {
+        lunchViewModel.getUsers().observe(this, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                setUsers(users);
+                lunchViewModel.addParticipantsInAllRestaurants(restaurants, users);
+                restaurantAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -135,7 +119,7 @@ public class ListViewFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.toolbar_menu, menu);
-        super.onCreateOptionsMenu(menu,inflater);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override

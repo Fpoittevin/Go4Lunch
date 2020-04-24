@@ -3,18 +3,30 @@ package com.ocr.francois.go4lunch.ui.listView;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.SearchView;
+import android.widget.SimpleCursorAdapter;
 
+import androidx.cursoradapter.widget.CursorAdapter;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.models.Restaurant;
 import com.ocr.francois.go4lunch.models.User;
@@ -33,7 +45,7 @@ public class ListViewFragment extends BaseFragment {
     @BindView(R.id.fragment_list_view_recycler_view)
     RecyclerView recyclerView;
     private RestaurantAdapter restaurantAdapter;
-
+    private PlacesClient placesClient;
     public static ListViewFragment newInstance() {
         return new ListViewFragment();
     }
@@ -57,6 +69,8 @@ public class ListViewFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
+        Places.initialize(getContext(), "AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE");
+        placesClient = Places.createClient(getContext());
         observeLocation();
         getUsers();
     }
@@ -69,7 +83,7 @@ public class ListViewFragment extends BaseFragment {
 
     private void configureRecyclerView() {
         restaurants = new ArrayList<>();
-        restaurantAdapter = new RestaurantAdapter(getContext(), restaurants, (RestaurantAdapter.RestaurantItemClickCallback) getActivity());
+        restaurantAdapter = new RestaurantAdapter(getContext(), restaurants, (RestaurantAdapter.RestaurantItemClickCallback) getActivity(), currentLocation);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setAdapter(restaurantAdapter);
         recyclerView.setLayoutManager(layoutManager);
@@ -85,7 +99,7 @@ public class ListViewFragment extends BaseFragment {
                 if (newLocation != null) {
                     if (currentLocation == null || Math.round(newLocation.distanceTo(currentLocation)) < 100) {
                         currentLocation = newLocation;
-
+                        restaurantAdapter.setCurrentLocation(currentLocation);
                         getRestaurants();
                     }
                 }
@@ -120,6 +134,40 @@ public class ListViewFragment extends BaseFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.toolbar_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+
+        MenuItem searchItem = menu.findItem(R.id.menu_activity_main_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d("TEXTE CHANGE !!!!!", newText);
+
+                AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
+                FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                        .setQuery(newText)
+                        .setOrigin(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                        .setSessionToken(token)
+                        .build();
+                placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
+
+                    for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
+                        Log.i("GOOGLE AUTO COMPLETE", prediction.getPlaceId());
+                        Log.i("GOOGLE AUTO COMPLETE", prediction.getPrimaryText(null).toString());
+                    }
+                }).addOnFailureListener((exception) -> {
+                    if (exception instanceof ApiException) {
+                        ApiException apiException = (ApiException) exception;
+                        Log.e("GOOGLE AUTO COMPLETE", "Place not found: " + apiException.getStatusCode());
+                    }
+                });
+                return false;
+            }
+        });
     }
 
     @Override

@@ -20,4 +20,12 @@ public class UserViewModel extends ViewModel {
         //TODO: tous les users sauf current user;
         return userRepository.getUsers();
     }
+
+    public void createUser(String id, String userName, String urlPicture) {
+        this.userRepository.createUser(id, userName, urlPicture);
+    }
+
+    public MutableLiveData<User> getUser(String id) {
+        return userRepository.getUser(id);
+    }
 }

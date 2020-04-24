@@ -15,14 +15,24 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.injection.Injection;
 import com.ocr.francois.go4lunch.injection.ViewModelFactory;
 import com.ocr.francois.go4lunch.models.Photo;
 import com.ocr.francois.go4lunch.models.Restaurant;
+import com.ocr.francois.go4lunch.models.User;
+import com.ocr.francois.go4lunch.ui.base.BaseFragment;
 import com.ocr.francois.go4lunch.ui.viewmodels.RestaurantViewModel;
+import com.ocr.francois.go4lunch.ui.workmates.WorkmatesAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,7 +41,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RestaurantDetailsFragment extends Fragment {
+public class RestaurantDetailsFragment extends BaseFragment {
 
     @BindView(R.id.fragment_restaurant_details_picture_image_view)
     ImageView restaurantPictureImageView;
@@ -45,14 +55,14 @@ public class RestaurantDetailsFragment extends Fragment {
     Button likeButton;
     @BindView(R.id.fragment_restaurant_details_website_button)
     Button websiteButton;
+    @BindView(R.id.fragment_restaurant_details_recycler_view)
+    RecyclerView recyclerView;
+    @BindView(R.id.fragment_restaurant_details_floating_action_button)
+    FloatingActionButton fab;
 
+    WorkmatesAdapter workmatesAdapter;
     String placeId;
-    RestaurantViewModel restaurantViewModel;
     Restaurant restaurant;
-
-    public RestaurantDetailsFragment() {
-        // Required empty public constructor
-    }
 
     public static RestaurantDetailsFragment newInstance(String placeId) {
         RestaurantDetailsFragment restaurantDetailsFragment = new RestaurantDetailsFragment();
@@ -65,11 +75,6 @@ public class RestaurantDetailsFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -77,20 +82,32 @@ public class RestaurantDetailsFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         this.placeId = this.getArguments().getString("placeId");
-        configureViewModel();
+        configureLunchViewModel();
+
+        getRestaurant();
 
         return view;
     }
 
-    private void configureViewModel() {
-        ViewModelFactory viewModelFactory = Injection.provideViewModelFactory();
-        restaurantViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(RestaurantViewModel.class);
-        restaurantViewModel.getRestaurant(placeId).observe(this, new Observer<Restaurant>() {
+    private void getRestaurant() {
+        lunchViewModel.getRestaurant(placeId).observe(this, new Observer<Restaurant>() {
             @Override
             public void onChanged(Restaurant restaurantChange) {
 
                 restaurant = restaurantChange;
                 updateUi();
+            }
+        });
+    }
+
+    private void getUsers() {
+        lunchViewModel.getUsers().observe(this, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                if (!users.isEmpty()) {
+                    setUsers(users);
+                    workmatesAdapter.notifyDataSetChanged();
+                }
             }
         });
     }
@@ -116,6 +133,7 @@ public class RestaurantDetailsFragment extends Fragment {
 
         configureCallButton();
         configureWebsiteButton();
+        configureFab();
     }
 
     private void configureCallButton() {
@@ -151,5 +169,23 @@ public class RestaurantDetailsFragment extends Fragment {
         } else {
             websiteButton.setClickable(false);
         }
+    }
+
+    private void configureRecyclerView() {
+        workmatesAdapter = new WorkmatesAdapter(getContext(), new ArrayList<>());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setAdapter(workmatesAdapter);
+        recyclerView.setLayoutManager(layoutManager);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
+    }
+
+    private void configureFab() {
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lunchViewModel.saveLunch(getCurrentUser().getUid(), restaurant.getPlaceId(), restaurant.getName());
+            }
+        });
     }
 }

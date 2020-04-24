@@ -18,6 +18,12 @@ public class User {
 
     public User() {}
 
+    public User(String id, String userName, @Nullable String urlPicture) {
+        this.id = id;
+        this.userName = userName;
+        this.urlPicture = urlPicture;
+    }
+
     public User(String id, String userName, @Nullable String urlPicture, @Nullable String lunchRestaurantPlaceId, @Nullable String lunchRestaurantName, @Nullable Timestamp lunchTimestamp) {
         this.id = id;
         this.userName = userName;

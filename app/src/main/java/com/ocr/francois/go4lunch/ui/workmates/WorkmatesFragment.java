@@ -1,6 +1,7 @@
 package com.ocr.francois.go4lunch.ui.workmates;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,9 +57,11 @@ public class WorkmatesFragment extends BaseFragment {
     private void getUsers() {
         lunchViewModel.getUsers().observe(this, new Observer<List<User>>() {
             @Override
-            public void onChanged(List<User> users) {
-                if (!users.isEmpty()) {
-                    setUsers(users);
+            public void onChanged(List<User> usersnew) {
+                if (!usersnew.isEmpty()) {
+                    Log.d("CHANGE !!!", "CHANGE !!!!!!!!!!!!!");
+                    setUsers(usersnew);
+                    Log.d("ON CHANGE !!!!!!!", String.valueOf(users.size()));
                     workmatesAdapter.notifyDataSetChanged();
                 }
             }

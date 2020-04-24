@@ -1,7 +1,7 @@
 package com.ocr.francois.go4lunch.ui.listView;
 
 import android.content.Context;
-import android.util.Log;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +27,17 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
     private List<Restaurant> restaurants;
     private Context context;
     private RestaurantItemClickCallback restaurantItemClickCallback;
+    private Location currentLocation;
 
-    public RestaurantAdapter(Context context, List<Restaurant> restaurants, RestaurantItemClickCallback restaurantItemClickCallback) {
+    public RestaurantAdapter(Context context, List<Restaurant> restaurants, RestaurantItemClickCallback restaurantItemClickCallback, Location currentLocation) {
         this.context = context;
         this.restaurants = restaurants;
         this.restaurantItemClickCallback = restaurantItemClickCallback;
+        this.currentLocation = currentLocation;
+    }
+
+    public void setCurrentLocation(Location currentLocation) {
+        this.currentLocation = currentLocation;
     }
 
     @NonNull
@@ -47,7 +53,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
     public void onBindViewHolder(@NonNull RestaurantViewHolder holder, int position) {
 
         Restaurant restaurant = restaurants.get(position);
-        holder.updateUi(restaurant);
+        holder.updateUi(restaurant, currentLocation);
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,15 +74,17 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
 
     static class RestaurantViewHolder extends RecyclerView.ViewHolder {
 
+        protected View view;
         @BindView(R.id.fragment_list_view_restaurant_item_name_text_view)
         TextView nameTextView;
         @BindView(R.id.fragment_list_view_restaurant_item_address_text_view)
         TextView addressTextView;
+        @BindView(R.id.fragment_list_view_restaurant_item_distance)
+        TextView distanceTextView;
         @BindView(R.id.fragment_list_view_restaurant_item_participants_number_text_view)
         TextView participantsNumberTextView;
         @BindView(R.id.fragment_list_view_restaurant_item_photo_image_view)
         ImageView photoImageView;
-        protected View view;
 
         RestaurantViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -84,10 +92,14 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
             ButterKnife.bind(this, view);
         }
 
-        void updateUi(Restaurant restaurant) {
+        void updateUi(Restaurant restaurant, Location currentLocation) {
             nameTextView.setText(restaurant.getName());
             addressTextView.setText(restaurant.getVicinity().replaceAll(", ", "\n"));
 
+            if (currentLocation != null) {
+                String distanceText = getDistance(restaurant, currentLocation) + " m";
+                distanceTextView.setText(distanceText);
+            }
             participantsNumberTextView.setText(String.valueOf(restaurant.getParticipants().size()));
 
             if (restaurant.getPhotos() != null) {
@@ -101,6 +113,14 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
                             .into(photoImageView);
                 }
             }
+        }
+
+        private int getDistance(Restaurant restaurant, Location currentLocation) {
+            Location restaurantLocation = new Location("restaurant location");
+            restaurantLocation.setLatitude(restaurant.getGeometry().getLocation().getLat());
+            restaurantLocation.setLongitude(restaurant.getGeometry().getLocation().getLng());
+
+            return Math.round(currentLocation.distanceTo(restaurantLocation));
         }
     }
 }

@@ -18,11 +18,11 @@ import com.ocr.francois.go4lunch.utils.DateTool;
 
 import java.util.List;
 
+import bolts.Task;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.WorkmatesViewHolder> {
-
     private Context context;
     private List<User> workmates;
 
@@ -35,7 +35,7 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.Work
     @Override
     public WorkmatesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.fragment_workmates_item, parent, false);
+        View view = inflater.inflate(R.layout.recycler_view_workmates_item, parent, false);
 
         return new WorkmatesViewHolder(view);
     }
@@ -55,9 +55,9 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.Work
 
     static class WorkmatesViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.fragment_workmates_item_user_name_text_view)
-        TextView userNameTextView;
-        @BindView(R.id.fragment_workmates_item_picture_image_view)
+        @BindView(R.id.recycler_view_workmates_item_text_view)
+        TextView textView;
+        @BindView(R.id.recycler_view_workmates_item_picture_image_view)
         ImageView pictureImageView;
         View view;
 
@@ -77,7 +77,7 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.Work
                 }
             }
 
-            userNameTextView.setText(textToDisplay);
+            textView.setText(textToDisplay);
 
             if (user.getUrlPicture() != null) {
                 Glide.with(view)

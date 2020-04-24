@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.ocr.francois.go4lunch.api.UserHelper;
 import com.ocr.francois.go4lunch.models.Restaurant;
 import com.ocr.francois.go4lunch.models.User;
 import com.ocr.francois.go4lunch.repositories.RestaurantRepository;
@@ -30,7 +31,7 @@ public class LunchViewModel extends ViewModel {
         return restaurantRepository.getRestaurants(location, radius);
     }
 
-    public MutableLiveData<Restaurant> getRestaurantDetails(String placeId) {
+    public MutableLiveData<Restaurant> getRestaurant(String placeId) {
         return restaurantRepository.getRestaurant(placeId);
     }
 
@@ -75,5 +76,9 @@ public class LunchViewModel extends ViewModel {
                 addParticipantInRestaurant(restaurant, users);
             }
         }
+    }
+
+    public void saveLunch(String userId, String lunchRestaurantPlaceId, String lunchRestaurantName) {
+        userRepository.saveLunch(userId, lunchRestaurantPlaceId, lunchRestaurantName);
     }
 }

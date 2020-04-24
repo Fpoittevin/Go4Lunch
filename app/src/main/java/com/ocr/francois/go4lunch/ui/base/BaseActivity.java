@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.ui.signin.SignInActivity;
 
 import butterknife.ButterKnife;
@@ -29,6 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Nullable
     protected FirebaseUser getCurrentUser() {
+
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 

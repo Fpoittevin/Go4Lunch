@@ -11,4 +11,8 @@ public class DateTool {
 
         return new com.google.firebase.Timestamp(todayMidnight.toDate());
     }
+
+    public static boolean isToday(Timestamp timestamp) {
+        return timestamp.compareTo(DateTool.getTodayMidnightTimestamp()) >= 1;
+    }
 }

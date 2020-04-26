@@ -23,26 +23,27 @@ import java.util.List;
 
 public class UserRepository {
 
-    private MutableLiveData<List<User>> users = new MutableLiveData<>();
-
     public MutableLiveData<List<User>> getUsers() {
 
+        MutableLiveData<List<User>> users = new MutableLiveData<>();
         List<User> usersList = new ArrayList<>();
 
         UserHelper.getAllUsers().addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException e) {
+                usersList.clear();
                 if (querySnapshots != null) {
                     for (QueryDocumentSnapshot doc : querySnapshots) {
                         usersList.add(doc.toObject(User.class));
                     }
-                    users.postValue(usersList);
-                    //users.setValue(usersList);
+                    users.setValue(usersList);
+                    Log.d("IN REPOSITORY users", String.valueOf(usersList.size()));
                 } else {
                     Log.d("users", "Error getting documents");
                 }
             }
         });
+
         return users;
     }
 

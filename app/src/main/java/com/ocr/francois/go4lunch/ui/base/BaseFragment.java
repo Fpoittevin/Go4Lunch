@@ -1,6 +1,8 @@
 package com.ocr.francois.go4lunch.ui.base;
 
 import android.location.Location;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -51,5 +53,19 @@ public abstract class BaseFragment extends Fragment {
     protected void setUsers(List<User> users) {
         this.users.clear();
         this.users.addAll(users);
+    }
+
+    protected void showProgressBar(int resId) {
+        ProgressBar progressBar = this.getActivity().findViewById(resId);
+        if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    protected void hideProgressBar(int resId) {
+        ProgressBar progressBar = this.getActivity().findViewById(resId);
+        if (progressBar != null) {
+            progressBar.setVisibility(View.INVISIBLE);
+        }
     }
 }

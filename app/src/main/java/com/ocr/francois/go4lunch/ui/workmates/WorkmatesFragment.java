@@ -15,6 +15,7 @@ import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.models.User;
 import com.ocr.francois.go4lunch.ui.base.BaseFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -46,7 +47,7 @@ public class WorkmatesFragment extends BaseFragment {
     }
 
     private void configureRecyclerView() {
-        workmatesAdapter = new WorkmatesAdapter(getContext(), users);
+        workmatesAdapter = new WorkmatesAdapter(new ArrayList<>());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setAdapter(workmatesAdapter);
         recyclerView.setLayoutManager(layoutManager);
@@ -57,12 +58,10 @@ public class WorkmatesFragment extends BaseFragment {
     private void getUsers() {
         lunchViewModel.getUsers().observe(this, new Observer<List<User>>() {
             @Override
-            public void onChanged(List<User> usersnew) {
-                if (!usersnew.isEmpty()) {
-                    Log.d("CHANGE !!!", "CHANGE !!!!!!!!!!!!!");
-                    setUsers(usersnew);
-                    Log.d("ON CHANGE !!!!!!!", String.valueOf(users.size()));
-                    workmatesAdapter.notifyDataSetChanged();
+            public void onChanged(List<User> users) {
+                Log.d("ON CHANGE !!!!!!", String.valueOf(users.size()));
+                if (!users.isEmpty()) {
+                    workmatesAdapter.updatesWorkmates(users);
                 }
             }
         });

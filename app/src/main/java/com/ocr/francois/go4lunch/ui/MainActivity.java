@@ -1,19 +1,28 @@
 package com.ocr.francois.go4lunch.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -25,12 +34,16 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserInfo;
 import com.ocr.francois.go4lunch.R;
+import com.ocr.francois.go4lunch.injection.Injection;
+import com.ocr.francois.go4lunch.injection.ViewModelFactory;
 import com.ocr.francois.go4lunch.models.Restaurant;
+import com.ocr.francois.go4lunch.models.User;
 import com.ocr.francois.go4lunch.ui.base.BaseActivity;
 import com.ocr.francois.go4lunch.ui.listView.ListViewFragment;
 import com.ocr.francois.go4lunch.ui.listView.RestaurantAdapter;
 import com.ocr.francois.go4lunch.ui.mapView.MapViewFragment;
 import com.ocr.francois.go4lunch.ui.restaurantDetails.RestaurantDetailsActivity;
+import com.ocr.francois.go4lunch.ui.viewmodels.LunchViewModel;
 import com.ocr.francois.go4lunch.ui.workmates.WorkmatesFragment;
 import com.ocr.francois.go4lunch.utils.LocationTracker;
 
@@ -49,10 +62,20 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
     @BindView(R.id.activity_main_navigation_view)
     NavigationView navigationView;
 
+    View navigationViewHeader;
+    ImageView userPictureImageView;
+    TextView userNameTextView;
+    TextView userEmailTextView;
+
+    private View view;
+
     private MapViewFragment mapViewFragment;
     private ListViewFragment listViewFragment;
     private WorkmatesFragment workmatesFragment;
     private int frameLayoutId;
+    private User currentUser;
+
+    private LunchViewModel lunchViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +88,8 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
         configureDrawerLayout();
         configureNavigationView();
 
+        configureLunchViewModel();
+        getCurrentUserInFirestore();
         frameLayoutId = R.id.activity_main_frame_layout;
 
         mapViewFragment = MapViewFragment.newInstance();
@@ -78,7 +103,43 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
                 Log.d("location : ", String.valueOf(location.getLatitude()) + location.getLongitude());
             }
         });
+    }
 
+    @Nullable
+    @Override
+    public View onCreateView(@Nullable View parent, @NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
+        view = super.onCreateView(parent, name, context, attrs);
+        return view;
+    }
+
+    private void configureLunchViewModel() {
+        ViewModelFactory viewModelFactory = Injection.provideViewModelFactory();
+        lunchViewModel = ViewModelProviders.of(this, viewModelFactory).get(LunchViewModel.class);
+    }
+
+    private void getCurrentUserInFirestore() {
+        lunchViewModel.getCurrentUserInFirestore(getCurrentUser().getUid()).observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                currentUser = user;
+                updateUi();
+            }
+        });
+    }
+
+    private void updateUi() {
+        if (currentUser.getUrlPicture() != null) {
+            Glide.with(navigationViewHeader)
+                    .load(currentUser.getUrlPicture())
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(userPictureImageView);
+        }
+        if (currentUser.getUserName() != null) {
+            userNameTextView.setText(currentUser.getUserName());
+        }
+        if (getCurrentUser().getEmail() != null) {
+            userEmailTextView.setText(getCurrentUser().getEmail());
+        }
     }
 
     private void configureBottomNavigationView() {
@@ -123,12 +184,21 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
     }
 
     private void configureNavigationView() {
+        navigationViewHeader = navigationView.inflateHeaderView(R.layout.navigation_view_header);
+        userPictureImageView = navigationViewHeader.findViewById(R.id.navigation_view_header_user_picture_image_view);
+        userNameTextView = navigationViewHeader.findViewById(R.id.navigation_view_header_user_name_text_view);
+        userEmailTextView = navigationViewHeader.findViewById(R.id.navigation_view_header_user_email_text_view);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.drawer_menu_lunch_button:
-
+                        if (currentUser.getLunchRestaurantPlaceId() != null) {
+                            startRestaurantDetailActivity(currentUser.getLunchRestaurantPlaceId());
+                        } else {
+                            Toast.makeText(getApplicationContext(), "vous n'avez choisi aucun restaurant pour l'instant", Toast.LENGTH_LONG).show();
+                        }
                         break;
                     case R.id.drawer_menu_settings_button:
 

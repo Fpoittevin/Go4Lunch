@@ -6,11 +6,11 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.ocr.francois.go4lunch.api.UserHelper;
 import com.ocr.francois.go4lunch.models.Restaurant;
 import com.ocr.francois.go4lunch.models.User;
 import com.ocr.francois.go4lunch.repositories.RestaurantRepository;
 import com.ocr.francois.go4lunch.repositories.UserRepository;
+import com.ocr.francois.go4lunch.utils.DateTool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +41,10 @@ public class LunchViewModel extends ViewModel {
         return userRepository.getUsers();
     }
 
+    public MutableLiveData<User> getCurrentUserInFirestore(String id) {
+        return userRepository.getUser(id);
+    }
+
     public int getNumbersOfUsersByRestaurant(Restaurant restaurant, List<User> users) {
 
         return getWorkmatesByRestaurant(restaurant, users, false, null).size();
@@ -53,12 +57,14 @@ public class LunchViewModel extends ViewModel {
         if (users != null && !users.isEmpty()) {
             for (User user : users) {
 
-                if (user.getLunchRestaurantPlaceId() != null && user.getLunchRestaurantPlaceId().equals(restaurant.getPlaceId())) {
+                if (user.getLunchTimestamp() != null && user.getLunchRestaurantPlaceId() != null) {
+                    if (DateTool.isToday(user.getLunchTimestamp()) && user.getLunchRestaurantPlaceId().equals(restaurant.getPlaceId())) {
 
-                    if (!includeCurrentUser && user.getId().equals(currentUserId)) {
-                        continue;
+                        if (!includeCurrentUser && user.getId().equals(currentUserId)) {
+                            continue;
+                        }
+                        workmatesByRestaurant.add(user);
                     }
-                    workmatesByRestaurant.add(user);
                 }
             }
         }

@@ -5,6 +5,13 @@
     android:layout_height="match_parent"
     tools:context=".ui.mapView.MapViewFragment">
 
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        android:id="@+id/fragment_map_view_progress_bar" />
+
     <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"

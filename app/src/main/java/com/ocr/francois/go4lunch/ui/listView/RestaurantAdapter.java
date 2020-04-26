@@ -1,6 +1,5 @@
 package com.ocr.francois.go4lunch.ui.listView;
 
-import android.content.Context;
 import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,12 +24,11 @@ import butterknife.ButterKnife;
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder> {
 
     private List<Restaurant> restaurants;
-    private Context context;
     private RestaurantItemClickCallback restaurantItemClickCallback;
     private Location currentLocation;
 
-    public RestaurantAdapter(Context context, List<Restaurant> restaurants, RestaurantItemClickCallback restaurantItemClickCallback, Location currentLocation) {
-        this.context = context;
+    public RestaurantAdapter(List<Restaurant> restaurants, RestaurantItemClickCallback restaurantItemClickCallback, Location currentLocation) {
+
         this.restaurants = restaurants;
         this.restaurantItemClickCallback = restaurantItemClickCallback;
         this.currentLocation = currentLocation;
@@ -43,7 +41,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
     @NonNull
     @Override
     public RestaurantViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.fragment_list_view_restaurant_item, parent, false);
 
         return new RestaurantViewHolder(view);

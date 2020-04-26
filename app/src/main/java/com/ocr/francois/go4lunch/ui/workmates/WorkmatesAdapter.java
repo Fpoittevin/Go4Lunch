@@ -18,23 +18,27 @@ import com.ocr.francois.go4lunch.utils.DateTool;
 
 import java.util.List;
 
-import bolts.Task;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.WorkmatesViewHolder> {
-    private Context context;
+
     private List<User> workmates;
 
-    public WorkmatesAdapter(Context context, List<User> users) {
-        this.context = context;
+    public WorkmatesAdapter(List<User> users) {
         this.workmates = users;
+    }
+
+    public void updatesWorkmates(List<User> workmates) {
+        this.workmates.clear();
+        this.workmates.addAll(workmates);
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public WorkmatesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.recycler_view_workmates_item, parent, false);
 
         return new WorkmatesViewHolder(view);
@@ -44,8 +48,7 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.Work
     public void onBindViewHolder(@NonNull WorkmatesViewHolder holder, int position) {
 
         User workmate = workmates.get(position);
-
-        holder.updateUi(context, workmate);
+        holder.updateUi(workmate);
     }
 
     @Override
@@ -67,13 +70,13 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.Work
             ButterKnife.bind(this, view);
         }
 
-        void updateUi(Context context, User user) {
+        void updateUi(User user) {
 
-            String textToDisplay = user.getUserName() + " " + context.getResources().getString(R.string.hasnt_decided_yet);
+            String textToDisplay = user.getUserName() + " " + view.getResources().getString(R.string.hasnt_decided_yet);
 
             if (user.getLunchTimestamp() != null && user.getLunchTimestamp().compareTo(DateTool.getTodayMidnightTimestamp()) == 1) {
                 if (user.getLunchRestaurantName() != null) {
-                    textToDisplay = user.getUserName() + " " + context.getResources().getString(R.string.is_eating_at) + " " + user.getLunchRestaurantName();
+                    textToDisplay = user.getUserName() + " " + view.getResources().getString(R.string.is_eating_at) + " " + user.getLunchRestaurantName();
                 }
             }
 

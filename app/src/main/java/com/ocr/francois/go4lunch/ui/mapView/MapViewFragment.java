@@ -50,6 +50,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
         configureLunchViewModel();
         configureMap();
         configureLocationTracker();
+        showProgressBar(R.id.fragment_map_view_progress_bar);
 
         return view;
     }
@@ -78,7 +79,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
                     LatLng latLngLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
                     map.moveCamera(CameraUpdateFactory.newLatLng(latLngLocation));
                     map.animateCamera(CameraUpdateFactory.zoomTo(12));
-
+                    hideProgressBar(R.id.fragment_map_view_progress_bar);
                     getRestaurants();
                 }
             }

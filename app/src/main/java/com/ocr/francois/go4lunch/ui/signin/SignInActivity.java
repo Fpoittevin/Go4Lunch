@@ -102,7 +102,6 @@ public class SignInActivity extends BaseActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // TODO: add createUserInFirestore
                             updateUI();
                         } else {
                             Snackbar.make(findViewById(getLayout()), R.string.auth_error, Snackbar.LENGTH_SHORT).show();

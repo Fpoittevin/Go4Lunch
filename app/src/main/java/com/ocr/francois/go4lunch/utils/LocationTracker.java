@@ -20,6 +20,8 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class LocationTracker implements OnSuccessListener<Location> {
 
+    //TODO : mettre les nombre de location request dans des constantes ou préférences
+
     private Context context;
     private MutableLiveData<Location> location;
     private FusedLocationProviderClient fusedLocationClient;
@@ -32,6 +34,7 @@ public class LocationTracker implements OnSuccessListener<Location> {
         this.locationRequest = new LocationRequest()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(30 * 1000)
+                .setSmallestDisplacement(100)
                 .setFastestInterval(2 * 1000);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);

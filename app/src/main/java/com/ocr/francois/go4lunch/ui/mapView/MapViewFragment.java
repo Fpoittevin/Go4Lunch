@@ -23,11 +23,8 @@ import com.ocr.francois.go4lunch.ui.base.BaseFragment;
 
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MapViewFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+// TODO : mettre zoom de la carte et radius dans préférences
+
 public class MapViewFragment extends BaseFragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap map;
@@ -68,20 +65,17 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
         locationTracker.stopLocationUpdates();
     }
 
-
     private void observeLocation() {
 
         locationTracker.getLocation().observe(this, newLocation -> {
             if (newLocation != null) {
-                if (currentLocation == null || Math.round(newLocation.distanceTo(currentLocation)) < 500) {
-
                     currentLocation = newLocation;
                     LatLng latLngLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
                     map.moveCamera(CameraUpdateFactory.newLatLng(latLngLocation));
                     map.animateCamera(CameraUpdateFactory.zoomTo(12));
+
                     hideProgressBar(R.id.fragment_map_view_progress_bar);
                     getRestaurants();
-                }
             }
         });
     }
@@ -120,8 +114,10 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
             MarkerOptions markerOptions = new MarkerOptions();
             LatLng latLng = new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng());
             markerOptions.position(latLng);
-            if (lunchViewModel.getNumbersOfUsersByRestaurant(restaurant, users) != 0) {
-                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            if (lunchViewModel.getNumbersOfUsersByRestaurant(restaurant, users) == 0) {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_orange));
+            } else {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_green));
             }
             Marker marker = map.addMarker(markerOptions);
 

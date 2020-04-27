@@ -21,4 +21,7 @@ public interface PlacesService {
 
     @GET("details/json?key=AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE")
     Call<GoogleDetailResult> getPlaceDetails(@Query("place_id") String placeId);
+
+    //TODO : ne demander que les infos nécessaires
+    //TODO : ajouter le radius choisi dans les préférences utilisateurs
 }

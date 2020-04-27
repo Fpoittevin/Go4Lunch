@@ -172,7 +172,7 @@ public class RestaurantDetailsFragment extends BaseFragment {
     }
 
     private void configureRecyclerView() {
-        workmatesAdapter = new WorkmatesAdapter(getContext(), new ArrayList<>());
+        workmatesAdapter = new WorkmatesAdapter(new ArrayList<>());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setAdapter(workmatesAdapter);
         recyclerView.setLayoutManager(layoutManager);

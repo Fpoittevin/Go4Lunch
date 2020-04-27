@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -28,6 +29,7 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.Work
     public WorkmatesAdapter(List<User> users) {
         this.workmates = users;
     }
+
 
     public void updatesWorkmates(List<User> workmates) {
         this.workmates.clear();

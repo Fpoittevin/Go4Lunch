@@ -18,6 +18,7 @@ import com.ocr.francois.go4lunch.utils.LocationTracker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class BaseFragment extends Fragment {
 
@@ -35,7 +36,7 @@ public abstract class BaseFragment extends Fragment {
     protected void configureLunchViewModel() {
 
         ViewModelFactory viewModelFactory = Injection.provideViewModelFactory();
-        lunchViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(LunchViewModel.class);
+        lunchViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity()), viewModelFactory).get(LunchViewModel.class);
     }
 
     protected void configureLocationTracker() {
@@ -47,7 +48,6 @@ public abstract class BaseFragment extends Fragment {
 
         this.restaurants.clear();
         this.restaurants.addAll(restaurants);
-        lunchViewModel.addParticipantsInAllRestaurants(this.restaurants, this.users);
     }
 
     protected void setUsers(List<User> users) {
@@ -56,14 +56,14 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void showProgressBar(int resId) {
-        ProgressBar progressBar = this.getActivity().findViewById(resId);
+        ProgressBar progressBar = Objects.requireNonNull(this.getActivity()).findViewById(resId);
         if (progressBar != null) {
             progressBar.setVisibility(View.VISIBLE);
         }
     }
 
     protected void hideProgressBar(int resId) {
-        ProgressBar progressBar = this.getActivity().findViewById(resId);
+        ProgressBar progressBar = Objects.requireNonNull(this.getActivity()).findViewById(resId);
         if (progressBar != null) {
             progressBar.setVisibility(View.INVISIBLE);
         }

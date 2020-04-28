@@ -8,7 +8,6 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -22,12 +21,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.injection.Injection;
 import com.ocr.francois.go4lunch.injection.ViewModelFactory;
 import com.ocr.francois.go4lunch.ui.MainActivity;
-import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.ui.base.BaseActivity;
-import com.ocr.francois.go4lunch.ui.viewmodels.LunchViewModel;
 import com.ocr.francois.go4lunch.ui.viewmodels.UserViewModel;
 
 import butterknife.BindView;
@@ -118,7 +116,7 @@ public class SignInActivity extends BaseActivity {
 
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             String urlPicture = "";
-            if(currentUser.getPhotoUrl() != null) {
+            if (currentUser.getPhotoUrl() != null) {
                 urlPicture = currentUser.getPhotoUrl().toString();
             }
             userViewModel.createUser(currentUser.getUid(), currentUser.getDisplayName(), urlPicture);

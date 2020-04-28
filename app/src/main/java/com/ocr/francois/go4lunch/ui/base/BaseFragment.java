@@ -5,6 +5,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,6 +31,8 @@ public abstract class BaseFragment extends Fragment {
     protected List<Restaurant> restaurants = new ArrayList<>();
     protected List<User> users = new ArrayList<>();
 
+    protected abstract void updateUiWhenDataChange();
+
     protected FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
@@ -40,17 +44,47 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void configureLocationTracker() {
-
         this.locationTracker = new LocationTracker(getContext());
     }
 
-    protected void setRestaurants(List<Restaurant> restaurants) {
+    protected void getRestaurants() {
+        if(restaurants == null) {
+            restaurants = new ArrayList<>();
+        }
+        // TODO: mettre radius dans les préférences
+        if (currentLocation != null) {
+            lunchViewModel.getRestaurants(currentLocation, 2000).observe(this, new Observer<List<Restaurant>>() {
+                @Override
+                public void onChanged(List<Restaurant> restaurants) {
+                    setRestaurants(restaurants);
+                    updateUiWhenDataChange();
+                }
+            });
+        }
+    }
 
+    protected void getUsers() {
+        if(users == null) {
+            users = new ArrayList<>();
+        }
+        lunchViewModel.getUsers().observe(this, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                setUsers(users);
+                if(restaurants != null) {
+                    lunchViewModel.addParticipantsInAllRestaurants(restaurants, users);
+                }
+                updateUiWhenDataChange();
+            }
+        });
+    }
+
+    private void setRestaurants(List<Restaurant> restaurants) {
         this.restaurants.clear();
         this.restaurants.addAll(restaurants);
     }
 
-    protected void setUsers(List<User> users) {
+    private void setUsers(List<User> users) {
         this.users.clear();
         this.users.addAll(users);
     }

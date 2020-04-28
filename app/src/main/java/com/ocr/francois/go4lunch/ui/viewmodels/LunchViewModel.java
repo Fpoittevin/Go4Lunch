@@ -45,12 +45,14 @@ public class LunchViewModel extends ViewModel {
         return userRepository.getUser(id);
     }
 
+    // LUNCHES
+
     public int getNumbersOfUsersByRestaurant(Restaurant restaurant, List<User> users) {
 
         return getWorkmatesByRestaurant(restaurant, users, false, null).size();
     }
 
-    public List<User> getWorkmatesByRestaurant(Restaurant restaurant, List<User> users, Boolean includeCurrentUser, @Nullable String currentUserId) {
+    private List<User> getWorkmatesByRestaurant(Restaurant restaurant, List<User> users, Boolean includeCurrentUser, @Nullable String currentUserId) {
 
         List<User> workmatesByRestaurant = new ArrayList<>();
 
@@ -71,7 +73,7 @@ public class LunchViewModel extends ViewModel {
         return workmatesByRestaurant;
     }
 
-    public void addParticipantInRestaurant(Restaurant restaurant, List<User> users) {
+    private void addParticipantInRestaurant(Restaurant restaurant, List<User> users) {
         restaurant.getParticipants().clear();
         restaurant.setParticipants(getWorkmatesByRestaurant(restaurant, users, true, null));
     }

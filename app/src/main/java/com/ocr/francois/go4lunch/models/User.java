@@ -3,6 +3,7 @@ package com.ocr.francois.go4lunch.models;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.Timestamp;
+import com.ocr.francois.go4lunch.utils.DateTool;
 
 import java.util.List;
 
@@ -82,5 +83,9 @@ public class User {
 
     public void setLunchTimestamp(@Nullable Timestamp lunchTimestamp) {
         this.lunchTimestamp = lunchTimestamp;
+    }
+
+    public boolean choseARestaurant() {
+        return lunchTimestamp != null && DateTool.isToday(lunchTimestamp) && lunchRestaurantPlaceId != null && lunchRestaurantName != null;
     }
 }

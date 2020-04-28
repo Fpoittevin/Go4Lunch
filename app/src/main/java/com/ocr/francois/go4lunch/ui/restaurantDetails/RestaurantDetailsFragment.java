@@ -1,6 +1,7 @@
 package com.ocr.francois.go4lunch.ui.restaurantDetails;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,10 +12,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,17 +21,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ocr.francois.go4lunch.R;
-import com.ocr.francois.go4lunch.injection.Injection;
-import com.ocr.francois.go4lunch.injection.ViewModelFactory;
 import com.ocr.francois.go4lunch.models.Photo;
 import com.ocr.francois.go4lunch.models.Restaurant;
-import com.ocr.francois.go4lunch.models.User;
 import com.ocr.francois.go4lunch.ui.base.BaseFragment;
-import com.ocr.francois.go4lunch.ui.viewmodels.RestaurantViewModel;
-import com.ocr.francois.go4lunch.ui.workmates.WorkmatesAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,7 +77,7 @@ public class RestaurantDetailsFragment extends BaseFragment {
 
         this.placeId = this.getArguments().getString("placeId");
         configureLunchViewModel();
-
+        configureRecyclerView();
         getRestaurant();
 
         return view;
@@ -100,16 +94,9 @@ public class RestaurantDetailsFragment extends BaseFragment {
         });
     }
 
-    private void getUsers() {
-        lunchViewModel.getUsers().observe(this, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                if (!users.isEmpty()) {
-                    setUsers(users);
-                    workmatesAdapter.notifyDataSetChanged();
-                }
-            }
-        });
+    @Override
+    protected void updateUiWhenDataChange() {
+        workmatesAdapter.notifyDataSetChanged();
     }
 
     private void updateUi() {
@@ -140,14 +127,15 @@ public class RestaurantDetailsFragment extends BaseFragment {
         String phoneNumber = restaurant.getInternationalPhoneNumber();
         if (phoneNumber != null) {
             callButton.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("MissingPermission")
                 @Override
                 public void onClick(View v) {
 
-                    if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.CALL_PHONE)) {
+                    if (EasyPermissions.hasPermissions(Objects.requireNonNull(getContext()), Manifest.permission.CALL_PHONE)) {
                         Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
-                        getActivity().startActivity(callIntent);
+                        Objects.requireNonNull(getActivity()).startActivity(callIntent);
                     } else {
-                        EasyPermissions.requestPermissions(getActivity(), getContext().getResources().getString(R.string.need_location_permissions_message), 124, Manifest.permission.CALL_PHONE);
+                        EasyPermissions.requestPermissions(Objects.requireNonNull(getActivity()), getContext().getResources().getString(R.string.need_location_permissions_message), 124, Manifest.permission.CALL_PHONE);
                     }
                 }
             });

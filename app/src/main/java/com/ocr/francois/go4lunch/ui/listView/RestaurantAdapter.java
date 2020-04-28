@@ -1,6 +1,5 @@
 package com.ocr.francois.go4lunch.ui.listView;
 
-import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,17 +24,16 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
 
     private List<Restaurant> restaurants;
     private RestaurantItemClickCallback restaurantItemClickCallback;
-    private Location currentLocation;
 
-    public RestaurantAdapter(List<Restaurant> restaurants, RestaurantItemClickCallback restaurantItemClickCallback, Location currentLocation) {
-
+    RestaurantAdapter(List<Restaurant> restaurants, RestaurantItemClickCallback restaurantItemClickCallback) {
         this.restaurants = restaurants;
         this.restaurantItemClickCallback = restaurantItemClickCallback;
-        this.currentLocation = currentLocation;
     }
 
-    public void setCurrentLocation(Location currentLocation) {
-        this.currentLocation = currentLocation;
+    void updateRestaurants(List<Restaurant> restaurants) {
+        this.restaurants.clear();
+        this.restaurants.addAll(restaurants);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -51,14 +49,8 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
     public void onBindViewHolder(@NonNull RestaurantViewHolder holder, int position) {
 
         Restaurant restaurant = restaurants.get(position);
-        holder.updateUi(restaurant, currentLocation);
-        holder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                restaurantItemClickCallback.onRestaurantItemClick(restaurant);
-            }
-        });
+        holder.updateUi(restaurant);
+        holder.view.setOnClickListener(v -> restaurantItemClickCallback.onRestaurantItemClick(restaurant.getPlaceId()));
     }
 
     @Override
@@ -67,7 +59,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
     }
 
     public interface RestaurantItemClickCallback {
-        void onRestaurantItemClick(Restaurant restaurant);
+        void onRestaurantItemClick(String placeId);
     }
 
     static class RestaurantViewHolder extends RecyclerView.ViewHolder {
@@ -90,15 +82,15 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
             ButterKnife.bind(this, view);
         }
 
-        void updateUi(Restaurant restaurant, Location currentLocation) {
+        void updateUi(Restaurant restaurant) {
             nameTextView.setText(restaurant.getName());
             addressTextView.setText(restaurant.getVicinity().replaceAll(", ", "\n"));
 
-            if (currentLocation != null) {
-                String distanceText = getDistance(restaurant, currentLocation) + " m";
-                distanceTextView.setText(distanceText);
-            }
-            participantsNumberTextView.setText(String.valueOf(restaurant.getParticipants().size()));
+            String distanceText = Math.round(restaurant.getDistance()) + " m";
+            distanceTextView.setText(distanceText);
+
+            String participantText = "(" + restaurant.getParticipants().size() + ")";
+            participantsNumberTextView.setText(participantText);
 
             if (restaurant.getPhotos() != null) {
                 if (!restaurant.getPhotos().isEmpty()) {
@@ -111,14 +103,6 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
                             .into(photoImageView);
                 }
             }
-        }
-
-        private int getDistance(Restaurant restaurant, Location currentLocation) {
-            Location restaurantLocation = new Location("restaurant location");
-            restaurantLocation.setLatitude(restaurant.getGeometry().getLocation().getLat());
-            restaurantLocation.setLongitude(restaurant.getGeometry().getLocation().getLng());
-
-            return Math.round(currentLocation.distanceTo(restaurantLocation));
         }
     }
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/sort_toolbar_menu"
+        android:icon="@drawable/ic_filter_list_white_24dp"
+        android:title="@string/sort_button_title"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/sort_by_distance"
+                android:title="@string/sort_by_distance"
+                app:showAsAction="never|withText" />
+            <item
+                android:id="@+id/sort_by_participants"
+                android:title="@string/sort_by_participants"
+                app:showAsAction="never|withText" />
+            <item
+                android:id="@+id/sort_by_likes"
+                android:title="@string/sort_by_likes"
+                app:showAsAction="never|withText" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/search_toolbar_menu"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="@string/search_button_title"
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="ifRoom" />
+</menu>

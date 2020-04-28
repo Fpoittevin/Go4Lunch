@@ -1,6 +1,5 @@
 package com.ocr.francois.go4lunch.ui.base;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -11,7 +10,6 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.ocr.francois.go4lunch.ui.signin.SignInActivity;
 
 import butterknife.ButterKnife;
 
@@ -50,12 +48,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    protected void authVerification() {
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            Intent signInIntent = new Intent(this, SignInActivity.class);
-            startActivity(signInIntent);
-        }
-    }
 
     protected boolean displayFragment(int layout, Fragment fragment) {
         getSupportFragmentManager()

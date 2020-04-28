@@ -1,4 +1,4 @@
-package com.ocr.francois.go4lunch.ui.workmates;
+package com.ocr.francois.go4lunch.ui.restaurantDetails;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +22,9 @@ import butterknife.ButterKnife;
 public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.WorkmatesViewHolder> {
 
     private List<User> workmates;
-    private WorkmateItemClickCallback workmateItemClickCallback;
 
-    WorkmatesAdapter(List<User> users, WorkmateItemClickCallback workmateItemClickCallback) {
+    public WorkmatesAdapter(List<User> users) {
         this.workmates = users;
-        this.workmateItemClickCallback = workmateItemClickCallback;
     }
 
 
@@ -47,21 +45,13 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.Work
 
     @Override
     public void onBindViewHolder(@NonNull WorkmatesViewHolder holder, int position) {
-
         User workmate = workmates.get(position);
         holder.updateUi(workmate);
-        if (workmate.choseARestaurant()) {
-            holder.view.setOnClickListener(v -> workmateItemClickCallback.onWorkmateItemClick(workmate.getLunchRestaurantPlaceId()));
-        }
     }
 
     @Override
     public int getItemCount() {
         return workmates.size();
-    }
-
-    public interface WorkmateItemClickCallback {
-        void onWorkmateItemClick(String placeId);
     }
 
     static class WorkmatesViewHolder extends RecyclerView.ViewHolder {
@@ -80,11 +70,7 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.Work
 
         void updateUi(User user) {
 
-            String textToDisplay = user.getUserName() + " " + view.getResources().getString(R.string.hasnt_decided_yet);
-
-            if (user.choseARestaurant()) {
-                textToDisplay = user.getUserName() + " " + view.getResources().getString(R.string.is_eating_at) + " " + user.getLunchRestaurantName();
-            }
+            String textToDisplay = user.getUserName() + " " + view.getResources().getString(R.string.is_joining);
 
             textView.setText(textToDisplay);
 

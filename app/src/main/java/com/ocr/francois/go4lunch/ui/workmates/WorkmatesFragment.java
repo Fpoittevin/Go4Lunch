@@ -1,22 +1,19 @@
 package com.ocr.francois.go4lunch.ui.workmates;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ocr.francois.go4lunch.R;
-import com.ocr.francois.go4lunch.models.User;
 import com.ocr.francois.go4lunch.ui.base.BaseFragment;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,10 +32,9 @@ public class WorkmatesFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_workmates, container, false);
-        ButterKnife.bind(this, view);
 
+        ButterKnife.bind(this, view);
         configureLunchViewModel();
         configureRecyclerView();
         getUsers();
@@ -47,7 +43,7 @@ public class WorkmatesFragment extends BaseFragment {
     }
 
     private void configureRecyclerView() {
-        workmatesAdapter = new WorkmatesAdapter(new ArrayList<>());
+        workmatesAdapter = new WorkmatesAdapter(new ArrayList<>(), (WorkmatesAdapter.WorkmateItemClickCallback) getActivity());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setAdapter(workmatesAdapter);
         recyclerView.setLayoutManager(layoutManager);
@@ -55,14 +51,22 @@ public class WorkmatesFragment extends BaseFragment {
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
-    private void getUsers() {
-        lunchViewModel.getUsers().observe(this, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                Log.d("ON CHANGE !!!!!!", String.valueOf(users.size()));
-                if (!users.isEmpty()) {
-                    workmatesAdapter.updatesWorkmates(users);
-                }
+    protected void updateUiWhenDataChange() {
+        if (!users.isEmpty()) {
+            sortWorkmatesList();
+            workmatesAdapter.updatesWorkmates(users);
+        }
+    }
+
+    private void sortWorkmatesList() {
+
+        Collections.sort(users, (user1, user2) -> {
+            if (user1.choseARestaurant() == user2.choseARestaurant()) {
+                return 0;
+            } else if (user1.choseARestaurant()) {
+                return -1;
+            } else {
+                return 1;
             }
         });
     }

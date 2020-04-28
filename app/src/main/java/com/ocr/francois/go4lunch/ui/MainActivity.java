@@ -43,7 +43,9 @@ import com.ocr.francois.go4lunch.ui.listView.ListViewFragment;
 import com.ocr.francois.go4lunch.ui.listView.RestaurantAdapter;
 import com.ocr.francois.go4lunch.ui.mapView.MapViewFragment;
 import com.ocr.francois.go4lunch.ui.restaurantDetails.RestaurantDetailsActivity;
+import com.ocr.francois.go4lunch.ui.signin.SignInActivity;
 import com.ocr.francois.go4lunch.ui.viewmodels.LunchViewModel;
+import com.ocr.francois.go4lunch.ui.workmates.WorkmatesAdapter;
 import com.ocr.francois.go4lunch.ui.workmates.WorkmatesFragment;
 import com.ocr.francois.go4lunch.utils.LocationTracker;
 
@@ -51,7 +53,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class MainActivity extends BaseActivity implements LocationListener, SearchView.OnQueryTextListener, RestaurantAdapter.RestaurantItemClickCallback, MapViewFragment.MarkerClickCallback {
+public class MainActivity extends BaseActivity implements LocationListener, SearchView.OnQueryTextListener, RestaurantAdapter.RestaurantItemClickCallback, MapViewFragment.MarkerClickCallback, WorkmatesAdapter.WorkmateItemClickCallback {
 
     @BindView(R.id.activity_main_toolbar)
     MaterialToolbar toolbar;
@@ -67,8 +69,6 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
     TextView userNameTextView;
     TextView userEmailTextView;
 
-    private View view;
-
     private MapViewFragment mapViewFragment;
     private ListViewFragment listViewFragment;
     private WorkmatesFragment workmatesFragment;
@@ -80,35 +80,30 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        authVerification();
 
-        //UI
-        configureBottomNavigationView();
-        configureToolBar();
-        configureDrawerLayout();
-        configureNavigationView();
+        if (isCurrentUserLogged()) {
+            //UI
+            configureBottomNavigationView();
+            configureToolBar();
+            configureDrawerLayout();
+            configureNavigationView();
 
-        configureLunchViewModel();
-        getCurrentUserInFirestore();
-        frameLayoutId = R.id.activity_main_frame_layout;
+            configureLunchViewModel();
+            getCurrentUserInFirestore();
+            frameLayoutId = R.id.activity_main_frame_layout;
 
-        mapViewFragment = MapViewFragment.newInstance();
-        mapViewFragment.setMarkerClickCallback(this);
-        displayFragment(frameLayoutId, mapViewFragment);
-
-        LocationTracker locationTracker = new LocationTracker(this);
-        locationTracker.getLocation().observe(this, new Observer<Location>() {
-            @Override
-            public void onChanged(Location location) {
-                Log.d("location : ", String.valueOf(location.getLatitude()) + location.getLongitude());
-            }
-        });
+            mapViewFragment = MapViewFragment.newInstance();
+            mapViewFragment.setMarkerClickCallback(this);
+            displayFragment(frameLayoutId, mapViewFragment);
+        } else {
+            startSignInActivity();
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(@Nullable View parent, @NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
-        view = super.onCreateView(parent, name, context, attrs);
+        View view = super.onCreateView(parent, name, context, attrs);
         return view;
     }
 
@@ -166,7 +161,6 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
                         }
                         return displayFragment(frameLayoutId, workmatesFragment);
                 }
-
                 return false;
             }
         });
@@ -230,7 +224,7 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
                             new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    authVerification();
+                                    startSignInActivity();
                                 }
                             });
             }
@@ -243,24 +237,16 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
     }
 
     @Override
-    public void onLocationChanged(Location location) {
-
-    }
+    public void onLocationChanged(Location location) { }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
+    public void onStatusChanged(String provider, int status, Bundle extras) { }
 
     @Override
-    public void onProviderEnabled(String provider) {
-
-    }
+    public void onProviderEnabled(String provider) { }
 
     @Override
-    public void onProviderDisabled(String provider) {
-
-    }
+    public void onProviderDisabled(String provider) { }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
@@ -275,19 +261,24 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
     }
 
     @Override
-    public void onRestaurantItemClick(Restaurant restaurant) {
-
-        startRestaurantDetailActivity(restaurant.getPlaceId());
-    }
+    public void onRestaurantItemClick(String placeId) {startRestaurantDetailActivity(placeId); }
 
     @Override
     public void onMarkerClickCallback(String placeId) {
         startRestaurantDetailActivity(placeId);
     }
 
+    @Override
+    public void onWorkmateItemClick(String placeId) { startRestaurantDetailActivity(placeId); }
+
     private void startRestaurantDetailActivity(String placeId) {
         Intent restaurantDetailsIntent = new Intent(MainActivity.this, RestaurantDetailsActivity.class);
         restaurantDetailsIntent.putExtra("placeId", placeId);
         startActivity(restaurantDetailsIntent);
+    }
+
+    private void startSignInActivity() {
+        Intent signInIntent = new Intent(this, SignInActivity.class);
+        startActivity(signInIntent);
     }
 }

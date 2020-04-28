@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,11 +27,11 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.models.Restaurant;
-import com.ocr.francois.go4lunch.models.User;
 import com.ocr.francois.go4lunch.ui.base.BaseFragment;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,6 +45,8 @@ public class ListViewFragment extends BaseFragment {
     private RestaurantAdapter restaurantAdapter;
     private PlacesClient placesClient;
 
+    private SortMethod sortMethod = SortMethod.DISTANCE;
+
     public static ListViewFragment newInstance() {
         return new ListViewFragment();
     }
@@ -51,14 +54,12 @@ public class ListViewFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list_view, container, false);
 
         ButterKnife.bind(this, view);
         configureLunchViewModel();
         configureLocationTracker();
         configureRecyclerView();
-
         setHasOptionsMenu(true);
 
         return view;
@@ -67,7 +68,8 @@ public class ListViewFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        Places.initialize(getContext(), "AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE");
+        //TODO: change place of api key
+        Places.initialize(Objects.requireNonNull(getContext()), "AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE");
         placesClient = Places.createClient(getContext());
         observeLocation();
         getUsers();
@@ -79,9 +81,16 @@ public class ListViewFragment extends BaseFragment {
         locationTracker.stopLocationUpdates();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        locationTracker.stopLocationUpdates();
+    }
+
     private void configureRecyclerView() {
-        restaurants = new ArrayList<>();
-        restaurantAdapter = new RestaurantAdapter(restaurants, (RestaurantAdapter.RestaurantItemClickCallback) getActivity(), currentLocation);
+        restaurantAdapter = new RestaurantAdapter(
+                new ArrayList<>(),
+                (RestaurantAdapter.RestaurantItemClickCallback) getActivity());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setAdapter(restaurantAdapter);
         recyclerView.setLayoutManager(layoutManager);
@@ -95,45 +104,36 @@ public class ListViewFragment extends BaseFragment {
             @Override
             public void onChanged(Location newLocation) {
                 if (newLocation != null) {
-                    if (currentLocation == null || Math.round(newLocation.distanceTo(currentLocation)) < 100) {
-                        currentLocation = newLocation;
-                        restaurantAdapter.setCurrentLocation(currentLocation);
-                        getRestaurants();
-                    }
+                    currentLocation = newLocation;
+                    getRestaurants();
                 }
             }
         });
     }
 
-    private void getRestaurants() {
-        lunchViewModel.getRestaurants(currentLocation, 2000).observe(this, new Observer<List<Restaurant>>() {
-            @Override
-            public void onChanged(List<Restaurant> restaurants) {
-                if (restaurants != null) {
-                    setRestaurants(restaurants);
-                    restaurantAdapter.notifyDataSetChanged();
-                }
-            }
-        });
-    }
+    protected void updateUiWhenDataChange() {
+        lunchViewModel.addParticipantsInAllRestaurants(restaurants, users);
 
-    private void getUsers() {
-        lunchViewModel.getUsers().observe(this, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                setUsers(users);
-                lunchViewModel.addParticipantsInAllRestaurants(restaurants, users);
-                restaurantAdapter.notifyDataSetChanged();
-            }
-        });
+        switch (sortMethod) {
+            case DISTANCE:
+                Collections.sort(restaurants, new Restaurant.RestaurantDistanceComparator());
+                break;
+            case PARTICIPANTS:
+                Collections.sort(restaurants, new Restaurant.RestaurantParticipantsComparator());
+                break;
+            case LIKE:
+                //TODO: create like comparator
+        }
+
+        restaurantAdapter.updateRestaurants(restaurants);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.toolbar_menu, menu);
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.sort_and_search_toolbar_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
-        MenuItem searchItem = menu.findItem(R.id.menu_activity_main_search);
+        MenuItem searchItem = menu.findItem(R.id.search_toolbar_menu);
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -170,14 +170,29 @@ public class ListViewFragment extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_activity_main_search) {
-
+        switch (item.getItemId()) {
+            case R.id.sort_by_distance:
+                sortMethod = SortMethod.DISTANCE;
+                break;
+            case R.id.sort_by_participants:
+                sortMethod = SortMethod.PARTICIPANTS;
+                break;
+            case (R.id.sort_by_likes):
+                sortMethod = SortMethod.LIKE;
+                break;
         }
+        getRestaurants();
         return true;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+    }
+
+    private enum SortMethod {
+        DISTANCE,
+        PARTICIPANTS,
+        LIKE
     }
 }

@@ -11,6 +11,7 @@ import com.ocr.francois.go4lunch.models.GoogleSearchResults;
 import com.ocr.francois.go4lunch.models.Restaurant;
 
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,8 +38,16 @@ public class RestaurantRepository {
             public void onResponse(Call<GoogleSearchResults> call, Response<GoogleSearchResults> response) {
 
                 if (response.body() != null) {
-                    restaurants.setValue(response.body().getRestaurants());
-                    Log.d("getRETAURANTS", "onResponse: not null");
+                    List<Restaurant> restaurantsList = response.body().getRestaurants();
+                    for (Restaurant restaurant : restaurantsList) {
+                        Location restaurantLocation = new Location("restaurant location");
+                        restaurantLocation.setLatitude(restaurant.getGeometry().getLocation().getLat());
+                        restaurantLocation.setLongitude(restaurant.getGeometry().getLocation().getLng());
+
+                        restaurant.setDistance(location.distanceTo(restaurantLocation));
+                    }
+
+                    restaurants.setValue(restaurantsList);
                 }
             }
 

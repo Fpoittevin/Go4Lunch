@@ -1,9 +1,12 @@
 package com.ocr.francois.go4lunch.models;
 
+import android.util.Log;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Restaurant {
@@ -61,6 +64,7 @@ public class Restaurant {
     private String internationalPhoneNumber;
 
     private List<User> participants = new ArrayList<>();
+    private double distance = 0;
 
     public Geometry getGeometry() {
         return geometry;
@@ -207,6 +211,30 @@ public class Restaurant {
     public void addParticipant(User user) {
         if(!participants.contains(user)) {
             participants.add(user);
+        }
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public static class RestaurantDistanceComparator implements Comparator<Restaurant> {
+
+        @Override
+        public int compare(Restaurant restaurantA, Restaurant restaurantB) {
+            Log.d("compare !!", String.valueOf(Double.compare(restaurantA.distance, restaurantB.distance)));
+            return Double.compare(restaurantA.distance, restaurantB.distance);
+        }
+    }
+
+    public static class RestaurantParticipantsComparator implements Comparator<Restaurant> {
+        @Override
+        public int compare(Restaurant restaurantA, Restaurant restaurantB) {
+            return Integer.compare(restaurantB.getParticipants().size(),restaurantA.getParticipants().size());
         }
     }
 }

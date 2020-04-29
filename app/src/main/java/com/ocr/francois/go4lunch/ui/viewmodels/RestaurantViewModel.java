@@ -2,7 +2,9 @@ package com.ocr.francois.go4lunch.ui.viewmodels;
 
 import android.location.Location;
 
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.ocr.francois.go4lunch.models.Restaurant;
@@ -23,6 +25,14 @@ public class RestaurantViewModel extends ViewModel {
     }
 
     public MutableLiveData<Restaurant> getRestaurant(String placeId) {
-        return restaurantRepository.getRestaurant(placeId);
+        MediatorLiveData<Restaurant> restaurant = new MediatorLiveData<>();
+
+        restaurant.addSource(restaurantRepository.getRestaurant(placeId), new Observer<Restaurant>() {
+            @Override
+            public void onChanged(Restaurant restaurantValue) {
+                restaurant.setValue(restaurantValue);
+            }
+        });
+        return restaurant;
     }
 }

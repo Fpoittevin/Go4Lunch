@@ -47,8 +47,6 @@ public class UserRepository {
         return users;
     }
 
-
-
     public MutableLiveData<List<User>> getUsersByLunch(String placeId) {
         MutableLiveData<List<User>> usersByLunch = new MutableLiveData<>();
 

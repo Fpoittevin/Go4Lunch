@@ -64,6 +64,8 @@ public class Restaurant {
     private String internationalPhoneNumber;
 
     private List<User> participants = new ArrayList<>();
+
+    private int note = 0;
     private double distance = 0;
 
     public Geometry getGeometry() {
@@ -205,13 +207,23 @@ public class Restaurant {
     public List<User> getParticipants() {
         return participants;
     }
+
     public void setParticipants(List<User> participants) {
         this.participants = participants;
     }
+
     public void addParticipant(User user) {
         if(!participants.contains(user)) {
             participants.add(user);
         }
+    }
+
+    public int getNote() {
+        return note;
+    }
+
+    public void setNote(int note) {
+        this.note = note;
     }
 
     public double getDistance() {
@@ -235,6 +247,13 @@ public class Restaurant {
         @Override
         public int compare(Restaurant restaurantA, Restaurant restaurantB) {
             return Integer.compare(restaurantB.getParticipants().size(),restaurantA.getParticipants().size());
+        }
+    }
+
+    public static class RestaurantNotesComparator implements Comparator<Restaurant> {
+        @Override
+        public int compare(Restaurant restaurantA, Restaurant restaurantB) {
+            return Integer.compare(restaurantB.getNote(), restaurantA.getNote());
         }
     }
 }

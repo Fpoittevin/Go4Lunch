@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -73,6 +74,8 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         TextView distanceTextView;
         @BindView(R.id.fragment_list_view_restaurant_item_participants_number_text_view)
         TextView participantsNumberTextView;
+        @BindView(R.id.fragment_list_view_restaurant_item_note_rating_bar)
+        RatingBar noteRatingBar;
         @BindView(R.id.fragment_list_view_restaurant_item_photo_image_view)
         ImageView photoImageView;
 
@@ -88,6 +91,14 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
 
             String distanceText = Math.round(restaurant.getDistance()) + " m";
             distanceTextView.setText(distanceText);
+
+            noteRatingBar.setVisibility(View.INVISIBLE);
+            if(restaurant.getNote() > 0) {
+                noteRatingBar.setVisibility(View.VISIBLE);
+                noteRatingBar.setIsIndicator(true);
+                noteRatingBar.setNumStars(restaurant.getNote());
+                noteRatingBar.setRating((float) restaurant.getNote());
+            }
 
             String participantText = "(" + restaurant.getParticipants().size() + ")";
             participantsNumberTextView.setText(participantText);

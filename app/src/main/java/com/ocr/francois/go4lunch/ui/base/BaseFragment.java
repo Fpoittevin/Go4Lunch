@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -13,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ocr.francois.go4lunch.injection.Injection;
 import com.ocr.francois.go4lunch.injection.ViewModelFactory;
+import com.ocr.francois.go4lunch.models.Like;
 import com.ocr.francois.go4lunch.models.Restaurant;
 import com.ocr.francois.go4lunch.models.User;
 import com.ocr.francois.go4lunch.ui.viewmodels.LunchViewModel;
@@ -30,6 +30,7 @@ public abstract class BaseFragment extends Fragment {
 
     protected List<Restaurant> restaurants = new ArrayList<>();
     protected List<User> users = new ArrayList<>();
+    protected List<Like> likes = new ArrayList<>();
 
     protected abstract void updateUiWhenDataChange();
 
@@ -48,7 +49,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void getRestaurants() {
-        if(restaurants == null) {
+        if (restaurants == null) {
             restaurants = new ArrayList<>();
         }
         // TODO: mettre radius dans les préférences
@@ -64,19 +65,37 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void getUsers() {
-        if(users == null) {
+        if (users == null) {
             users = new ArrayList<>();
         }
         lunchViewModel.getUsers().observe(this, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
                 setUsers(users);
-                if(restaurants != null) {
+                if (restaurants != null) {
                     lunchViewModel.addParticipantsInAllRestaurants(restaurants, users);
                 }
                 updateUiWhenDataChange();
             }
         });
+    }
+
+    protected void getNotes() {
+        lunchViewModel.getAllLikes().observe(this, new Observer<List<Like>>() {
+            @Override
+            public void onChanged(List<Like> likes) {
+                setLikes(likes);
+                if (restaurants != null) {
+                    lunchViewModel.addNotesInAllRestaurants(restaurants, likes, users.size());
+                }
+                updateUiWhenDataChange();
+            }
+        });
+    }
+
+    private void setLikes(List<Like> likes) {
+        this.likes.clear();
+        this.likes.addAll(likes);
     }
 
     private void setRestaurants(List<Restaurant> restaurants) {

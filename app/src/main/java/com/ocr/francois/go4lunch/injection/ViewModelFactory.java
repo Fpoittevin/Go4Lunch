@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.ocr.francois.go4lunch.repositories.LikeRepository;
 import com.ocr.francois.go4lunch.repositories.RestaurantRepository;
 import com.ocr.francois.go4lunch.repositories.UserRepository;
 import com.ocr.francois.go4lunch.ui.viewmodels.LunchViewModel;
@@ -14,10 +15,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
     private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
 
-    public ViewModelFactory(RestaurantRepository restaurantRepository, UserRepository userRepository) {
+    public ViewModelFactory(RestaurantRepository restaurantRepository, UserRepository userRepository, LikeRepository likeRepository) {
         this.restaurantRepository = restaurantRepository;
         this.userRepository = userRepository;
+        this.likeRepository = likeRepository;
     }
 
     @NonNull
@@ -30,7 +33,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new UserViewModel(userRepository);
         }
         if (modelClass.isAssignableFrom(LunchViewModel.class)) {
-            return (T) new LunchViewModel(restaurantRepository, userRepository);
+            return (T) new LunchViewModel(restaurantRepository, userRepository, likeRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }

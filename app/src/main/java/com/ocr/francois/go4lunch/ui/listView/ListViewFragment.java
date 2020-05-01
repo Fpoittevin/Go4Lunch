@@ -106,15 +106,12 @@ public class ListViewFragment extends BaseFragment {
                 if (newLocation != null) {
                     currentLocation = newLocation;
                     getRestaurants();
-                    getNotes();
                 }
             }
         });
     }
 
     protected void updateUiWhenDataChange() {
-        lunchViewModel.addParticipantsInAllRestaurants(restaurants, users);
-        lunchViewModel.addNotesInAllRestaurants(restaurants, likes, users.size());
         switch (sortMethod) {
             case DISTANCE:
                 Collections.sort(restaurants, new Restaurant.RestaurantDistanceComparator());

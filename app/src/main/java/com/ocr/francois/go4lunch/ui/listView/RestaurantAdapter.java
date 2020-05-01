@@ -1,5 +1,6 @@
 package com.ocr.francois.go4lunch.ui.listView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +32,12 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         this.restaurantItemClickCallback = restaurantItemClickCallback;
     }
 
-    void updateRestaurants(List<Restaurant> restaurants) {
+    void updateRestaurants(List<Restaurant> restaurantsList) {
         this.restaurants.clear();
-        this.restaurants.addAll(restaurants);
+        this.restaurants.addAll(restaurantsList);
+        for (Restaurant restaurant : this.restaurants) {
+            Log.d("LES NOTES APRES RETOUR", String.valueOf(restaurant.getNote()));
+        }
         notifyDataSetChanged();
     }
 
@@ -86,6 +90,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         }
 
         void updateUi(Restaurant restaurant) {
+            Log.d("RESTO", String.valueOf(restaurant.getNote()));
             nameTextView.setText(restaurant.getName());
             addressTextView.setText(restaurant.getVicinity().replaceAll(", ", "\n"));
 
@@ -100,7 +105,8 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
                 noteRatingBar.setRating((float) restaurant.getNote());
             }
 
-            String participantText = "(" + restaurant.getParticipants().size() + ")";
+            //String participantText = "(" + restaurant.getParticipants().size() + ")";
+            String participantText = "(" + restaurant.getNumberOfParticipants() + ")";
             participantsNumberTextView.setText(participantText);
 
             if (restaurant.getPhotos() != null) {

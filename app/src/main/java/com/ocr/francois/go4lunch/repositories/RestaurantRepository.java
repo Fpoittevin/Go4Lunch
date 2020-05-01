@@ -3,6 +3,7 @@ package com.ocr.francois.go4lunch.repositories;
 import android.location.Location;
 import android.util.Log;
 
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.ocr.francois.go4lunch.api.PlacesService;

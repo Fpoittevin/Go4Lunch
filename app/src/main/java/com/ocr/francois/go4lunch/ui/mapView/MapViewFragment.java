@@ -49,7 +49,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
     public void onStart() {
         super.onStart();
         observeLocation();
-        getUsers();
+        //getUsers();
     }
 
     @Override
@@ -79,7 +79,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
     }
 
     protected void updateUiWhenDataChange() {
-        lunchViewModel.addParticipantsInAllRestaurants(restaurants, users);
+        //lunchViewModel.addParticipantsInAllRestaurants(restaurants, users);
 
         map.clear();
         if (!restaurants.isEmpty()) {
@@ -92,11 +92,16 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
             MarkerOptions markerOptions = new MarkerOptions();
             LatLng latLng = new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng());
             markerOptions.position(latLng);
-            if (lunchViewModel.getNumbersOfUsersByRestaurant(restaurant, users) == 0) {
+            if (restaurant.getNumberOfParticipants() == 0) {
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_orange));
             } else {
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_green));
             }
+            /*if (lunchViewModel.getNumbersOfUsersByRestaurant(restaurant, users) == 0) {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_orange));
+            } else {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_green));
+            }*/
             Marker marker = map.addMarker(markerOptions);
 
             marker.setTag(restaurant.getPlaceId());

@@ -1,6 +1,7 @@
 package com.ocr.francois.go4lunch.ui.base;
 
 import android.location.Location;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -56,8 +57,12 @@ public abstract class BaseFragment extends Fragment {
         if (currentLocation != null) {
             lunchViewModel.getRestaurants(currentLocation, 2000).observe(this, new Observer<List<Restaurant>>() {
                 @Override
-                public void onChanged(List<Restaurant> restaurants) {
-                    setRestaurants(restaurants);
+                public void onChanged(List<Restaurant> restaurantsList) {
+                    Log.d("LISTE RESTO", "CA CHANGE !!!!!!");
+
+
+
+                    setRestaurants(restaurantsList);
                     updateUiWhenDataChange();
                 }
             });
@@ -80,27 +85,9 @@ public abstract class BaseFragment extends Fragment {
         });
     }
 
-    protected void getNotes() {
-        lunchViewModel.getAllLikes().observe(this, new Observer<List<Like>>() {
-            @Override
-            public void onChanged(List<Like> likes) {
-                setLikes(likes);
-                if (restaurants != null) {
-                    lunchViewModel.addNotesInAllRestaurants(restaurants, likes, users.size());
-                }
-                updateUiWhenDataChange();
-            }
-        });
-    }
-
-    private void setLikes(List<Like> likes) {
-        this.likes.clear();
-        this.likes.addAll(likes);
-    }
-
-    private void setRestaurants(List<Restaurant> restaurants) {
+    private void setRestaurants(List<Restaurant> restaurantsList) {
         this.restaurants.clear();
-        this.restaurants.addAll(restaurants);
+        this.restaurants.addAll(restaurantsList);
     }
 
     private void setUsers(List<User> users) {

@@ -64,6 +64,7 @@ public class Restaurant {
     private String internationalPhoneNumber;
 
     private List<User> participants = new ArrayList<>();
+    private int numberOfParticipants = 0;
 
     private int note = 0;
     private double distance = 0;
@@ -218,6 +219,14 @@ public class Restaurant {
         }
     }
 
+    public int getNumberOfParticipants() {
+        return numberOfParticipants;
+    }
+
+    public void setNumberOfParticipants(int numberOfParticipants) {
+        this.numberOfParticipants = numberOfParticipants;
+    }
+
     public int getNote() {
         return note;
     }
@@ -235,10 +244,8 @@ public class Restaurant {
     }
 
     public static class RestaurantDistanceComparator implements Comparator<Restaurant> {
-
         @Override
         public int compare(Restaurant restaurantA, Restaurant restaurantB) {
-            Log.d("compare !!", String.valueOf(Double.compare(restaurantA.distance, restaurantB.distance)));
             return Double.compare(restaurantA.distance, restaurantB.distance);
         }
     }
@@ -246,7 +253,7 @@ public class Restaurant {
     public static class RestaurantParticipantsComparator implements Comparator<Restaurant> {
         @Override
         public int compare(Restaurant restaurantA, Restaurant restaurantB) {
-            return Integer.compare(restaurantB.getParticipants().size(),restaurantA.getParticipants().size());
+            return Integer.compare(restaurantB.getNumberOfParticipants(),restaurantA.getNumberOfParticipants());
         }
     }
 

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ocr.francois.go4lunch.R;
-import com.ocr.francois.go4lunch.models.Like;
 import com.ocr.francois.go4lunch.models.Photo;
 import com.ocr.francois.go4lunch.models.Restaurant;
 import com.ocr.francois.go4lunch.models.User;
@@ -77,7 +75,6 @@ public class RestaurantDetailsFragment extends BaseFragment {
         bundle.putString("placeId", placeId);
         restaurantDetailsFragment.setArguments(bundle);
 
-
         return restaurantDetailsFragment;
     }
 
@@ -105,14 +102,20 @@ public class RestaurantDetailsFragment extends BaseFragment {
             }
         });
     }
-/*
-   private void getNote() {
-        lunchViewModel.getLikesByRestaurant(restaurant.getPlaceId()).observe(this, new Observer<List<Like>>() {
-            @Override
-            public void onChanged(List<Like> likes) {
+
+    private void getNote() {
+        lunchViewModel.getNoteOfRestaurant(placeId).observe(this, note -> {
+            Log.d("NOTE !!!!!", String.valueOf(note));
+            noteRatingBar.setVisibility(View.INVISIBLE);
+           if (note > 0) {
+                noteRatingBar.setVisibility(View.VISIBLE);
+                noteRatingBar.setIsIndicator(true);
+                noteRatingBar.setNumStars(note);
+                noteRatingBar.setRating((float) note);
             }
         });
-   }
+    }
+
 
     private void getParticipants() {
         lunchViewModel.getUsers().observe(this, new Observer<List<User>>() {
@@ -120,13 +123,13 @@ public class RestaurantDetailsFragment extends BaseFragment {
             public void onChanged(List<User> users) {
                 //TODO: remove current user from list
                 List<User> participants = lunchViewModel.getWorkmatesByRestaurant(restaurant, users, false, null);
-                if(!participants.isEmpty()) {
+                if (!participants.isEmpty()) {
                     workmatesAdapter.updatesWorkmates(participants);
                 }
             }
         });
     }
-*/
+
     @Override
     protected void updateUiWhenDataChange() {
         workmatesAdapter.notifyDataSetChanged();
@@ -155,7 +158,16 @@ public class RestaurantDetailsFragment extends BaseFragment {
         configureWebsiteButton();
         configureFab();
         configureLikeButton();
-        //getParticipants();
+
+        workmatesAdapter.updatesWorkmates(restaurant.getParticipants());
+
+        noteRatingBar.setVisibility(View.INVISIBLE);
+        if (restaurant.getNote() > 0) {
+            noteRatingBar.setVisibility(View.VISIBLE);
+            noteRatingBar.setIsIndicator(true);
+            noteRatingBar.setNumStars(restaurant.getNote());
+            noteRatingBar.setRating((float) restaurant.getNote());
+        }
     }
 
     private void configureCallButton() {

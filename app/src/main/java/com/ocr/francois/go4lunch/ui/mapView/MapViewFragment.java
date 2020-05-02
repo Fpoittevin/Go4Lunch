@@ -48,8 +48,16 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
     @Override
     public void onStart() {
         super.onStart();
+        locationTracker.startLocationUpdates();
         observeLocation();
-        //getUsers();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(currentLocation != null){
+
+        }
     }
 
     @Override
@@ -68,19 +76,17 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
         locationTracker.getLocation().observe(this, newLocation -> {
             if (newLocation != null) {
                 currentLocation = newLocation;
-                LatLng latLngLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                map.moveCamera(CameraUpdateFactory.newLatLng(latLngLocation));
-                map.animateCamera(CameraUpdateFactory.zoomTo(12));
-
-                hideProgressBar(R.id.fragment_map_view_progress_bar);
-                getRestaurants();
             }
+            LatLng latLngLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            map.moveCamera(CameraUpdateFactory.newLatLng(latLngLocation));
+            map.animateCamera(CameraUpdateFactory.zoomTo(12));
+
+            hideProgressBar(R.id.fragment_map_view_progress_bar);
+            getRestaurants();
         });
     }
 
     protected void updateUiWhenDataChange() {
-        //lunchViewModel.addParticipantsInAllRestaurants(restaurants, users);
-
         map.clear();
         if (!restaurants.isEmpty()) {
             addMarkers();
@@ -97,11 +103,6 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
             } else {
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_green));
             }
-            /*if (lunchViewModel.getNumbersOfUsersByRestaurant(restaurant, users) == 0) {
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_orange));
-            } else {
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_green));
-            }*/
             Marker marker = map.addMarker(markerOptions);
 
             marker.setTag(restaurant.getPlaceId());

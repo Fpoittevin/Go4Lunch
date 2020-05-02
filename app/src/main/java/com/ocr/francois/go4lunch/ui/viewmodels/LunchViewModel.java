@@ -1,7 +1,6 @@
 package com.ocr.francois.go4lunch.ui.viewmodels;
 
 import android.location.Location;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -53,9 +52,7 @@ public class LunchViewModel extends ViewModel {
         return userRepository.getUser(id);
     }
 
-
     // USERS
-
 
     public void saveLunch(String userId, String lunchRestaurantPlaceId, String lunchRestaurantName) {
         userRepository.saveLunch(userId, lunchRestaurantPlaceId, lunchRestaurantName);
@@ -66,7 +63,6 @@ public class LunchViewModel extends ViewModel {
     public void createLike(String restaurantPlaceId, String userId) {
         likeRepository.createLike(restaurantPlaceId, userId);
     }
-
 
     public LiveData<Integer> getNoteOfRestaurant(String placeId) {
         NoteGenerator noteGenerator = new NoteGenerator();
@@ -107,9 +103,7 @@ public class LunchViewModel extends ViewModel {
             });
 
             restaurantsListLiveData.addSource(getNotesOfRestaurants(), notesList -> {
-                Log.d("NOTES CHANGED !", "onChanged: ");
                 notes = notesList;
-                Log.d("notes", notes.toString());
                 if (!restaurants.isEmpty()) {
                     addNotesInRestaurants();
                     restaurantsListLiveData.setValue(restaurants);
@@ -137,7 +131,6 @@ public class LunchViewModel extends ViewModel {
         private void addNotesInRestaurants() {
             for (Restaurant restaurant : restaurants) {
                 if (notes.containsKey(restaurant.getPlaceId())) {
-                    Log.d("ADD NOTE IN RESTAURANT", "addNotesInRestaurants: " + notes.get(restaurant.getPlaceId()));
                     restaurant.setNote(notes.get(restaurant.getPlaceId()).intValue());
                 }
             }

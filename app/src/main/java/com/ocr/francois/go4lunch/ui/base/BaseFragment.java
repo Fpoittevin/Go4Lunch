@@ -1,12 +1,10 @@
 package com.ocr.francois.go4lunch.ui.base;
 
 import android.location.Location;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,16 +53,9 @@ public abstract class BaseFragment extends Fragment {
         }
         // TODO: mettre radius dans les préférences
         if (currentLocation != null) {
-            lunchViewModel.getRestaurants(currentLocation, 2000).observe(this, new Observer<List<Restaurant>>() {
-                @Override
-                public void onChanged(List<Restaurant> restaurantsList) {
-                    Log.d("LISTE RESTO", "CA CHANGE !!!!!!");
-
-
-
-                    setRestaurants(restaurantsList);
-                    updateUiWhenDataChange();
-                }
+            lunchViewModel.getRestaurants(currentLocation, 2000).observe(this, restaurantsList -> {
+                setRestaurants(restaurantsList);
+                updateUiWhenDataChange();
             });
         }
     }
@@ -73,15 +64,9 @@ public abstract class BaseFragment extends Fragment {
         if (users == null) {
             users = new ArrayList<>();
         }
-        lunchViewModel.getUsers().observe(this, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                setUsers(users);
-                if (restaurants != null) {
-                    lunchViewModel.addParticipantsInAllRestaurants(restaurants, users);
-                }
-                updateUiWhenDataChange();
-            }
+        lunchViewModel.getUsers().observe(this, users -> {
+            setUsers(users);
+            updateUiWhenDataChange();
         });
     }
 

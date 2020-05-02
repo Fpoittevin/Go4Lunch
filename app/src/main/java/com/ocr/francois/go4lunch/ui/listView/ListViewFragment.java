@@ -23,8 +23,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.maps.android.SphericalUtil;
 import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.models.Restaurant;
 import com.ocr.francois.go4lunch.ui.base.BaseFragment;
@@ -144,16 +148,27 @@ public class ListViewFragment extends BaseFragment {
                 Log.d("TEXTE CHANGE !!!!!", newText);
 
                 AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
+                LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+
+
+                LatLng latLng1 = SphericalUtil.computeOffset(latLng, 600, 45);
+                LatLng latLng2 = SphericalUtil.computeOffset(latLng, 600, 225);
+                RectangularBounds bounds = RectangularBounds.newInstance(latLng2,latLng1);
                 FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
                         .setQuery(newText)
-                        .setOrigin(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                        .setOrigin(latLng)
+                        .setLocationRestriction(bounds)
+                        .setTypeFilter(TypeFilter.ESTABLISHMENT)
                         .setSessionToken(token)
                         .build();
                 placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
 
                     for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
-                        Log.i("GOOGLE AUTO COMPLETE", prediction.getPlaceId());
-                        Log.i("GOOGLE AUTO COMPLETE", prediction.getPrimaryText(null).toString());
+                        if (prediction.getPlaceTypes().contains(Place.Type.RESTAURANT)) {
+                            Log.i("GOOGLE AUTO COMPLETE", prediction.getPlaceTypes().toString());
+                            Log.i("GOOGLE AUTO COMPLETE", prediction.getPrimaryText(null).toString());
+                        }
+
                     }
                 }).addOnFailureListener((exception) -> {
                     if (exception instanceof ApiException) {

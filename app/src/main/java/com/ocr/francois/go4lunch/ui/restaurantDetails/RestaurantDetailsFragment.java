@@ -103,32 +103,6 @@ public class RestaurantDetailsFragment extends BaseFragment {
         });
     }
 
-    private void getNote() {
-        lunchViewModel.getNoteOfRestaurant(placeId).observe(this, note -> {
-            Log.d("NOTE !!!!!", String.valueOf(note));
-            noteRatingBar.setVisibility(View.INVISIBLE);
-           if (note > 0) {
-                noteRatingBar.setVisibility(View.VISIBLE);
-                noteRatingBar.setIsIndicator(true);
-                noteRatingBar.setNumStars(note);
-                noteRatingBar.setRating((float) note);
-            }
-        });
-    }
-
-
-    private void getParticipants() {
-        lunchViewModel.getUsers().observe(this, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                //TODO: remove current user from list
-                List<User> participants = lunchViewModel.getWorkmatesByRestaurant(restaurant, users, false, null);
-                if (!participants.isEmpty()) {
-                    workmatesAdapter.updatesWorkmates(participants);
-                }
-            }
-        });
-    }
 
     @Override
     protected void updateUiWhenDataChange() {

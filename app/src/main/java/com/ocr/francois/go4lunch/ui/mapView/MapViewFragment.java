@@ -53,14 +53,6 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if(currentLocation != null){
-
-        }
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         locationTracker.stopLocationUpdates();
@@ -79,7 +71,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
             }
             LatLng latLngLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
             map.moveCamera(CameraUpdateFactory.newLatLng(latLngLocation));
-            map.animateCamera(CameraUpdateFactory.zoomTo(12));
+            map.moveCamera(CameraUpdateFactory.zoomTo(12));
 
             hideProgressBar(R.id.fragment_map_view_progress_bar);
             getRestaurants();

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SeekBarPreference
+        android:max="20"
+        app:key="mapZoom"
+        app:min="10"
+        app:title="Map zoom" />
+
+    <SeekBarPreference
+        android:max="1000"
+        app:key="searchRadius"
+        app:min="250"
+        app:title="Search radius" />
+
+    <SwitchPreferenceCompat
+        app:allowDividerAbove="true"
+        app:key="enableNotifications"
+        app:title="Enable notifications" />
+
+</PreferenceScreen>

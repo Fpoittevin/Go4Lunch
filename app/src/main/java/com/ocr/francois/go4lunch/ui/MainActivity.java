@@ -1,7 +1,11 @@
 package com.ocr.francois.go4lunch.ui;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -36,18 +40,19 @@ import com.google.firebase.auth.UserInfo;
 import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.injection.Injection;
 import com.ocr.francois.go4lunch.injection.ViewModelFactory;
-import com.ocr.francois.go4lunch.models.Restaurant;
 import com.ocr.francois.go4lunch.models.User;
 import com.ocr.francois.go4lunch.ui.base.BaseActivity;
 import com.ocr.francois.go4lunch.ui.listView.ListViewFragment;
 import com.ocr.francois.go4lunch.ui.listView.RestaurantAdapter;
 import com.ocr.francois.go4lunch.ui.mapView.MapViewFragment;
 import com.ocr.francois.go4lunch.ui.restaurantDetails.RestaurantDetailsActivity;
+import com.ocr.francois.go4lunch.ui.settings.SettingsActivity;
+import com.ocr.francois.go4lunch.ui.settings.SettingsFragment;
 import com.ocr.francois.go4lunch.ui.signin.SignInActivity;
 import com.ocr.francois.go4lunch.ui.viewmodels.LunchViewModel;
 import com.ocr.francois.go4lunch.ui.workmates.WorkmatesAdapter;
 import com.ocr.francois.go4lunch.ui.workmates.WorkmatesFragment;
-import com.ocr.francois.go4lunch.utils.LocationTracker;
+import com.ocr.francois.go4lunch.utils.AlarmNotifications;
 
 import java.util.List;
 
@@ -82,6 +87,7 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
         super.onCreate(savedInstanceState);
 
         if (isCurrentUserLogged()) {
+
             //UI
             configureBottomNavigationView();
             configureToolBar();
@@ -95,6 +101,8 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
             mapViewFragment = MapViewFragment.newInstance();
             mapViewFragment.setMarkerClickCallback(this);
             displayFragment(frameLayoutId, mapViewFragment);
+
+            askForNotifications();
         } else {
             startSignInActivity();
         }
@@ -105,6 +113,31 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
     public View onCreateView(@Nullable View parent, @NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
         View view = super.onCreateView(parent, name, context, attrs);
         return view;
+    }
+
+    private void askForNotifications() {
+        getSharedPreferences();
+        if (!sharedPreferences.contains("enableNotifications")) {
+
+            SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+            dialogBuilder.setMessage("souhaitez vous recevoir une notification tous les jours à midi afin de connaitre les collègues qui mangeront avec vous ?")
+                    .setPositiveButton("oui", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            sharedPreferencesEditor.putBoolean(SettingsFragment.ENABLE_NOTIFICATIONS_KEY_PREFERENCES, true);
+                            AlarmNotifications alarmNotifications = new AlarmNotifications(getApplicationContext());
+                            alarmNotifications.start();
+                        }
+                    })
+                    .setNegativeButton("non", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            sharedPreferencesEditor.putBoolean(SettingsFragment.ENABLE_NOTIFICATIONS_KEY_PREFERENCES, false);
+                        }
+                    });
+            dialogBuilder.create().show();
+        }
     }
 
     private void configureLunchViewModel() {
@@ -195,7 +228,7 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
                         }
                         break;
                     case R.id.drawer_menu_settings_button:
-
+                        startSettingsActivity();
                         break;
                     case R.id.drawer_menu_logout_button:
                         logOut();
@@ -237,16 +270,20 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
     }
 
     @Override
-    public void onLocationChanged(Location location) { }
+    public void onLocationChanged(Location location) {
+    }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) { }
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    }
 
     @Override
-    public void onProviderEnabled(String provider) { }
+    public void onProviderEnabled(String provider) {
+    }
 
     @Override
-    public void onProviderDisabled(String provider) { }
+    public void onProviderDisabled(String provider) {
+    }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
@@ -261,7 +298,9 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
     }
 
     @Override
-    public void onRestaurantItemClick(String placeId) {startRestaurantDetailActivity(placeId); }
+    public void onRestaurantItemClick(String placeId) {
+        startRestaurantDetailActivity(placeId);
+    }
 
     @Override
     public void onMarkerClickCallback(String placeId) {
@@ -269,7 +308,9 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
     }
 
     @Override
-    public void onWorkmateItemClick(String placeId) { startRestaurantDetailActivity(placeId); }
+    public void onWorkmateItemClick(String placeId) {
+        startRestaurantDetailActivity(placeId);
+    }
 
     private void startRestaurantDetailActivity(String placeId) {
         Intent restaurantDetailsIntent = new Intent(MainActivity.this, RestaurantDetailsActivity.class);
@@ -280,5 +321,10 @@ public class MainActivity extends BaseActivity implements LocationListener, Sear
     private void startSignInActivity() {
         Intent signInIntent = new Intent(this, SignInActivity.class);
         startActivity(signInIntent);
+    }
+
+    private void startSettingsActivity() {
+        Intent settingsIntent = new Intent(this, SettingsActivity.class);
+        startActivity(settingsIntent);
     }
 }

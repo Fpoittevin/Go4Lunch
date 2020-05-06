@@ -9,9 +9,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        app:tint="#FFFFFF"
+        android:backgroundTint="@color/colorAccent"
+        app:backgroundTint="@color/colorWhite"
+        app:borderWidth="10dp"
         app:elevation="6dp"
         app:layout_anchor="@+id/fragment_restaurant_details_picture_image_view"
-        app:layout_anchorGravity="bottom|right|end" />
+        app:layout_anchorGravity="bottom|right|end"
+        app:rippleColor="#FFFEFE"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -41,22 +46,24 @@
                     android:textColor="@color/colorWhite"
                     app:layout_constraintBottom_toTopOf="@+id/fragment_restaurant_details_infos_text_view"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="Le Golf"/>
 
                 <RatingBar
                     android:id="@+id/fragment_restaurant_details_note_rating_bar"
                     style="?android:attr/ratingBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toTopOf="@+id/fragment_restaurant_details_infos_text_view"
                     app:layout_constraintLeft_toRightOf="@+id/fragment_restaurant_details_name_text_view"
-                    app:layout_constraintTop_toBottomOf="parent"
-                    app:layout_constraintBottom_toTopOf="@+id/fragment_restaurant_details_infos_text_view"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/fragment_restaurant_details_infos_text_view"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:padding="5dp"
+                    android:text="107 Route de Maromme, Mont-Saint-Aignan"
                     android:textColor="@color/colorWhite"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/fragment_restaurant_details_name_text_view" />

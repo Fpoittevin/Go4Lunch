@@ -87,9 +87,12 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         }
 
         void updateUi(Restaurant restaurant) {
-            nameTextView.setText(restaurant.getName());
-            addressTextView.setText(restaurant.getVicinity().replaceAll(", ", "\n"));
-
+            if(restaurant.getName() != null) {
+                nameTextView.setText(restaurant.getName());
+            }
+            if(restaurant.getVicinity() != null) {
+                addressTextView.setText(restaurant.getVicinity().replaceAll(", ", "\n"));
+            }
             String distanceText = Math.round(restaurant.getDistance()) + " m";
             distanceTextView.setText(distanceText);
 

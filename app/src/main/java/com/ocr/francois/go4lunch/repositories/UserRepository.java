@@ -37,7 +37,6 @@ public class UserRepository {
                         usersList.add(doc.toObject(User.class));
                     }
                     users.setValue(usersList);
-                    Log.d("IN REPOSITORY users", String.valueOf(usersList.size()));
                 } else {
                     Log.d("users", "Error getting documents");
                 }

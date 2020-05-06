@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +24,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.models.Photo;
 import com.ocr.francois.go4lunch.models.Restaurant;
-import com.ocr.francois.go4lunch.models.User;
 import com.ocr.francois.go4lunch.ui.base.BaseFragment;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -199,6 +196,8 @@ public class RestaurantDetailsFragment extends BaseFragment {
     }
 
     private void configureFab() {
+        fab.setImageResource(R.drawable.ic_check_white_24dp);
+        //TODO: change fab if current user is in participants list or note
         fab.setOnClickListener(v -> lunchViewModel.saveLunch(getCurrentUser().getUid(), restaurant.getPlaceId(), restaurant.getName()));
     }
 }

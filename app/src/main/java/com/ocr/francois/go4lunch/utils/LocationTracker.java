@@ -49,7 +49,6 @@ public class LocationTracker implements OnSuccessListener<Location> {
     }
 
     public MutableLiveData<Location> getLocation() {
-
         if (hasLocationPermissions()) {
 
             fusedLocationClient.getLastLocation()
@@ -59,6 +58,7 @@ public class LocationTracker implements OnSuccessListener<Location> {
                     });
         } else {
             EasyPermissions.requestPermissions((Activity) context, context.getResources().getString(R.string.need_location_permissions_message), 124, Manifest.permission.ACCESS_FINE_LOCATION);
+
         }
         return location;
     }

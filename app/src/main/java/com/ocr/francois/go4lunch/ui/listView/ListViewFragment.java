@@ -35,6 +35,7 @@ import com.ocr.francois.go4lunch.ui.base.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -146,36 +147,43 @@ public class ListViewFragment extends BaseFragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.d("TEXTE CHANGE !!!!!", newText);
+                if (newText.isEmpty()) {
+                    restaurantAdapter.updateRestaurants(restaurants);
+                } else {
 
-                AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-                LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                    AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
+                    LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
 
 
-                LatLng latLng1 = SphericalUtil.computeOffset(latLng, 600, 45);
-                LatLng latLng2 = SphericalUtil.computeOffset(latLng, 600, 225);
-                RectangularBounds bounds = RectangularBounds.newInstance(latLng2,latLng1);
-                FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                        .setQuery(newText)
-                        .setOrigin(latLng)
-                        .setLocationRestriction(bounds)
-                        .setTypeFilter(TypeFilter.ESTABLISHMENT)
-                        .setSessionToken(token)
-                        .build();
-                placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
-
-                    for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
-                        if (prediction.getPlaceTypes().contains(Place.Type.RESTAURANT)) {
-                            Log.i("GOOGLE AUTO COMPLETE", prediction.getPlaceTypes().toString());
-                            Log.i("GOOGLE AUTO COMPLETE", prediction.getPrimaryText(null).toString());
+                    LatLng latLng1 = SphericalUtil.computeOffset(latLng, 1600, 45);
+                    LatLng latLng2 = SphericalUtil.computeOffset(latLng, 1600, 225);
+                    RectangularBounds bounds = RectangularBounds.newInstance(latLng2, latLng1);
+                    FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                            .setQuery(newText)
+                            .setOrigin(latLng)
+                            .setLocationRestriction(bounds)
+                            .setTypeFilter(TypeFilter.ESTABLISHMENT)
+                            .setSessionToken(token)
+                            .build();
+                    placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
+                        List<Restaurant> restaurantsSuggestions = new ArrayList<>();
+                        for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
+                            if (prediction.getPlaceTypes().contains(Place.Type.RESTAURANT)) {
+                                for (Restaurant restaurant : restaurants) {
+                                    if (restaurant.getPlaceId().equals(prediction.getPlaceId())) {
+                                        restaurantsSuggestions.add(restaurant);
+                                    }
+                                }
+                            }
                         }
-
-                    }
-                }).addOnFailureListener((exception) -> {
-                    if (exception instanceof ApiException) {
-                        ApiException apiException = (ApiException) exception;
-                        Log.e("GOOGLE AUTO COMPLETE", "Place not found: " + apiException.getStatusCode());
-                    }
-                });
+                        restaurantAdapter.updateRestaurants(restaurantsSuggestions);
+                    }).addOnFailureListener((exception) -> {
+                        if (exception instanceof ApiException) {
+                            ApiException apiException = (ApiException) exception;
+                            Log.e("GOOGLE AUTO COMPLETE", "Place not found: " + apiException.getStatusCode());
+                        }
+                    });
+                }
                 return false;
             }
         });

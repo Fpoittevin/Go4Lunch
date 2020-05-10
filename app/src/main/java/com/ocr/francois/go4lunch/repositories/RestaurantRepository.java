@@ -3,7 +3,7 @@ package com.ocr.francois.go4lunch.repositories;
 import android.location.Location;
 import android.util.Log;
 
-import androidx.lifecycle.MediatorLiveData;
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.ocr.francois.go4lunch.api.PlacesService;
@@ -12,7 +12,6 @@ import com.ocr.francois.go4lunch.models.GoogleSearchResults;
 import com.ocr.francois.go4lunch.models.Restaurant;
 
 import java.util.List;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,14 +28,12 @@ public class RestaurantRepository {
 
     public MutableLiveData<List<Restaurant>> getRestaurants(Location location, int radius) {
 
-        if (restaurants == null) {
-            restaurants = new MutableLiveData<>();
-        }
+        if (restaurants == null) restaurants = new MutableLiveData<>();
 
         Call<GoogleSearchResults> call = placesService.getNearbyPlaces(location.getLatitude() + "," + location.getLongitude(), radius);
         call.enqueue(new Callback<GoogleSearchResults>() {
             @Override
-            public void onResponse(Call<GoogleSearchResults> call, Response<GoogleSearchResults> response) {
+            public void onResponse(@NonNull Call<GoogleSearchResults> call, @NonNull Response<GoogleSearchResults> response) {
 
                 if (response.body() != null) {
                     List<Restaurant> restaurantsList = response.body().getRestaurants();
@@ -53,7 +50,7 @@ public class RestaurantRepository {
             }
 
             @Override
-            public void onFailure(Call<GoogleSearchResults> call, Throwable t) {
+            public void onFailure(@NonNull Call<GoogleSearchResults> call, @NonNull Throwable t) {
 
                 Log.d("repo", "onFailure: ");
             }
@@ -68,7 +65,7 @@ public class RestaurantRepository {
 
         call.enqueue(new Callback<GoogleDetailResult>() {
             @Override
-            public void onResponse(Call<GoogleDetailResult> call, Response<GoogleDetailResult> response) {
+            public void onResponse(@NonNull Call<GoogleDetailResult> call, @NonNull Response<GoogleDetailResult> response) {
 
                 if (response.body() != null) {
                     Log.d("repo", "onResponse: " + response);
@@ -77,7 +74,7 @@ public class RestaurantRepository {
             }
 
             @Override
-            public void onFailure(Call<GoogleDetailResult> call, Throwable t) {
+            public void onFailure(@NonNull Call<GoogleDetailResult> call, @NonNull Throwable t) {
 
                 Log.d("repo", "onFailure: ");
             }

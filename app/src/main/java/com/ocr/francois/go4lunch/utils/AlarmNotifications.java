@@ -21,18 +21,14 @@ public class AlarmNotifications {
     }
 
     public void start() {
-         Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 16);
-        calendar.set(Calendar.MINUTE, 30);
+        calendar.set(Calendar.HOUR_OF_DAY, 12);
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000 * 5, 30000, alarmIntent);
-        //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
     }
 
     public void stop() {
-        if (alarmManager != null) {
-            alarmManager.cancel(alarmIntent);
-        }
+        if (alarmManager != null) alarmManager.cancel(alarmIntent);
     }
 }

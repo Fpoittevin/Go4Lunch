@@ -25,9 +25,9 @@
     <string name="list_button_title">List View</string>
     <string name="workmates_button_title">Workmates</string>
 
-    <string name="is_eating_at">is eating at</string>
-    <string name="hasnt_decided_yet">hasn\'t decided yet</string>
-    <string name="is_joining">is joining!</string>
+    <string name="is_eating_at">\ is eating at \</string>
+    <string name="hasnt_decided_yet">\ hasn\'t decided yet</string>
+    <string name="is_joining">\ is joining!</string>
 
     <string name="call_button">CALL</string>
     <string name="like_button">LIKE</string>
@@ -35,9 +35,10 @@
 
     <string name="need_location_permissions_message">Go4Lunch need your location to work</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_settings">Settings</string>
+
+    <!-- Activities Titles -->
+    <string name="i_am_hungry_title">I\'m Hungry!</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
@@ -50,11 +51,16 @@
     <!-- Sync Preferences -->
     <string name="sync_title">Sync email periodically</string>
     <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
     <!-- NOTIFICATIONS -->
     <string name="notification_title">your lunch !</string>
     <string name="default_notification_channel_id">go_4_lunch_notifications</string>
+    <string name="alert_dialog_notifications_message">Would you like to receive a notification every day at noon to find out which workmates will be eating with you?</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+
+    <!-- MAIN ACTIVITY -->
+    <string name="no_restaurant_message">You haven\'t chosen any restaurant yet.</string>
 </resources>

@@ -1,7 +1,5 @@
 package com.ocr.francois.go4lunch.models;
 
-import android.util.Log;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -213,11 +211,6 @@ public class Restaurant {
         this.participants = participants;
     }
 
-    public void addParticipant(User user) {
-        if(!participants.contains(user)) {
-            participants.add(user);
-        }
-    }
 
     public int getNumberOfParticipants() {
         return numberOfParticipants;
@@ -253,7 +246,7 @@ public class Restaurant {
     public static class RestaurantParticipantsComparator implements Comparator<Restaurant> {
         @Override
         public int compare(Restaurant restaurantA, Restaurant restaurantB) {
-            return Integer.compare(restaurantB.getNumberOfParticipants(),restaurantA.getNumberOfParticipants());
+            return Integer.compare(restaurantB.getNumberOfParticipants(), restaurantA.getNumberOfParticipants());
         }
     }
 

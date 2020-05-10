@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
 public class WorkmatesFragment extends BaseFragment {
@@ -32,9 +31,8 @@ public class WorkmatesFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_workmates, container, false);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
 
-        ButterKnife.bind(this, view);
         configureLunchViewModel();
         configureRecyclerView();
         getUsers();
@@ -43,7 +41,8 @@ public class WorkmatesFragment extends BaseFragment {
     }
 
     private void configureRecyclerView() {
-        workmatesAdapter = new WorkmatesAdapter(new ArrayList<>(), (WorkmatesAdapter.WorkmateItemClickCallback) getActivity());
+        workmatesAdapter = new WorkmatesAdapter(new ArrayList<>());
+        workmatesAdapter.setWorkmateItemClickCallback((WorkmatesAdapter.WorkmateItemClickCallback) getActivity());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setAdapter(workmatesAdapter);
         recyclerView.setLayoutManager(layoutManager);
@@ -54,7 +53,7 @@ public class WorkmatesFragment extends BaseFragment {
     protected void updateUiWhenDataChange() {
         if (!users.isEmpty()) {
             sortWorkmatesList();
-            workmatesAdapter.updatesWorkmates(users);
+            workmatesAdapter.updatesWorkmates(users, getCurrentUser().getUid());
         }
     }
 
@@ -69,5 +68,10 @@ public class WorkmatesFragment extends BaseFragment {
                 return 1;
             }
         });
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_workmates;
     }
 }

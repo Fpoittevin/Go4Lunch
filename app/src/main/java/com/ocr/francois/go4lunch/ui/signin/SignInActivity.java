@@ -2,10 +2,8 @@ package com.ocr.francois.go4lunch.ui.signin;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -13,11 +11,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -52,7 +48,7 @@ public class SignInActivity extends BaseActivity {
     }
 
     @Override
-    protected int getLayout() {
+    protected int getLayoutId() {
         return R.layout.activity_sign_in;
     }
 
@@ -63,12 +59,9 @@ public class SignInActivity extends BaseActivity {
                 .build();
 
         googleSignInClient = GoogleSignIn.getClient(this, gso);
-        googleSignInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent signInIntent = googleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
-            }
+        googleSignInButton.setOnClickListener(v -> {
+            Intent signInIntent = googleSignInClient.getSignInIntent();
+            startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
         });
     }
 
@@ -88,7 +81,7 @@ public class SignInActivity extends BaseActivity {
 
                 authWithFirebase(credential);
             } catch (ApiException e) {
-                Snackbar.make(findViewById(getLayout()), R.string.google_sign_in_error, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(getLayoutId()), R.string.google_sign_in_error, Snackbar.LENGTH_SHORT).show();
             }
         }
     }
@@ -96,16 +89,13 @@ public class SignInActivity extends BaseActivity {
     private void authWithFirebase(AuthCredential credential) {
         showProgressBar(activity_sign_in_progress_bar);
         auth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            updateUI();
-                        } else {
-                            Snackbar.make(findViewById(getLayout()), R.string.auth_error, Snackbar.LENGTH_SHORT).show();
-                        }
-                        hideProgressBar(activity_sign_in_progress_bar);
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        updateUI();
+                    } else {
+                        Snackbar.make(findViewById(getLayoutId()), R.string.auth_error, Snackbar.LENGTH_SHORT).show();
                     }
+                    hideProgressBar(activity_sign_in_progress_bar);
                 });
     }
 

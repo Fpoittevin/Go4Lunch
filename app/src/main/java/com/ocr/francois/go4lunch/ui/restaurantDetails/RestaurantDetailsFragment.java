@@ -1,8 +1,9 @@
 package com.ocr.francois.go4lunch.ui.restaurantDetails;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,12 +23,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ocr.francois.go4lunch.R;
+import com.ocr.francois.go4lunch.models.Like;
 import com.ocr.francois.go4lunch.models.Photo;
 import com.ocr.francois.go4lunch.models.Restaurant;
+import com.ocr.francois.go4lunch.models.User;
 import com.ocr.francois.go4lunch.ui.base.BaseFragment;
+import com.ocr.francois.go4lunch.ui.workmates.WorkmatesAdapter;
 
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -91,15 +95,11 @@ public class RestaurantDetailsFragment extends BaseFragment {
     }
 
     private void getRestaurant() {
-        lunchViewModel.getRestaurant(placeId).observe(this, new Observer<Restaurant>() {
-            @Override
-            public void onChanged(Restaurant restaurantChange) {
-                restaurant = restaurantChange;
-                updateUi();
-            }
+        lunchViewModel.getRestaurant(placeId).observe(getViewLifecycleOwner(), restaurantChange -> {
+            restaurant = restaurantChange;
+            updateUi();
         });
     }
-
 
     @Override
     protected void updateUiWhenDataChange() {
@@ -113,7 +113,7 @@ public class RestaurantDetailsFragment extends BaseFragment {
             Photo photo = restaurant.getPhotos().get(0);
             String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&key=AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE&photoreference=" + photo.getPhotoReference();
             Glide
-                    .with(getView())
+                    .with(requireView())
                     .load(photoUrl)
                     .into(restaurantPictureImageView);
         }
@@ -130,7 +130,7 @@ public class RestaurantDetailsFragment extends BaseFragment {
         configureFab();
         configureLikeButton();
 
-        workmatesAdapter.updatesWorkmates(restaurant.getParticipants());
+        workmatesAdapter.updatesWorkmates(restaurant.getParticipants(), getCurrentUser().getUid());
 
         noteRatingBar.setVisibility(View.INVISIBLE);
         if (restaurant.getNote() > 0) {
@@ -144,17 +144,13 @@ public class RestaurantDetailsFragment extends BaseFragment {
     private void configureCallButton() {
         String phoneNumber = restaurant.getInternationalPhoneNumber();
         if (phoneNumber != null) {
-            callButton.setOnClickListener(new View.OnClickListener() {
-                @SuppressLint("MissingPermission")
-                @Override
-                public void onClick(View v) {
+            callButton.setOnClickListener(v -> {
 
-                    if (EasyPermissions.hasPermissions(Objects.requireNonNull(getContext()), Manifest.permission.CALL_PHONE)) {
-                        Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
-                        Objects.requireNonNull(getActivity()).startActivity(callIntent);
-                    } else {
-                        EasyPermissions.requestPermissions(Objects.requireNonNull(getActivity()), getContext().getResources().getString(R.string.need_location_permissions_message), 124, Manifest.permission.CALL_PHONE);
-                    }
+                if (EasyPermissions.hasPermissions(requireContext(), Manifest.permission.CALL_PHONE)) {
+                    Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
+                    requireActivity().startActivity(callIntent);
+                } else {
+                    EasyPermissions.requestPermissions(requireActivity(), requireContext().getResources().getString(R.string.need_location_permissions_message), 124, Manifest.permission.CALL_PHONE);
                 }
             });
         } else {
@@ -163,10 +159,26 @@ public class RestaurantDetailsFragment extends BaseFragment {
     }
 
     private void configureLikeButton() {
-        likeButton.setOnClickListener(new View.OnClickListener() {
+        Drawable star = getResources().getDrawable(R.drawable.ic_star_orange_24dp);
+        Drawable starBorder = getResources().getDrawable(R.drawable.ic_star_border_orange_24dp);
+
+        lunchViewModel.getLikesByRestaurant(restaurant.getPlaceId()).observe(getViewLifecycleOwner(), new Observer<List<Like>>() {
             @Override
-            public void onClick(View v) {
-                lunchViewModel.createLike(placeId, getCurrentUser().getUid());
+            public void onChanged(List<Like> likes) {
+                boolean currentUserLikeRestaurant = false;
+                for (Like like : likes) {
+                    if (like.getUserId().equals(getCurrentUser().getUid())) {
+                        currentUserLikeRestaurant = true;
+                        break;
+                    }
+                }
+                if (currentUserLikeRestaurant) {
+                    likeButton.setOnClickListener(v -> lunchViewModel.deleteLike(getCurrentUser().getUid(), restaurant.getPlaceId()));
+                    likeButton.setCompoundDrawablesWithIntrinsicBounds(null, star, null, null);
+                } else {
+                    likeButton.setOnClickListener(v -> lunchViewModel.createLike(placeId, getCurrentUser().getUid()));
+                    likeButton.setCompoundDrawablesWithIntrinsicBounds(null, starBorder, null, null);
+                }
             }
         });
     }
@@ -174,12 +186,9 @@ public class RestaurantDetailsFragment extends BaseFragment {
     private void configureWebsiteButton() {
         String website = restaurant.getWebsite();
         if (website != null) {
-            websiteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent websiteIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(website));
-                    startActivity(websiteIntent);
-                }
+            websiteButton.setOnClickListener(v -> {
+                Intent websiteIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(website));
+                startActivity(websiteIntent);
             });
         } else {
             websiteButton.setClickable(false);
@@ -197,7 +206,27 @@ public class RestaurantDetailsFragment extends BaseFragment {
 
     private void configureFab() {
         fab.setImageResource(R.drawable.ic_check_white_24dp);
-        //TODO: change fab if current user is in participants list or note
-        fab.setOnClickListener(v -> lunchViewModel.saveLunch(getCurrentUser().getUid(), restaurant.getPlaceId(), restaurant.getName()));
+
+        boolean currentUserIsParticipant = false;
+
+        for (User participant : restaurant.getParticipants()) {
+            if (participant.getId().equals(getCurrentUser().getUid())) {
+                currentUserIsParticipant = true;
+                break;
+            }
+        }
+
+        if (currentUserIsParticipant) {
+            fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+            fab.setOnClickListener(v -> lunchViewModel.deleteLunch(getCurrentUser().getUid()));
+        } else {
+            fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorGrey)));
+            fab.setOnClickListener(v -> lunchViewModel.saveLunch(getCurrentUser().getUid(), restaurant.getPlaceId(), restaurant.getName()));
+        }
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_restaurant_details;
     }
 }

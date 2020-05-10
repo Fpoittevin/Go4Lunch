@@ -10,8 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         app:tint="#FFFFFF"
-        android:backgroundTint="@color/colorAccent"
-        app:backgroundTint="@color/colorWhite"
+        app:backgroundTint="@color/colorAccent"
         app:borderWidth="10dp"
         app:elevation="6dp"
         app:layout_anchor="@+id/fragment_restaurant_details_picture_image_view"
@@ -70,8 +69,6 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -87,7 +84,6 @@
                 <Button
                     android:id="@+id/fragment_restaurant_details_like_button"
                     style="@style/FragmentRestaurantDetailsButton"
-                    android:drawableTop="@drawable/ic_star_orange_24dp"
                     android:text="@string/like_button"
                     app:layout_constraintEnd_toStartOf="@+id/fragment_restaurant_details_website_button"
                     app:layout_constraintStart_toEndOf="@+id/fragment_restaurant_details_call_button"

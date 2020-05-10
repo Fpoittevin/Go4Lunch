@@ -3,36 +3,38 @@ package com.ocr.francois.go4lunch.ui.workmates;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.models.User;
+import com.ocr.francois.go4lunch.ui.MainActivity;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.WorkmatesViewHolder> {
+public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesViewHolder> {
 
     private List<User> workmates;
     private WorkmateItemClickCallback workmateItemClickCallback;
 
-    WorkmatesAdapter(List<User> users, WorkmateItemClickCallback workmateItemClickCallback) {
+    public WorkmatesAdapter(List<User> users) {
         this.workmates = users;
+    }
+
+    void setWorkmateItemClickCallback(WorkmateItemClickCallback workmateItemClickCallback) {
         this.workmateItemClickCallback = workmateItemClickCallback;
     }
 
-
-    void updatesWorkmates(List<User> workmates) {
+    public void updatesWorkmates(List<User> workmatesList, String currentUserId) {
         this.workmates.clear();
-        this.workmates.addAll(workmates);
+
+        for (User workmate : workmatesList) {
+            if (!workmate.getId().equals(currentUserId)) {
+                this.workmates.add(workmate);
+            }
+        }
+
         notifyDataSetChanged();
     }
 
@@ -50,8 +52,10 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.Work
 
         User workmate = workmates.get(position);
         holder.updateUi(workmate);
-        if (workmate.choseARestaurant()) {
-            holder.view.setOnClickListener(v -> workmateItemClickCallback.onWorkmateItemClick(workmate.getLunchRestaurantPlaceId()));
+        if (holder.itemView.getContext() instanceof MainActivity) {
+            if (workmate.choseARestaurant()) {
+                holder.itemView.setOnClickListener(v -> workmateItemClickCallback.onWorkmateItemClick(workmate.getLunchRestaurantPlaceId()));
+            }
         }
     }
 
@@ -62,38 +66,5 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.Work
 
     public interface WorkmateItemClickCallback {
         void onWorkmateItemClick(String placeId);
-    }
-
-    static class WorkmatesViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.recycler_view_workmates_item_text_view)
-        TextView textView;
-        @BindView(R.id.recycler_view_workmates_item_picture_image_view)
-        ImageView pictureImageView;
-        View view;
-
-        WorkmatesViewHolder(@NonNull View itemView) {
-            super(itemView);
-            this.view = itemView;
-            ButterKnife.bind(this, view);
-        }
-
-        void updateUi(User user) {
-
-            String textToDisplay = user.getUserName() + " " + view.getResources().getString(R.string.hasnt_decided_yet);
-
-            if (user.choseARestaurant()) {
-                textToDisplay = user.getUserName() + " " + view.getResources().getString(R.string.is_eating_at) + " " + user.getLunchRestaurantName();
-            }
-
-            textView.setText(textToDisplay);
-
-            if (user.getUrlPicture() != null) {
-                Glide.with(view)
-                        .load(user.getUrlPicture())
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(pictureImageView);
-            }
-        }
     }
 }

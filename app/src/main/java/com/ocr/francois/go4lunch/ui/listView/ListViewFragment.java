@@ -74,8 +74,8 @@ public class ListViewFragment extends BaseFragment {
     public void onStart() {
         super.onStart();
         //TODO: change place of api key
-        Places.initialize(Objects.requireNonNull(getContext()), "AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE");
-        placesClient = Places.createClient(getContext());
+        Places.initialize(requireContext(), "AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE");
+        placesClient = Places.createClient(requireContext());
         observeLocation();
         getUsers();
     }
@@ -215,5 +215,10 @@ public class ListViewFragment extends BaseFragment {
         DISTANCE,
         PARTICIPANTS,
         LIKE
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_list_view;
     }
 }

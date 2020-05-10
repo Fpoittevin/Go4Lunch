@@ -63,6 +63,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         AlarmNotifications alarmNotifications = new AlarmNotifications(requireContext());
         SwitchPreferenceCompat enableNotificationsSwitch = findPreference(ENABLE_NOTIFICATIONS_KEY_PREFERENCES);
         if (enableNotificationsSwitch != null) {
+
+            enableNotificationsSwitch.setChecked(sharedPreferences.getBoolean(ENABLE_NOTIFICATIONS_KEY_PREFERENCES, false));
             enableNotificationsSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
                 if ((Boolean) newValue) {
                     alarmNotifications.start();

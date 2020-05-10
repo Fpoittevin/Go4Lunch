@@ -1,7 +1,8 @@
 package com.ocr.francois.go4lunch.utils;
 
-import org.joda.time.DateTime;
 import com.google.firebase.Timestamp;
+
+import org.joda.time.DateTime;
 
 public class DateTool {
 

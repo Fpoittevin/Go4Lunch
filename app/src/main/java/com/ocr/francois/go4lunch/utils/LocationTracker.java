@@ -20,22 +20,24 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class LocationTracker implements OnSuccessListener<Location> {
 
-    //TODO : mettre les nombre de location request dans des constantes ou préférences
-
     private Context context;
     private MutableLiveData<Location> location;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
     private LocationRequest locationRequest;
 
+    private static final int LOCATION_REQUEST_INTERVAL = 30000;
+    private static final int LOCATION_REQUEST_SMALLEST_DISPLACEMENT = 100;
+    private static final int LOCATION_REQUEST_FASTEST_DISPLACEMENT = 2000;
+
     public LocationTracker(Context context) {
         this.context = context;
         this.location = new MutableLiveData<>();
         this.locationRequest = new LocationRequest()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(30 * 1000)
-                .setSmallestDisplacement(100)
-                .setFastestInterval(2 * 1000);
+                .setInterval(LOCATION_REQUEST_INTERVAL)
+                .setSmallestDisplacement(LOCATION_REQUEST_SMALLEST_DISPLACEMENT)
+                .setFastestInterval(LOCATION_REQUEST_FASTEST_DISPLACEMENT);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
         locationCallback = new LocationCallback() {
@@ -50,7 +52,6 @@ public class LocationTracker implements OnSuccessListener<Location> {
 
     public MutableLiveData<Location> getLocation() {
         if (hasLocationPermissions()) {
-
             fusedLocationClient.getLastLocation()
                     .addOnSuccessListener((Activity) context, loc -> {
                         startLocationUpdates();
@@ -68,13 +69,11 @@ public class LocationTracker implements OnSuccessListener<Location> {
     }
 
     private Boolean hasLocationPermissions() {
-
         return EasyPermissions.hasPermissions(context, Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
     @Override
     public void onSuccess(Location location) {
-
         setLocation(location);
     }
 

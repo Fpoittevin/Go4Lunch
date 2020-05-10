@@ -26,7 +26,7 @@ public class RestaurantDetailsActivity extends BaseActivity {
     }
 
     @Override
-    protected int getLayout() {
+    protected int getLayoutId() {
         return R.layout.activity_restaurant_details;
     }
 }

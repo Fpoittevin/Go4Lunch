@@ -2,15 +2,21 @@ package com.ocr.francois.go4lunch.ui.base;
 
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.PreferenceManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.injection.Injection;
 import com.ocr.francois.go4lunch.injection.ViewModelFactory;
 import com.ocr.francois.go4lunch.models.Restaurant;
@@ -21,7 +27,8 @@ import com.ocr.francois.go4lunch.utils.LocationTracker;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import butterknife.ButterKnife;
 
 public abstract class BaseFragment extends Fragment {
 
@@ -32,6 +39,17 @@ public abstract class BaseFragment extends Fragment {
 
     protected List<Restaurant> restaurants = new ArrayList<>();
     protected List<User> users = new ArrayList<>();
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(getLayoutId(), container, false);
+        ButterKnife.bind(this, view);
+
+        return view;
+    }
+
+    protected abstract int getLayoutId();
 
     protected abstract void updateUiWhenDataChange();
 

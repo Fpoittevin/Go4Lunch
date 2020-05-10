@@ -2,29 +2,29 @@ package com.ocr.francois.go4lunch.models;
 
 public class Like {
 
-    private String RestaurantPlaceId;
-    private String UserId;
+    private String restaurantPlaceId;
+    private String userId;
 
     public Like() {}
 
     public Like(String restaurantPlaceId, String userId) {
-        RestaurantPlaceId = restaurantPlaceId;
-        UserId = userId;
+        this.restaurantPlaceId = restaurantPlaceId;
+        this.userId = userId;
     }
 
     public String getRestaurantPlaceId() {
-        return RestaurantPlaceId;
+        return restaurantPlaceId;
     }
 
     public void setRestaurantPlaceId(String restaurantPlaceId) {
-        RestaurantPlaceId = restaurantPlaceId;
+        this.restaurantPlaceId = restaurantPlaceId;
     }
 
     public String getUserId() {
-        return UserId;
+        return userId;
     }
 
     public void setUserId(String userId) {
-        UserId = userId;
+        this.userId = userId;
     }
 }

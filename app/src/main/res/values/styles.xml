@@ -26,4 +26,11 @@
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:layout_margin">10dp</item>
     </style>
+
+    <style name="ToolbarStyle" parent="AppTheme">
+        <item name="colorControlNormal">@color/colorWhite</item>
+        <item name="color">@color/colorWhite</item>
+        <item name="titleTextColor">@color/colorWhite</item>
+        <item name="android:textColorPrimary">@color/colorWhite</item>
+    </style>
 </resources>

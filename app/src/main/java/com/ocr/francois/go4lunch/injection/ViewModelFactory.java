@@ -17,7 +17,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
 
-    public ViewModelFactory(RestaurantRepository restaurantRepository, UserRepository userRepository, LikeRepository likeRepository) {
+    ViewModelFactory(RestaurantRepository restaurantRepository, UserRepository userRepository, LikeRepository likeRepository) {
         this.restaurantRepository = restaurantRepository;
         this.userRepository = userRepository;
         this.likeRepository = likeRepository;

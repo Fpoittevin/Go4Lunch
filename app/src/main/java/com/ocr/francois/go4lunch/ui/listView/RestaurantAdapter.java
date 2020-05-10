@@ -89,6 +89,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         void updateUi(Restaurant restaurant) {
             if(restaurant.getName() != null) {
                 nameTextView.setText(restaurant.getName());
+                Log.e("RESTO LISTE", restaurant.getName());
             }
             if(restaurant.getVicinity() != null) {
                 addressTextView.setText(restaurant.getVicinity().replaceAll(", ", "\n"));

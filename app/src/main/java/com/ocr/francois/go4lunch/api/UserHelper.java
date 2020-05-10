@@ -23,20 +23,28 @@ public class UserHelper {
         return UserHelper.getUsersCollection();
     }
 
-    public static Task<Void> createUser(String id, String userName, String urlPicture) {
+    public static void createUser(String id, String userName, String urlPicture) {
         User userToCreate = new User(id, userName, urlPicture);
-        return UserHelper.getUsersCollection().document(id).set(userToCreate);
+        UserHelper.getUsersCollection().document(id).set(userToCreate);
     }
 
     public static Task<DocumentSnapshot> getUser(String id) {
         return UserHelper.getUsersCollection().document(id).get();
     }
 
-    public static Task<Void> insertLunch(String userId, String lunchRestaurantPlaceId, String lunchRestaurantName) {
+    public static void insertLunch(String userId, String lunchRestaurantPlaceId, String lunchRestaurantName) {
         Map<String, Object> lunchData = new HashMap<>();
         lunchData.put("lunchRestaurantPlaceId", lunchRestaurantPlaceId);
         lunchData.put("lunchRestaurantName", lunchRestaurantName);
         lunchData.put("lunchTimestamp", Timestamp.now());
-        return UserHelper.getUsersCollection().document(userId).update(lunchData);
+        UserHelper.getUsersCollection().document(userId).update(lunchData);
+    }
+
+    public static void deleteLunch(String userId) {
+        Map<String, Object> lunchData = new HashMap<>();
+        lunchData.put("lunchRestaurantPlaceId", null);
+        lunchData.put("lunchRestaurantName", null);
+        lunchData.put("lunchTimestamp", null);
+        UserHelper.getUsersCollection().document(userId).update(lunchData);
     }
 }

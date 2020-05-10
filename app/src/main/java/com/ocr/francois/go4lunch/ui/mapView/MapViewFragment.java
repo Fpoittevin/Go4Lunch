@@ -1,6 +1,5 @@
 package com.ocr.francois.go4lunch.ui.mapView;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
-import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -81,7 +79,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
         observeLocation();
         //TODO: change place of api key
         Places.initialize(requireContext(), "AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE");
-        placesClient = Places.createClient(getContext());
+        placesClient = Places.createClient(Objects.requireNonNull(getContext()));
     }
 
     @Override
@@ -214,5 +212,10 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
 
     public interface MarkerClickCallback {
         void onMarkerClickCallback(String placeId);
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_map_view;
     }
 }

@@ -22,7 +22,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(this.getLayout());
+        setContentView(this.getLayoutId());
         ButterKnife.bind(this);
     }
 
@@ -32,7 +32,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    protected abstract int getLayout();
+    protected abstract int getLayoutId();
 
     @Nullable
     protected FirebaseUser getCurrentUser() {

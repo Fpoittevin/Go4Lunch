@@ -58,13 +58,25 @@ public class LunchViewModel extends ViewModel {
         userRepository.saveLunch(userId, lunchRestaurantPlaceId, lunchRestaurantName);
     }
 
+    public void deleteLunch(String userId) {
+        userRepository.deleteLunch(userId);
+    }
+
     // LUNCHES
 
     public void createLike(String restaurantPlaceId, String userId) {
         likeRepository.createLike(restaurantPlaceId, userId);
     }
 
-    public LiveData<Integer> getNoteOfRestaurant(String placeId) {
+    public void deleteLike(String userId, String restaurantId) {
+        likeRepository.deleteLike(userId, restaurantId);
+    }
+
+    public MutableLiveData<List<Like>> getLikesByRestaurant(String restaurantPlaceId) {
+        return likeRepository.getLikesByRestaurant(restaurantPlaceId);
+    }
+
+    private LiveData<Integer> getNoteOfRestaurant(String placeId) {
         NoteGenerator noteGenerator = new NoteGenerator();
         return noteGenerator.getNote(placeId);
     }
@@ -131,7 +143,7 @@ public class LunchViewModel extends ViewModel {
         private void addNotesInRestaurants() {
             for (Restaurant restaurant : restaurants) {
                 if (notes.containsKey(restaurant.getPlaceId())) {
-                    restaurant.setNote(notes.get(restaurant.getPlaceId()).intValue());
+                    restaurant.setNote(notes.get(restaurant.getPlaceId()));
                 }
             }
         }

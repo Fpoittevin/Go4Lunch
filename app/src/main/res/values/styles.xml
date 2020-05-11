@@ -20,7 +20,7 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
-    <style name="FragmentRestaurantDetailsButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
+    <style name="ActivityRestaurantDetailsButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/colorPrimary</item>
@@ -32,5 +32,10 @@
         <item name="color">@color/colorWhite</item>
         <item name="titleTextColor">@color/colorWhite</item>
         <item name="android:textColorPrimary">@color/colorWhite</item>
+    </style>
+
+    <style name="RatingBarStyle" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@color/colorGrey</item>
+        <item name="colorControlActivated">@color/colorYellow</item>
     </style>
 </resources>

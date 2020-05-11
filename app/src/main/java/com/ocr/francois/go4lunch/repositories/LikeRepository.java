@@ -1,14 +1,8 @@
 package com.ocr.francois.go4lunch.repositories;
 
-import android.util.Log;
-
-import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.ocr.francois.go4lunch.api.LikeHelper;
 import com.ocr.francois.go4lunch.models.Like;
 
@@ -39,24 +33,6 @@ public class LikeRepository {
             }
         });
         return likes;
-    }
-
-    public MutableLiveData<Boolean> userLikeRestaurant(String userId, String restaurantId) {
-        MutableLiveData<Boolean> userLikeRestaurant = new MutableLiveData<>();
-
-        LikeHelper.getLikesByRestaurant(restaurantId)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException e) {
-                        for (QueryDocumentSnapshot doc : querySnapshots) {
-                            Like like = doc.toObject(Like.class);
-                            Log.e("LIKE", like.getRestaurantPlaceId() + " / " + like.getUserId());
-                        }
-
-                    }
-                });
-
-        return userLikeRestaurant;
     }
 
     public MutableLiveData<List<Like>> getLikesByRestaurant(String placeId) {

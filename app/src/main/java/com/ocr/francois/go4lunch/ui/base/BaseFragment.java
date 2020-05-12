@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -16,7 +15,6 @@ import androidx.preference.PreferenceManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.injection.Injection;
 import com.ocr.francois.go4lunch.injection.ViewModelFactory;
 import com.ocr.francois.go4lunch.models.Restaurant;
@@ -27,29 +25,32 @@ import com.ocr.francois.go4lunch.utils.LocationTracker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 
 public abstract class BaseFragment extends Fragment {
 
-    protected LunchViewModel lunchViewModel;
     protected LocationTracker locationTracker;
     protected Location currentLocation = null;
     protected SharedPreferences sharedPreferences;
-
     protected List<Restaurant> restaurants = new ArrayList<>();
     protected List<User> users = new ArrayList<>();
+    private LunchViewModel lunchViewModel;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(getLayoutId(), container, false);
         ButterKnife.bind(this, view);
+        showProgressBar();
 
         return view;
     }
 
     protected abstract int getLayoutId();
+
+    protected abstract int getProgressBarId();
 
     protected abstract void updateUiWhenDataChange();
 
@@ -108,15 +109,15 @@ public abstract class BaseFragment extends Fragment {
         this.users.addAll(users);
     }
 
-    protected void showProgressBar(int resId) {
-        ProgressBar progressBar = this.requireActivity().findViewById(resId);
+    protected void showProgressBar() {
+        ProgressBar progressBar = this.requireActivity().findViewById(getProgressBarId());
         if (progressBar != null) {
             progressBar.setVisibility(View.VISIBLE);
         }
     }
 
-    protected void hideProgressBar(int resId) {
-        ProgressBar progressBar = this.requireActivity().findViewById(resId);
+    protected void hideProgressBar() {
+        ProgressBar progressBar = this.requireActivity().findViewById(getProgressBarId());
         if (progressBar != null) {
             progressBar.setVisibility(View.INVISIBLE);
         }

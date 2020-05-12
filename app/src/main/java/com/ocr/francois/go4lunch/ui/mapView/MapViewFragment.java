@@ -58,12 +58,11 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_map_view, container, false);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
 
         configureLunchViewModel();
         configureMap();
         configureLocationTracker();
-        showProgressBar(R.id.fragment_map_view_progress_bar);
         setHasOptionsMenu(true);
 
         return view;
@@ -107,12 +106,12 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
             map.moveCamera(CameraUpdateFactory.newLatLng(latLngLocation));
             map.moveCamera(CameraUpdateFactory.zoomTo(mapZoom));
 
-            hideProgressBar(R.id.fragment_map_view_progress_bar);
             getRestaurants();
         });
     }
 
     protected void updateUiWhenDataChange() {
+        hideProgressBar();
         map.clear();
         if (!restaurants.isEmpty()) {
             addMarkers(restaurants);
@@ -223,4 +222,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
     protected int getLayoutId() {
         return R.layout.fragment_map_view;
     }
+
+    @Override
+    protected int getProgressBarId() { return R.id.fragment_map_view_progress_bar; }
 }

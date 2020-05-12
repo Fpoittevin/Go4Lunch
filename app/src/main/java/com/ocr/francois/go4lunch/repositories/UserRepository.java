@@ -2,12 +2,8 @@ package com.ocr.francois.go4lunch.repositories;
 
 import android.util.Log;
 
-import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.ocr.francois.go4lunch.api.UserHelper;
 import com.ocr.francois.go4lunch.models.User;
@@ -44,12 +40,9 @@ public class UserRepository {
     public MutableLiveData<User> getUser(String id) {
         MutableLiveData<User> user = new MutableLiveData<>();
 
-        UserHelper.getUsersCollection().document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if (documentSnapshot != null) {
-                    user.setValue(documentSnapshot.toObject(User.class));
-                }
+        UserHelper.getUsersCollection().document(id).addSnapshotListener((documentSnapshot, e) -> {
+            if (documentSnapshot != null) {
+                user.setValue(documentSnapshot.toObject(User.class));
             }
         });
         return user;

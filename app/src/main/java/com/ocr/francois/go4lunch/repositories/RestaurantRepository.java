@@ -6,7 +6,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
-import com.ocr.francois.go4lunch.BuildConfig;
 import com.ocr.francois.go4lunch.api.PlacesService;
 import com.ocr.francois.go4lunch.models.GoogleDetailResult;
 import com.ocr.francois.go4lunch.models.GoogleSearchResults;

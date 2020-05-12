@@ -64,6 +64,7 @@ public class WorkmatesFragment extends BaseFragment {
     }
 
     protected void updateUiWhenDataChange() {
+        hideProgressBar();
         if (!users.isEmpty()) {
             sortWorkmatesList();
             workmatesAdapter.updatesWorkmates(users, getCurrentUser().getUid());
@@ -87,6 +88,9 @@ public class WorkmatesFragment extends BaseFragment {
     protected int getLayoutId() {
         return R.layout.fragment_workmates;
     }
+
+    @Override
+    protected int getProgressBarId() { return R.id.fragment_workmates_progress_bar; }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {

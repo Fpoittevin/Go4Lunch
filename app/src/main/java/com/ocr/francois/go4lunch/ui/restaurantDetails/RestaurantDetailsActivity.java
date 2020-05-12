@@ -18,7 +18,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,9 +43,9 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class RestaurantDetailsActivity extends BaseActivity implements View.OnClickListener {
 
+    private static final int PROGRESS_BAR_ID = R.id.activity_restaurant_details_progress_bar;
     @BindView(R.id.activity_restaurant_details_frame_layout)
     FrameLayout frameLayout;
-
     @BindView(R.id.activity_restaurant_details_toolbar)
     MaterialToolbar toolbar;
     @BindView(R.id.activity_restaurant_details_picture_image_view)
@@ -67,15 +66,11 @@ public class RestaurantDetailsActivity extends BaseActivity implements View.OnCl
     RecyclerView recyclerView;
     @BindView(R.id.activity_restaurant_details_floating_action_button)
     FloatingActionButton fab;
-
     private WorkmatesAdapter workmatesAdapter;
     private Restaurant restaurant;
     private boolean currentUserLikeRestaurant;
     private boolean currentUserIsParticipant = false;
-
     private LunchViewModel lunchViewModel;
-
-    private static final int PROGRESS_BAR_ID = R.id.activity_restaurant_details_progress_bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

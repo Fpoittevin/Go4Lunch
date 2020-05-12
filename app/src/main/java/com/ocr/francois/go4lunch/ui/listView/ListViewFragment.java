@@ -59,9 +59,8 @@ public class ListViewFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_list_view, container, false);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
 
-        ButterKnife.bind(this, view);
         configureLunchViewModel();
         configureLocationTracker();
         configureRecyclerView();
@@ -122,6 +121,7 @@ public class ListViewFragment extends BaseFragment {
     }
 
     protected void updateUiWhenDataChange() {
+        hideProgressBar();
         switch (sortMethod) {
             case DISTANCE:
                 Collections.sort(restaurants, new Restaurant.RestaurantDistanceComparator());
@@ -215,6 +215,9 @@ public class ListViewFragment extends BaseFragment {
     protected int getLayoutId() {
         return R.layout.fragment_list_view;
     }
+
+    @Override
+    protected int getProgressBarId() { return R.id.fragment_list_view_progress_bar; }
 
     private enum SortMethod {
         DISTANCE,

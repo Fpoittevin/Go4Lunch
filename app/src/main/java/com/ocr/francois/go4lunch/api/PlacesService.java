@@ -1,5 +1,6 @@
 package com.ocr.francois.go4lunch.api;
 
+import com.ocr.francois.go4lunch.BuildConfig;
 import com.ocr.francois.go4lunch.models.GoogleDetailResult;
 import com.ocr.francois.go4lunch.models.GoogleSearchResults;
 
@@ -16,12 +17,9 @@ public interface PlacesService {
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
-    @GET("nearbysearch/json?type=restaurant&key=AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE")
+    @GET("nearbysearch/json?type=restaurant&key=" + BuildConfig.GOOGLE_API_KEY)
     Call<GoogleSearchResults> getNearbyPlaces(@Query("location") String location, @Query("radius") int radius);
 
-    @GET("details/json?key=AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE")
+    @GET("details/json?fields=name,vicinity,international_phone_number,website,photo,place_id&key=" + BuildConfig.GOOGLE_API_KEY)
     Call<GoogleDetailResult> getPlaceDetails(@Query("place_id") String placeId);
-
-    //TODO : ne demander que les infos nécessaires
-    //TODO : ajouter le radius choisi dans les préférences utilisateurs
 }

@@ -32,8 +32,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class NotificationReceiver extends BroadcastReceiver {
-    private final int NOTIFICATION_ID = 123;
-    private final String NOTIFICATION_TAG = "GO4LUNCH";
     private Context context;
     private Restaurant restaurant;
     private NotificationManager notificationManager;
@@ -104,33 +102,34 @@ public class NotificationReceiver extends BroadcastReceiver {
     private void generateNotification() {
 
         String notificationContent = "";
+        StringBuilder stringBuilder = new StringBuilder(notificationContent);
 
         if (restaurant.getName() != null) {
-            notificationContent = restaurant.getName();
+            stringBuilder.append(restaurant.getName());
         }
         if (restaurant.getVicinity() != null) {
-            notificationContent = notificationContent + ", " + restaurant.getVicinity();
+            stringBuilder.append(", ").append(restaurant.getVicinity());
         }
 
         if (restaurant.getParticipants().size() > 0) {
-            notificationContent = notificationContent + " with ";
+            stringBuilder.append(" ").append(context.getResources().getString(R.string.with)).append(" ");
 
             for (int i = 0; i < restaurant.getParticipants().size(); i++) {
 
                 User user = restaurant.getParticipants().get(i);
 
                 if (user.getUserName() != null) {
-                    notificationContent = notificationContent + " " + user.getUserName();
-                    if (i == restaurant.getParticipants().size() - 1) {
-                        notificationContent = notificationContent + ".";
-                    } else {
-                        notificationContent = notificationContent + ",";
+                    stringBuilder.append(user.getUserName());
+
+                    if (!(i == restaurant.getParticipants().size() - 1)) {
+                        stringBuilder.append(", ");
                     }
                 }
             }
+            stringBuilder.append(".");
         }
 
-        sendNotification(notificationContent);
+        sendNotification(stringBuilder.toString());
     }
 
     private void sendNotification(String notificationContent) {
@@ -153,14 +152,16 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         if (notificationManager != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                CharSequence channelName = "Message provenant de Go4Lunch";
+                CharSequence channelName = "go4lunch_channel";
                 int importance = NotificationManager.IMPORTANCE_HIGH;
                 NotificationChannel mChannel = new NotificationChannel(channelId, channelName, importance);
 
                 notificationManager.createNotificationChannel(mChannel);
             }
 
-            notificationManager.notify(NOTIFICATION_TAG, NOTIFICATION_ID, notificationBuilder.build());
+            String notificationTag = "GO4LUNCH";
+            int notificationId = 123;
+            notificationManager.notify(notificationTag, notificationId, notificationBuilder.build());
         }
     }
 }

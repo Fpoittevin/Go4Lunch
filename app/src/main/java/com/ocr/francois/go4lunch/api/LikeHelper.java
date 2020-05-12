@@ -25,9 +25,9 @@ public class LikeHelper {
         LikeHelper.getLikesCollection().add(likeToCreate);
     }
 
-    public static void deleteLike(String userId, String restaurantId) {
+    public static void deleteLike(String restaurantPlaceId, String userId) {
         LikeHelper.getLikesCollection()
-                .whereEqualTo("restaurantPlaceId", restaurantId)
+                .whereEqualTo("restaurantPlaceId", restaurantPlaceId)
                 .whereEqualTo("userId", userId)
                 .get()
                 .addOnCompleteListener(task -> {

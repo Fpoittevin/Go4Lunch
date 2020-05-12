@@ -15,8 +15,8 @@ public class LikeRepository {
         LikeHelper.createLike(restaurantPlaceId, userId);
     }
 
-    public void deleteLike(String userId, String restaurantId) {
-        LikeHelper.deleteLike(userId, restaurantId);
+    public void deleteLike(String restaurantPlaceId, String userId) {
+        LikeHelper.deleteLike(restaurantPlaceId, userId);
     }
 
     public MutableLiveData<List<Like>> getAllLikes() {

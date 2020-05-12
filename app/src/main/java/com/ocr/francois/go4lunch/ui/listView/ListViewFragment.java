@@ -1,6 +1,6 @@
 package com.ocr.francois.go4lunch.ui.listView;
 
-import android.content.Intent;
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,18 +29,18 @@ import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.maps.android.SphericalUtil;
+import com.ocr.francois.go4lunch.BuildConfig;
 import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.models.Restaurant;
 import com.ocr.francois.go4lunch.ui.base.BaseFragment;
+import com.ocr.francois.go4lunch.ui.settings.SettingsFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 
 public class ListViewFragment extends BaseFragment {
 
@@ -71,10 +71,15 @@ public class ListViewFragment extends BaseFragment {
     }
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        requireActivity().setTitle(R.string.i_am_hungry_title);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
-        //TODO: change place of api key
-        Places.initialize(requireContext(), "AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE");
+        Places.initialize(requireContext(), BuildConfig.GOOGLE_API_KEY);
         placesClient = Places.createClient(requireContext());
         observeLocation();
         getUsers();
@@ -146,7 +151,6 @@ public class ListViewFragment extends BaseFragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.d("TEXTE CHANGE !!!!!", newText);
                 if (newText.isEmpty()) {
                     restaurantAdapter.updateRestaurants(restaurants);
                 } else {
@@ -154,9 +158,10 @@ public class ListViewFragment extends BaseFragment {
                     AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
                     LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
 
+                    int searchRadius = sharedPreferences.getInt(SettingsFragment.SEARCH_RADIUS_KEY_PREFERENCES, SettingsFragment.DEFAULT_SEARCH_RADIUS);
 
-                    LatLng latLng1 = SphericalUtil.computeOffset(latLng, 1600, 45);
-                    LatLng latLng2 = SphericalUtil.computeOffset(latLng, 1600, 225);
+                    LatLng latLng1 = SphericalUtil.computeOffset(latLng, searchRadius, 45);
+                    LatLng latLng2 = SphericalUtil.computeOffset(latLng, searchRadius, 225);
                     RectangularBounds bounds = RectangularBounds.newInstance(latLng2, latLng1);
                     FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
                             .setQuery(newText)
@@ -207,18 +212,13 @@ public class ListViewFragment extends BaseFragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+    protected int getLayoutId() {
+        return R.layout.fragment_list_view;
     }
 
     private enum SortMethod {
         DISTANCE,
         PARTICIPANTS,
         LIKE
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.fragment_list_view;
     }
 }

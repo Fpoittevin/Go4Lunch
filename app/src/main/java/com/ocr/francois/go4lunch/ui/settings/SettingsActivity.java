@@ -44,7 +44,6 @@ public class SettingsActivity extends BaseActivity {
         if (item.getItemId() == android.R.id.home) {
             finish();
         }
-
         return true;
     }
 }

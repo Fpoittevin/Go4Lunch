@@ -1,11 +1,9 @@
-package com.ocr.francois.go4lunch.utils;
+package com.ocr.francois.go4lunch.notifications;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-
-import com.ocr.francois.go4lunch.notifications.NotificationReceiver;
 
 import java.util.Calendar;
 
@@ -24,6 +22,7 @@ public class AlarmNotifications {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 12);
+        calendar.set(Calendar.MINUTE, 0);
 
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
     }

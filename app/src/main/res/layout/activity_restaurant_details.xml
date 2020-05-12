@@ -7,6 +7,16 @@
     android:orientation="vertical"
     tools:context=".ui.restaurantDetails.RestaurantDetailsActivity">
 
+    <ProgressBar
+        android:id="@+id/activity_restaurant_details_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="0dp"
+        android:indeterminate="true"
+        android:padding="0dp"
+        app:elevation="10dp" />
+
     <FrameLayout
         android:id="@+id/activity_restaurant_details_frame_layout"
         android:layout_width="match_parent"
@@ -34,10 +44,22 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/activity_restaurant_details_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/ToolbarStyle" />
+            </com.google.android.material.appbar.AppBarLayout>
+
             <ImageView
                 android:id="@+id/activity_restaurant_details_picture_image_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="250dp"
+                android:src="@drawable/ic_photo_black_24dp" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -58,9 +80,9 @@
                 <RatingBar
                     android:id="@+id/activity_restaurant_details_note_rating_bar"
                     style="?android:attr/ratingBarStyleSmall"
-                    android:theme="@style/RatingBarStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:theme="@style/RatingBarStyle"
                     app:layout_constraintBottom_toTopOf="@+id/activity_restaurant_details_infos_text_view"
                     app:layout_constraintLeft_toRightOf="@+id/activity_restaurant_details_name_text_view"
                     app:layout_constraintTop_toTopOf="parent" />

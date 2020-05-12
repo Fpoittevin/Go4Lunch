@@ -36,7 +36,9 @@ class WorkmatesViewHolder extends RecyclerView.ViewHolder {
 
         if (view.getContext() instanceof MainActivity) {
             textToDisplay = user.getUserName() + view.getResources().getString(R.string.hasnt_decided_yet);
+            textView.setTextColor(view.getContext().getResources().getColor(R.color.colorGrey));
             if (user.choseARestaurant()) {
+                textView.setTextColor(view.getContext().getResources().getColor(R.color.colorBlack));
                 textToDisplay = user.getUserName() + view.getResources().getString(R.string.is_eating_at) + user.getLunchRestaurantName();
             }
         } else {

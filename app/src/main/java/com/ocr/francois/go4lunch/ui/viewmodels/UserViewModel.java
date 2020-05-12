@@ -1,12 +1,8 @@
 package com.ocr.francois.go4lunch.ui.viewmodels;
 
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.ocr.francois.go4lunch.models.User;
 import com.ocr.francois.go4lunch.repositories.UserRepository;
-
-import java.util.List;
 
 public class UserViewModel extends ViewModel {
 
@@ -16,16 +12,7 @@ public class UserViewModel extends ViewModel {
         this.userRepository = userRepository;
     }
 
-    public MutableLiveData<List<User>> getWorkmates() {
-        //TODO: tous les users sauf current user;
-        return userRepository.getUsers();
-    }
-
     public void createUser(String id, String userName, String urlPicture) {
         this.userRepository.createUser(id, userName, urlPicture);
-    }
-
-    public MutableLiveData<User> getUser(String id) {
-        return userRepository.getUser(id);
     }
 }

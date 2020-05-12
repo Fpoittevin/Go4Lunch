@@ -5,19 +5,22 @@ import androidx.annotation.Nullable;
 import com.google.firebase.Timestamp;
 import com.ocr.francois.go4lunch.utils.DateTool;
 
-import java.util.List;
-
 public class User {
 
     private String id;
     private String userName;
-    @Nullable private String urlPicture;
+    @Nullable
+    private String urlPicture;
 
-    @Nullable private String lunchRestaurantPlaceId;
-    @Nullable private String lunchRestaurantName;
-    @Nullable private Timestamp lunchTimestamp;
+    @Nullable
+    private String lunchRestaurantPlaceId;
+    @Nullable
+    private String lunchRestaurantName;
+    @Nullable
+    private Timestamp lunchTimestamp;
 
-    public User() {}
+    public User() {
+    }
 
     public User(String id, String userName, @Nullable String urlPicture) {
         this.id = id;
@@ -46,16 +49,9 @@ public class User {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
+    @Nullable
     public String getUrlPicture() {
         return urlPicture;
-    }
-
-    public void setUrlPicture(String urlPicture) {
-        this.urlPicture = urlPicture;
     }
 
     @Nullable
@@ -63,26 +59,14 @@ public class User {
         return lunchRestaurantPlaceId;
     }
 
-    public void setLunchRestaurantPlaceId(@Nullable String lunchRestaurantPlaceId) {
-        this.lunchRestaurantPlaceId = lunchRestaurantPlaceId;
-    }
-
     @Nullable
     public String getLunchRestaurantName() {
         return lunchRestaurantName;
     }
 
-    public void setLunchRestaurantName(@Nullable String lunchRestaurantName) {
-        this.lunchRestaurantName = lunchRestaurantName;
-    }
-
     @Nullable
     public Timestamp getLunchTimestamp() {
         return lunchTimestamp;
-    }
-
-    public void setLunchTimestamp(@Nullable Timestamp lunchTimestamp) {
-        this.lunchTimestamp = lunchTimestamp;
     }
 
     public boolean choseARestaurant() {

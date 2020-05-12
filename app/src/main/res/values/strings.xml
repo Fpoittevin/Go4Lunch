@@ -16,9 +16,9 @@
     <string name="sort_by_distance">sort by distance</string>
     <string name="sort_by_participants">sort by participants</string>
     <string name="sort_by_likes">sort by likes</string>
-    <string name="lunch_button_title">your lunch</string>
-    <string name="settings_button_title">settings</string>
-    <string name="log_out_button_title">log out</string>
+    <string name="lunch_button_title">YOUR LUNCH</string>
+    <string name="settings_button_title">SETTINGS</string>
+    <string name="log_out_button_title">LOG OUT</string>
     <string name="navigation_drawer_open">open</string>
     <string name="navigation_drawer_close">close</string>
     <string name="map_button_title">Map View</string>
@@ -39,6 +39,7 @@
 
     <!-- Activities Titles -->
     <string name="i_am_hungry_title">I\'m Hungry!</string>
+    <string name="available_workmates_title">Available workmates</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
@@ -60,6 +61,8 @@
     <string name="alert_dialog_notifications_message">Would you like to receive a notification every day at noon to find out which workmates will be eating with you?</string>
     <string name="yes">yes</string>
     <string name="no">no</string>
+    <string name="with">with</string>
+    <string name="notification_tag">GO4LUNCH</string>
 
     <!-- MAIN ACTIVITY -->
     <string name="no_restaurant_message">You haven\'t chosen any restaurant yet.</string>

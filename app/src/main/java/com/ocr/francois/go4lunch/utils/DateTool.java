@@ -3,6 +3,7 @@ package com.ocr.francois.go4lunch.utils;
 import com.google.firebase.Timestamp;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeComparator;
 
 public class DateTool {
 
@@ -14,6 +15,8 @@ public class DateTool {
     }
 
     public static boolean isToday(Timestamp timestamp) {
-        return timestamp.compareTo(DateTool.getTodayMidnightTimestamp()) >= 1;
+        DateTime now = new DateTime();
+        DateTime dateToCompare = new DateTime(timestamp.toDate());
+        return DateTimeComparator.getDateOnlyInstance().compare(now, dateToCompare) == 0;
     }
 }

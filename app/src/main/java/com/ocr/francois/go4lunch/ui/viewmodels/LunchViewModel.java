@@ -68,8 +68,8 @@ public class LunchViewModel extends ViewModel {
         likeRepository.createLike(restaurantPlaceId, userId);
     }
 
-    public void deleteLike(String userId, String restaurantId) {
-        likeRepository.deleteLike(userId, restaurantId);
+    public void deleteLike(String restaurantPlaceId, String userId) {
+        likeRepository.deleteLike(restaurantPlaceId, userId);
     }
 
     public MutableLiveData<List<Like>> getLikesByRestaurant(String restaurantPlaceId) {

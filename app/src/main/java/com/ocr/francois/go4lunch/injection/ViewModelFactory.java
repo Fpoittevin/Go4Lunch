@@ -8,7 +8,6 @@ import com.ocr.francois.go4lunch.repositories.LikeRepository;
 import com.ocr.francois.go4lunch.repositories.RestaurantRepository;
 import com.ocr.francois.go4lunch.repositories.UserRepository;
 import com.ocr.francois.go4lunch.ui.viewmodels.LunchViewModel;
-import com.ocr.francois.go4lunch.ui.viewmodels.RestaurantViewModel;
 import com.ocr.francois.go4lunch.ui.viewmodels.UserViewModel;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
@@ -25,10 +24,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
     @NonNull
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(RestaurantViewModel.class)) {
-            return (T) new RestaurantViewModel(restaurantRepository);
-        }
         if (modelClass.isAssignableFrom(UserViewModel.class)) {
             return (T) new UserViewModel(userRepository);
         }

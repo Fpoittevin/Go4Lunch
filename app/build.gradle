@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -19,6 +20,15 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+
+            buildConfigField "String", "GOOGLE_API_KEY", "\"AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE\""
+            resValue "string", "GOOGLE_API_KEY", "AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE"
+        }
+        debug {
+
+            buildConfigField "String", "GOOGLE_API_KEY", "\"AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE\""
+            resValue "string", "GOOGLE_API_KEY", "AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE"
         }
     }
 

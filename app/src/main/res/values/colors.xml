@@ -8,6 +8,7 @@
     <color name="colorFacebookSignIn">#507BC0</color>
 
     <color name="colorWhite">#FFFFFF</color>
-    <color name="colorGrey">#E1E2E1</color>
+    <color name="colorGrey">#B3B2B2</color>
     <color name="colorYellow">#F8E71C</color>
+    <color name="colorBlack">#000000</color>
 </resources>

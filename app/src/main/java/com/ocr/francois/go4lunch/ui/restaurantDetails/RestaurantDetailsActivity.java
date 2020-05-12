@@ -2,10 +2,12 @@ package com.ocr.francois.go4lunch.ui.restaurantDetails;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -13,12 +15,15 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.injection.Injection;
@@ -37,11 +42,13 @@ import java.util.Objects;
 import butterknife.BindView;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class RestaurantDetailsActivity extends BaseActivity {
+public class RestaurantDetailsActivity extends BaseActivity implements View.OnClickListener {
 
     @BindView(R.id.activity_restaurant_details_frame_layout)
     FrameLayout frameLayout;
 
+    @BindView(R.id.activity_restaurant_details_toolbar)
+    MaterialToolbar toolbar;
     @BindView(R.id.activity_restaurant_details_picture_image_view)
     ImageView restaurantPictureImageView;
     @BindView(R.id.activity_restaurant_details_name_text_view)
@@ -63,8 +70,12 @@ public class RestaurantDetailsActivity extends BaseActivity {
 
     private WorkmatesAdapter workmatesAdapter;
     private Restaurant restaurant;
+    private boolean currentUserLikeRestaurant;
+    private boolean currentUserIsParticipant = false;
 
     private LunchViewModel lunchViewModel;
+
+    private static final int PROGRESS_BAR_ID = R.id.activity_restaurant_details_progress_bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +83,7 @@ public class RestaurantDetailsActivity extends BaseActivity {
 
         String placeId = getIntent().getStringExtra("placeId");
 
+        configureToolBar();
         configureLunchViewModel();
         configureRecyclerView();
         getRestaurant(placeId);
@@ -80,6 +92,11 @@ public class RestaurantDetailsActivity extends BaseActivity {
     @Override
     protected int getLayoutId() {
         return R.layout.activity_restaurant_details;
+    }
+
+    private void configureToolBar() {
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
 
     protected void configureLunchViewModel() {
@@ -92,8 +109,6 @@ public class RestaurantDetailsActivity extends BaseActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setAdapter(workmatesAdapter);
         recyclerView.setLayoutManager(layoutManager);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     private void getRestaurant(String placeId) {
@@ -104,14 +119,18 @@ public class RestaurantDetailsActivity extends BaseActivity {
     }
 
     private void updateUi() {
+        hideProgressBar(PROGRESS_BAR_ID);
+
+        getSupportActionBar().setTitle(restaurant.getName());
         restaurantNameTextView.setText(restaurant.getName());
 
         if (restaurant.getPhotos() != null && !restaurant.getPhotos().isEmpty()) {
             Photo photo = restaurant.getPhotos().get(0);
-            String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&key=AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE&photoreference=" + photo.getPhotoReference();
+            String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&key=AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE&photoreference=" + photo.getPhotoReference();
             Glide
                     .with(this)
                     .load(photoUrl)
+                    .centerCrop()
                     .into(restaurantPictureImageView);
         }
 
@@ -139,17 +158,8 @@ public class RestaurantDetailsActivity extends BaseActivity {
     }
 
     private void configureCallButton() {
-        String phoneNumber = restaurant.getInternationalPhoneNumber();
-        if (phoneNumber != null) {
-            callButton.setOnClickListener(v -> {
-
-                if (EasyPermissions.hasPermissions(this, Manifest.permission.CALL_PHONE)) {
-                    Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
-                    startActivity(callIntent);
-                } else {
-                    EasyPermissions.requestPermissions(this, getResources().getString(R.string.need_location_permissions_message), 124, Manifest.permission.CALL_PHONE);
-                }
-            });
+        if (restaurant.getInternationalPhoneNumber() != null) {
+            callButton.setOnClickListener(this);
         } else {
             callButton.setClickable(false);
         }
@@ -160,7 +170,9 @@ public class RestaurantDetailsActivity extends BaseActivity {
         Drawable starBorder = getResources().getDrawable(R.drawable.ic_star_border_orange_24dp);
 
         lunchViewModel.getLikesByRestaurant(restaurant.getPlaceId()).observe(this, likes -> {
-            boolean currentUserLikeRestaurant = false;
+            hideProgressBar(PROGRESS_BAR_ID);
+            likeButton.setClickable(true);
+            currentUserLikeRestaurant = false;
             for (Like like : likes) {
                 if (like.getUserId().equals(Objects.requireNonNull(getCurrentUser()).getUid())) {
                     currentUserLikeRestaurant = true;
@@ -168,22 +180,17 @@ public class RestaurantDetailsActivity extends BaseActivity {
                 }
             }
             if (currentUserLikeRestaurant) {
-                likeButton.setOnClickListener(v -> lunchViewModel.deleteLike(getCurrentUser().getUid(), restaurant.getPlaceId()));
                 likeButton.setCompoundDrawablesWithIntrinsicBounds(null, star, null, null);
             } else {
-                likeButton.setOnClickListener(v -> lunchViewModel.createLike(restaurant.getPlaceId(), Objects.requireNonNull(getCurrentUser()).getUid()));
                 likeButton.setCompoundDrawablesWithIntrinsicBounds(null, starBorder, null, null);
             }
+            likeButton.setOnClickListener(this);
         });
     }
 
     private void configureWebsiteButton() {
-        String website = restaurant.getWebsite();
-        if (website != null) {
-            websiteButton.setOnClickListener(v -> {
-                Intent websiteIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(website));
-                startActivity(websiteIntent);
-            });
+        if (restaurant.getWebsite() != null) {
+            websiteButton.setOnClickListener(this);
         } else {
             websiteButton.setClickable(false);
         }
@@ -191,9 +198,8 @@ public class RestaurantDetailsActivity extends BaseActivity {
 
     private void configureFab() {
         fab.setImageResource(R.drawable.ic_check_white_24dp);
-
-        boolean currentUserIsParticipant = false;
-
+        currentUserIsParticipant = false;
+        fab.setClickable(true);
         for (User participant : restaurant.getParticipants()) {
             if (participant.getId().equals(Objects.requireNonNull(getCurrentUser()).getUid())) {
                 currentUserIsParticipant = true;
@@ -203,10 +209,59 @@ public class RestaurantDetailsActivity extends BaseActivity {
 
         if (currentUserIsParticipant) {
             fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
-            fab.setOnClickListener(v -> lunchViewModel.deleteLunch(getCurrentUser().getUid()));
         } else {
             fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorGrey)));
-            fab.setOnClickListener(v -> lunchViewModel.saveLunch(Objects.requireNonNull(getCurrentUser()).getUid(), restaurant.getPlaceId(), restaurant.getName()));
         }
+        fab.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()) {
+            case R.id.activity_restaurant_details_call_button:
+                if (EasyPermissions.hasPermissions(this, Manifest.permission.CALL_PHONE)) {
+                    Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + restaurant.getInternationalPhoneNumber()));
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+                    startActivity(callIntent);
+                } else {
+                    EasyPermissions.requestPermissions(this, getResources().getString(R.string.need_location_permissions_message), 124, Manifest.permission.CALL_PHONE);
+                }
+                break;
+
+            case R.id.activity_restaurant_details_like_button:
+                showProgressBar(PROGRESS_BAR_ID);
+                likeButton.setClickable(false);
+                if (currentUserLikeRestaurant) {
+                    lunchViewModel.deleteLike(restaurant.getPlaceId(), Objects.requireNonNull(getCurrentUser()).getUid());
+                } else {
+                    lunchViewModel.createLike(restaurant.getPlaceId(), Objects.requireNonNull(getCurrentUser()).getUid());
+                }
+                break;
+            case R.id.activity_restaurant_details_website_button:
+                Intent websiteIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(restaurant.getWebsite()));
+                startActivity(websiteIntent);
+                break;
+
+            case R.id.activity_restaurant_details_floating_action_button:
+                showProgressBar(PROGRESS_BAR_ID);
+                fab.setClickable(false);
+                if (currentUserIsParticipant) {
+                    lunchViewModel.deleteLunch(Objects.requireNonNull(getCurrentUser()).getUid());
+                } else {
+                    lunchViewModel.saveLunch(Objects.requireNonNull(getCurrentUser()).getUid(), restaurant.getPlaceId(), restaurant.getName());
+                }
+
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return true;
     }
 }

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -61,10 +60,10 @@ public class NotificationsService extends FirebaseMessagingService {
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel mChannel = new NotificationChannel(channelId, channelName, importance);
 
-            notificationManager.createNotificationChannel(mChannel);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(mChannel);
+                notificationManager.notify(NOTIFICATION_TAG, NOTIFICATION_ID, notificationBuilder.build());
+            }
         }
-
-        // 7 - Show notification
-        notificationManager.notify(NOTIFICATION_TAG, NOTIFICATION_ID, notificationBuilder.build());
     }
 }

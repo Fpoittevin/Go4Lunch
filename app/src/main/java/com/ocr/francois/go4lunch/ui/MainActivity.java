@@ -38,7 +38,7 @@ import com.ocr.francois.go4lunch.ui.signin.SignInActivity;
 import com.ocr.francois.go4lunch.ui.viewmodels.LunchViewModel;
 import com.ocr.francois.go4lunch.ui.workmates.WorkmatesAdapter;
 import com.ocr.francois.go4lunch.ui.workmates.WorkmatesFragment;
-import com.ocr.francois.go4lunch.utils.AlarmNotifications;
+import com.ocr.francois.go4lunch.notifications.AlarmNotifications;
 import com.ocr.francois.go4lunch.utils.DateTool;
 
 import java.util.List;
@@ -121,7 +121,6 @@ public class MainActivity extends BaseActivity implements RestaurantAdapter.Rest
     }
 
     private void configureToolBar() {
-        toolbar.setTitle(R.string.i_am_hungry_title);
         setSupportActionBar(toolbar);
     }
 
@@ -136,6 +135,34 @@ public class MainActivity extends BaseActivity implements RestaurantAdapter.Rest
         userPictureImageView = navigationViewHeader.findViewById(R.id.navigation_view_header_user_picture_image_view);
         userNameTextView = navigationViewHeader.findViewById(R.id.navigation_view_header_user_name_text_view);
         userEmailTextView = navigationViewHeader.findViewById(R.id.navigation_view_header_user_email_text_view);
+    }
+
+    private void configureLunchViewModel() {
+        ViewModelFactory viewModelFactory = Injection.provideViewModelFactory();
+        lunchViewModel = ViewModelProviders.of(this, viewModelFactory).get(LunchViewModel.class);
+    }
+
+    private void getCurrentUserInFirestore() {
+        lunchViewModel.getCurrentUserInFirestore(Objects.requireNonNull(getCurrentUser()).getUid()).observe(this, user -> {
+            currentUser = user;
+            updateUi();
+        });
+    }
+
+    private void updateUi() {
+
+        if (currentUser.getUrlPicture() != null) {
+            Glide.with(navigationViewHeader)
+                    .load(currentUser.getUrlPicture())
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(userPictureImageView);
+        }
+        if (currentUser.getUserName() != null) {
+            userNameTextView.setText(currentUser.getUserName());
+        }
+        if (Objects.requireNonNull(getCurrentUser()).getEmail() != null) {
+            userEmailTextView.setText(getCurrentUser().getEmail());
+        }
 
         navigationView.setNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -153,35 +180,8 @@ public class MainActivity extends BaseActivity implements RestaurantAdapter.Rest
                     logOut();
                     break;
             }
-            return false;
+            return true;
         });
-    }
-
-    private void configureLunchViewModel() {
-        ViewModelFactory viewModelFactory = Injection.provideViewModelFactory();
-        lunchViewModel = ViewModelProviders.of(this, viewModelFactory).get(LunchViewModel.class);
-    }
-
-    private void getCurrentUserInFirestore() {
-        lunchViewModel.getCurrentUserInFirestore(Objects.requireNonNull(getCurrentUser()).getUid()).observe(this, user -> {
-            currentUser = user;
-            updateUi();
-        });
-    }
-
-    private void updateUi() {
-        if (currentUser.getUrlPicture() != null) {
-            Glide.with(navigationViewHeader)
-                    .load(currentUser.getUrlPicture())
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(userPictureImageView);
-        }
-        if (currentUser.getUserName() != null) {
-            userNameTextView.setText(currentUser.getUserName());
-        }
-        if (Objects.requireNonNull(getCurrentUser()).getEmail() != null) {
-            userEmailTextView.setText(getCurrentUser().getEmail());
-        }
     }
 
     private void askForNotifications() {
@@ -256,6 +256,4 @@ public class MainActivity extends BaseActivity implements RestaurantAdapter.Rest
     public void onWorkmateItemClick(String placeId) {
         startRestaurantDetailActivity(placeId);
     }
-
-
 }

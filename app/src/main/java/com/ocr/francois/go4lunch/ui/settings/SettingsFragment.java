@@ -9,7 +9,7 @@ import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreferenceCompat;
 
 import com.ocr.francois.go4lunch.R;
-import com.ocr.francois.go4lunch.utils.AlarmNotifications;
+import com.ocr.francois.go4lunch.notifications.AlarmNotifications;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 

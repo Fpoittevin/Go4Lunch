@@ -2,7 +2,6 @@ package com.ocr.francois.go4lunch.ui.viewmodels;
 
 import android.location.Location;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -14,6 +13,7 @@ import com.ocr.francois.go4lunch.repositories.LikeRepository;
 import com.ocr.francois.go4lunch.repositories.RestaurantRepository;
 import com.ocr.francois.go4lunch.repositories.UserRepository;
 import com.ocr.francois.go4lunch.utils.DateTool;
+import com.ocr.francois.go4lunch.utils.NoteTool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,14 +35,14 @@ public class LunchViewModel extends ViewModel {
     // RESTAURANTS
 
     public MutableLiveData<List<Restaurant>> getRestaurants(Location location, int radius) {
-        RestaurantsListMediatorLiveData restaurants = new RestaurantsListMediatorLiveData();
-        return restaurants.init(location, radius);
+        return new RestaurantsListLiveData(location, radius);
     }
 
     public MutableLiveData<Restaurant> getRestaurant(String placeId) {
-        RestaurantMediatorLiveData restaurant = new RestaurantMediatorLiveData();
-        return restaurant.init(placeId);
+        return new RestaurantMediatorLiveData(placeId);
     }
+
+    // USERS
 
     public MutableLiveData<List<User>> getUsers() {
         return userRepository.getUsers();
@@ -52,7 +52,7 @@ public class LunchViewModel extends ViewModel {
         return userRepository.getUser(id);
     }
 
-    // USERS
+    // LUNCHES
 
     public void saveLunch(String userId, String lunchRestaurantPlaceId, String lunchRestaurantName) {
         userRepository.saveLunch(userId, lunchRestaurantPlaceId, lunchRestaurantName);
@@ -62,7 +62,7 @@ public class LunchViewModel extends ViewModel {
         userRepository.deleteLunch(userId);
     }
 
-    // LUNCHES
+    // LIKES
 
     public void createLike(String restaurantPlaceId, String userId) {
         likeRepository.createLike(restaurantPlaceId, userId);
@@ -76,65 +76,45 @@ public class LunchViewModel extends ViewModel {
         return likeRepository.getLikesByRestaurant(restaurantPlaceId);
     }
 
-    private LiveData<Integer> getNoteOfRestaurant(String placeId) {
-        NoteGenerator noteGenerator = new NoteGenerator();
-        return noteGenerator.getNote(placeId);
-    }
+    // MEDIATOR LIVE DATA CLASSES
 
-    private LiveData<HashMap<String, Integer>> getNotesOfRestaurants() {
-        NotesGenerator notesGenerator = new NotesGenerator();
-        return notesGenerator.getNotes();
-    }
+    class RestaurantsListLiveData extends MediatorLiveData<List<Restaurant>> {
 
-    class RestaurantsListMediatorLiveData {
         private List<Restaurant> restaurants = new ArrayList<>();
-        private List<User> users;
-        private HashMap<String, Integer> notes;
+        private List<User> users = new ArrayList<>();
+        private HashMap<String, Integer> notes = new HashMap<>();
 
-        MediatorLiveData<List<Restaurant>> init(Location location, int radius) {
-            MediatorLiveData<List<Restaurant>> restaurantsListLiveData = new MediatorLiveData<>();
-
-            restaurantsListLiveData.addSource(restaurantRepository.getRestaurants(location, radius), restaurantsList -> {
+        RestaurantsListLiveData(Location location, int radius) {
+            this.addSource(restaurantRepository.getRestaurants(location, radius), restaurantsList -> {
                 restaurants.clear();
                 restaurants.addAll(restaurantsList);
-                if (users != null) {
-                    addNumbersOfParticipantsInRestaurants();
-                }
-                if (notes != null) {
-                    addNotesInRestaurants();
-                }
-                restaurantsListLiveData.setValue(restaurants);
+                generateRestaurantsList();
             });
-
-            restaurantsListLiveData.addSource(userRepository.getUsers(), usersList -> {
+            this.addSource(userRepository.getUsers(), usersList -> {
                 users = usersList;
-                if (!restaurants.isEmpty()) {
-                    addNumbersOfParticipantsInRestaurants();
-                    restaurantsListLiveData.setValue(restaurants);
-                }
+                generateRestaurantsList();
             });
-
-            restaurantsListLiveData.addSource(getNotesOfRestaurants(), notesList -> {
+            this.addSource(new NotesListLiveData(), notesList -> {
                 notes = notesList;
-                if (!restaurants.isEmpty()) {
-                    addNotesInRestaurants();
-                    restaurantsListLiveData.setValue(restaurants);
-                }
+                generateRestaurantsList();
             });
+        }
 
-
-            return restaurantsListLiveData;
+        private void generateRestaurantsList() {
+            this.setValue(restaurants);
+            addNumbersOfParticipantsInRestaurants();
+            addNotesInRestaurants();
         }
 
         private void addNumbersOfParticipantsInRestaurants() {
             for (Restaurant restaurant : restaurants) {
                 restaurant.setNumberOfParticipants(0);
-
                 for (User user : users) {
-                    if (user.getLunchTimestamp() != null && DateTool.isToday(user.getLunchTimestamp())) {
-                        if (user.getLunchRestaurantPlaceId() != null && user.getLunchRestaurantPlaceId().equals(restaurant.getPlaceId())) {
-                            restaurant.setNumberOfParticipants(restaurant.getNumberOfParticipants() + 1);
-                        }
+                    if (user.getLunchTimestamp() != null
+                            && DateTool.isToday(user.getLunchTimestamp())
+                            && user.getLunchRestaurantPlaceId() != null
+                            && user.getLunchRestaurantPlaceId().equals(restaurant.getPlaceId())) {
+                        restaurant.setNumberOfParticipants(restaurant.getNumberOfParticipants() + 1);
                     }
                 }
             }
@@ -142,6 +122,7 @@ public class LunchViewModel extends ViewModel {
 
         private void addNotesInRestaurants() {
             for (Restaurant restaurant : restaurants) {
+                restaurant.setNote(0);
                 if (notes.containsKey(restaurant.getPlaceId())) {
                     restaurant.setNote(notes.get(restaurant.getPlaceId()));
                 }
@@ -149,138 +130,95 @@ public class LunchViewModel extends ViewModel {
         }
     }
 
-    class RestaurantMediatorLiveData {
+    class RestaurantMediatorLiveData extends MediatorLiveData<Restaurant> {
         private Restaurant restaurant;
         private int note = 0;
         private List<User> participants = new ArrayList<>();
 
-        MediatorLiveData<Restaurant> init(String placeId) {
-            MediatorLiveData<Restaurant> restaurantLiveData = new MediatorLiveData<>();
-
-            restaurantLiveData.addSource(restaurantRepository.getRestaurant(placeId), newRestaurant -> {
+        RestaurantMediatorLiveData(String placeId) {
+            this.addSource(restaurantRepository.getRestaurant(placeId), newRestaurant -> {
                 restaurant = newRestaurant;
                 restaurant.setNote(note);
                 restaurant.setParticipants(participants);
-                restaurantLiveData.setValue(restaurant);
+                this.setValue(restaurant);
             });
-            restaurantLiveData.addSource(getNoteOfRestaurant(placeId), newNote -> {
+            this.addSource(new NoteLiveData(placeId), newNote -> {
                 note = newNote;
                 if (restaurant != null) {
                     restaurant.setNote(note);
-                    restaurantLiveData.setValue(restaurant);
+                    this.setValue(restaurant);
                 }
             });
-            restaurantLiveData.addSource(userRepository.getUsers(), users -> {
+            this.addSource(userRepository.getUsers(), users -> {
                 participants.clear();
                 for (User user : users) {
-                    if (user.getLunchTimestamp() != null && DateTool.isToday(user.getLunchTimestamp())
-                            && user.getLunchRestaurantPlaceId() != null && user.getLunchRestaurantPlaceId().equals(placeId)) {
+                    if (user.getLunchTimestamp() != null
+                            && DateTool.isToday(user.getLunchTimestamp())
+                            && user.getLunchRestaurantPlaceId() != null
+                            && user.getLunchRestaurantPlaceId().equals(placeId)) {
                         participants.add(user);
                     }
                 }
                 if (restaurant != null) {
                     restaurant.setParticipants(participants);
-                    restaurantLiveData.setValue(restaurant);
+                    this.setValue(restaurant);
                 }
             });
-            return restaurantLiveData;
         }
     }
 
-    class NotesGenerator {
+    class NotesListLiveData extends MediatorLiveData<HashMap<String, Integer>> {
+
         private int nbUsers = 0;
+        private HashMap<String, Integer> nbOfLikesByRestaurant = new HashMap<>();
         private HashMap<String, Integer> notesList = new HashMap<>();
-        private HashMap<String, Integer> nbLikesByRestaurant = new HashMap<>();
 
-        MediatorLiveData<HashMap<String, Integer>> getNotes() {
-            MediatorLiveData<HashMap<String, Integer>> notes = new MediatorLiveData<>();
-
-            notes.addSource(userRepository.getUsers(), users -> {
+        NotesListLiveData() {
+            this.addSource(userRepository.getUsers(), users -> {
                 nbUsers = users.size();
-                if (!nbLikesByRestaurant.isEmpty()) {
-                    notes.setValue(generateNotesList());
+                if (!nbOfLikesByRestaurant.isEmpty()) {
+                    generateNotesList();
                 }
             });
-
-            notes.addSource(likeRepository.getAllLikes(), likes -> {
+            this.addSource(likeRepository.getAllLikes(), likes -> {
                 for (Like like : likes) {
                     String placeId = like.getRestaurantPlaceId();
 
-                    if (nbLikesByRestaurant.containsKey(placeId)) {
-                        nbLikesByRestaurant.put(placeId, nbLikesByRestaurant.get(placeId) + 1);
+                    if (nbOfLikesByRestaurant.containsKey(placeId)) {
+                        nbOfLikesByRestaurant.put(placeId, nbOfLikesByRestaurant.get(placeId) + 1);
                     } else {
-                        nbLikesByRestaurant.put(placeId, 1);
+                        nbOfLikesByRestaurant.put(placeId, 1);
                     }
                 }
-                notes.setValue(generateNotesList());
+                generateNotesList();
             });
-
-            return notes;
         }
 
-        private HashMap<String, Integer> generateNotesList() {
-            for (Map.Entry line : nbLikesByRestaurant.entrySet()) {
-                notesList.put((String) line.getKey(), calculateNoteOfRestaurant((int) line.getValue()));
+        private void generateNotesList() {
+            for (Map.Entry line : nbOfLikesByRestaurant.entrySet()) {
+                notesList.put((String) line.getKey(), NoteTool.calculateNoteOfRestaurant(nbUsers, (int) line.getValue()));
             }
-            return notesList;
-        }
-
-        private int calculateNoteOfRestaurant(int nbLikes) {
-            float percent = ((float) nbLikes * 100 / nbUsers);
-
-            if (percent == 0) {
-                return 0;
-            } else if (percent != 0 && percent < (float) (100 / 3)) {
-                return 1;
-            } else if (percent < (float) (100 / 3 * 2)) {
-                return 2;
-            } else {
-                return 3;
-            }
+            this.setValue(notesList);
         }
     }
 
-    class NoteGenerator {
-        private int nbUsers;
-        private int nbLikes;
+    class NoteLiveData extends MediatorLiveData<Integer> {
+        private int nbOfUsers = 0;
+        private int nbOfLikes = 0;
 
-        MediatorLiveData<Integer> getNote(String placeId) {
-            MediatorLiveData<Integer> note = new MediatorLiveData<>();
-
-            nbUsers = 0;
-            nbLikes = 0;
-            note.addSource(userRepository.getUsers(), users -> {
-                setNbUsers(users.size());
-                note.setValue(calculateNoteOfRestaurant());
+        NoteLiveData(String placeId) {
+            this.addSource(userRepository.getUsers(), users -> {
+                nbOfUsers = users.size();
+                generateNote();
             });
-            note.addSource(likeRepository.getLikesByRestaurant(placeId), likes -> {
-                setNbLikes(likes.size());
-                note.setValue(calculateNoteOfRestaurant());
+            this.addSource(likeRepository.getLikesByRestaurant(placeId), likes -> {
+                nbOfLikes = likes.size();
+                generateNote();
             });
-            return note;
         }
 
-        void setNbUsers(int nbUsers) {
-            this.nbUsers = nbUsers;
-        }
-
-        void setNbLikes(int nbLikes) {
-            this.nbLikes = nbLikes;
-        }
-
-        private int calculateNoteOfRestaurant() {
-            float percent = ((float) nbLikes * 100 / nbUsers);
-
-            if (percent == 0) {
-                return 0;
-            } else if (percent != 0 && percent < (float) (100 / 3)) {
-                return 1;
-            } else if (percent < (float) (100 / 3 * 2)) {
-                return 2;
-            } else {
-                return 3;
-            }
+        private void generateNote() {
+            this.setValue(NoteTool.calculateNoteOfRestaurant(nbOfUsers, nbOfLikes));
         }
     }
-
 }

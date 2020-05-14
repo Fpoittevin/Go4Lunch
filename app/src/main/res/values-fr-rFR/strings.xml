@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Go4Lunch</string>
+    <string name="facebook_sign_in_button_text">connexion via Facebook</string>
+    <string name="google_sign_in_button_text">connexion via Google</string>
+    <string name="auth_error">L\'authentification a rencontré une erreur</string>
+    <string name="google_sign_in_error">L\'authentification via Google a rencontré une erreur</string>
+    <string name="facebook_sign_in_error">L\'authentification via Facebook a rencontré une erreur</string>
+    <string name="search_button_title">recherche</string>
+    <string name="sort_button_title">ordonner</string>
+    <string name="sort_by_distance">ordonner par distance</string>
+    <string name="sort_by_participants">ordonner par participants</string>
+    <string name="sort_by_likes">ordonner par notes</string>
+    <string name="lunch_button_title">TON DÉJEUNER</string>
+    <string name="settings_button_title">RÉGLAGES</string>
+    <string name="log_out_button_title">DÉCONNEXION</string>
+    <string name="navigation_drawer_open">ouvrir</string>
+    <string name="navigation_drawer_close">fermé</string>
+    <string name="map_button_title">Vue Carte</string>
+    <string name="list_button_title">Vue Liste</string>
+    <string name="workmates_button_title">Collègues</string>
+    <string name="is_eating_at">" mange à \\"</string>
+    <string name="hasnt_decided_yet">" n'a pas encore décidé"</string>
+    <string name="is_joining">" se joint!"</string>
+    <string name="call_button">APPEL</string>
+    <string name="like_button">J\'AIME</string>
+    <string name="website_button">SITE WEB</string>
+    <string name="need_location_permissions_message">Go4Lunch a besoin de ta localisation pour fonctionner</string>
+    <string name="title_activity_settings">Réglages</string>
+    <string name="i_am_hungry_title">J\'ai faim!</string>
+    <string name="available_workmates_title">collègues disponibles</string>
+    <string name="delete_account_btn_text">supprimer le compte</string>
+    <string name="delete_account_dialog_text">Es-tu certain de vouloir supprimer ton compte ?</string>
+    <string name="signature_title">Ta signature</string>
+    <string name="notification_title">ton déjeuner !</string>
+    <string name="alert_dialog_notifications_message">Souhaites-tu recevoir une notification tous les jours à midi pour savoir quels collègues mangeront avec toi?</string>
+    <string name="yes">oui</string>
+    <string name="no">non</string>
+    <string name="with">avec</string>
+    <string name="no_restaurant_message">Tu n\'as choisi aucun restaurant pour le moment.</string>
+    <string name="map_zoom_preference">Zoom de la carte</string>
+    <string name="search_radius_preference">Rayon de recherche</string>
+    <string name="notifications_preference">Activer les notifications</string>
+
+
+    <!-- ERROR -->
+    <string name="error_unknown_error">une erreur inconnue s\'est produite</string>
+</resources>

@@ -27,7 +27,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @SuppressWarnings("unchecked")
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(UserViewModel.class)) {
-            return (T) new UserViewModel(userRepository);
+            return (T) new UserViewModel(userRepository, likeRepository);
         }
         if (modelClass.isAssignableFrom(LunchViewModel.class)) {
             return (T) new LunchViewModel(restaurantRepository, userRepository, likeRepository);

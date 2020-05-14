@@ -131,7 +131,6 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
             Marker marker = map.addMarker(markerOptions);
 
             marker.setTag(restaurant.getPlaceId());
-            map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         }
     }
 

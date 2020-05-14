@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.ocr.francois.go4lunch.api.UserHelper;
 import com.ocr.francois.go4lunch.models.User;
@@ -12,6 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserRepository {
+
+    public Task<Void> deleteUser(String id) {
+        return UserHelper.deleteUser(id);
+    }
 
     public MutableLiveData<List<User>> getUsers() {
 

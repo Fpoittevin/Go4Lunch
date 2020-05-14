@@ -7,19 +7,6 @@
     android:orientation="vertical"
     tools:context=".ui.restaurantDetails.RestaurantDetailsActivity">
 
-    <ProgressBar
-        android:id="@+id/activity_restaurant_details_progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:indeterminate="true"
-        app:elevation="10dp" />
-
-    <FrameLayout
-        android:id="@+id/activity_restaurant_details_frame_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/activity_restaurant_details_floating_action_button"
         android:layout_width="wrap_content"
@@ -126,6 +113,14 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ProgressBar
+                android:id="@+id/activity_restaurant_details_progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                app:elevation="10dp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/activity_restaurant_details_recycler_view"

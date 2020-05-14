@@ -10,14 +10,11 @@
 
     <style name="SignInButton" parent="Widget.MaterialComponents.Button.Icon">
         <item name="android:layout_width">300dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingTop">15dp</item>
-        <item name="android:paddingBottom">15dp</item>
-        <item name="android:paddingLeft">15dp</item>
-        <item name="android:paddingRight">15dp</item>
+        <item name="android:layout_height">60dp</item>
         <item name="android:layout_marginBottom">10dp</item>
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="ActivityRestaurantDetailsButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">

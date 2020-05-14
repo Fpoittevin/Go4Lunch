@@ -21,7 +21,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-
             buildConfigField "String", "GOOGLE_API_KEY", "\"AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE\""
             resValue "string", "GOOGLE_API_KEY", "AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE"
         }
@@ -60,7 +59,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     //AUTH
-    implementation 'com.google.firebase:firebase-analytics:17.4.0'
+    implementation 'com.google.firebase:firebase-analytics:17.4.1'
     implementation 'com.google.firebase:firebase-auth:19.3.1'
     implementation 'com.firebaseui:firebase-ui-auth:4.3.2'
     implementation 'com.google.android.gms:play-services-auth:18.0.0'
@@ -73,7 +72,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:21.4.3'
 
     // NOTIFICATIONS
-    implementation 'com.google.firebase:firebase-messaging:20.1.6'
+    implementation 'com.google.firebase:firebase-messaging:20.1.7'
 
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.maps.android:android-maps-utils:1.1.0'

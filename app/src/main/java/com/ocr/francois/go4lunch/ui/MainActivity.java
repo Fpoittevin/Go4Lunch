@@ -1,6 +1,7 @@
 package com.ocr.francois.go4lunch.ui;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,11 +16,13 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserInfo;
@@ -27,6 +30,7 @@ import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.injection.Injection;
 import com.ocr.francois.go4lunch.injection.ViewModelFactory;
 import com.ocr.francois.go4lunch.models.User;
+import com.ocr.francois.go4lunch.notifications.AlarmNotifications;
 import com.ocr.francois.go4lunch.ui.base.BaseActivity;
 import com.ocr.francois.go4lunch.ui.listView.ListViewFragment;
 import com.ocr.francois.go4lunch.ui.listView.RestaurantAdapter;
@@ -38,7 +42,6 @@ import com.ocr.francois.go4lunch.ui.signin.SignInActivity;
 import com.ocr.francois.go4lunch.ui.viewmodels.LunchViewModel;
 import com.ocr.francois.go4lunch.ui.workmates.WorkmatesAdapter;
 import com.ocr.francois.go4lunch.ui.workmates.WorkmatesFragment;
-import com.ocr.francois.go4lunch.notifications.AlarmNotifications;
 import com.ocr.francois.go4lunch.utils.DateTool;
 
 import java.util.List;
@@ -73,9 +76,9 @@ public class MainActivity extends BaseActivity implements RestaurantAdapter.Rest
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        if (isCurrentUserLogged()) {
-            super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
 
+        if (isCurrentUserLogged()) {
             //UI
             configureBottomNavigationView();
             configureToolBar();
@@ -189,7 +192,7 @@ public class MainActivity extends BaseActivity implements RestaurantAdapter.Rest
         if (!sharedPreferences.contains("enableNotifications")) {
 
             SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
-            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+            MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(this);
             dialogBuilder.setMessage(getString(R.string.alert_dialog_notifications_message))
                     .setPositiveButton(getString(R.string.yes), (dialog, which) -> {
                         sharedPreferencesEditor.putBoolean(SettingsFragment.ENABLE_NOTIFICATIONS_KEY_PREFERENCES, true).apply();
@@ -207,32 +210,33 @@ public class MainActivity extends BaseActivity implements RestaurantAdapter.Rest
         startActivity(restaurantDetailsIntent);
     }
 
-    private void startSignInActivity() {
-        Intent signInIntent = new Intent(this, SignInActivity.class);
-        startActivity(signInIntent);
-    }
-
     private void startSettingsActivity() {
         Intent settingsIntent = new Intent(this, SettingsActivity.class);
         startActivity(settingsIntent);
     }
 
     private void logOut() {
-        List<? extends UserInfo> userInfos = FirebaseAuth.getInstance().getCurrentUser().getProviderData();
+        List<? extends UserInfo> userInfos = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getProviderData();
         FirebaseAuth.getInstance().signOut();
 
         for (UserInfo userInfo : userInfos) {
+            if (userInfo != null) {
+                switch (userInfo.getProviderId()) {
+                    case "google.com":
+                        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                .requestIdToken(getString(R.string.default_web_client_id))
+                                .requestEmail()
+                                .build();
 
-            switch (userInfo.getProviderId()) {
-                case "google.com":
-                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestIdToken(getString(R.string.default_web_client_id))
-                            .requestEmail()
-                            .build();
-
-                    GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
-                    googleSignInClient.signOut().addOnCompleteListener(this,
-                            task -> startSignInActivity());
+                        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
+                        googleSignInClient.signOut().addOnCompleteListener(this,
+                                task -> startSignInActivity());
+                        break;
+                    case "facebook.com":
+                        LoginManager.getInstance().logOut();
+                        startSignInActivity();
+                        break;
+                }
             }
         }
     }

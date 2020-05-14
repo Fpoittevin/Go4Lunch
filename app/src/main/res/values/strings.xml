@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">Go4Lunch</string>
 
+    <string name="facebook_app_id" translatable="false">984895895260473</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb984895895260473</string>
+
     // SIGN IN
-    <string name="facebook_app_id">216158303118265</string>
-    <string name="fb_login_protocol_scheme">fb216158303118265</string>
     <string name="facebook_sign_in_button_text">sign in with Facebook</string>
     <string name="google_sign_in_button_text">sign in with Google</string>
     <string name="auth_error">Authentication Failed</string>
@@ -42,28 +43,36 @@
     <string name="available_workmates_title">Available workmates</string>
 
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
+    <string name="messages_header" translatable="false">Messages</string>
+    <string name="sync_header" translatable="false">Sync</string>
+    <string name="delete_account_btn_text">delete account</string>
+    <string name="delete_account_dialog_text">Are you sure you want to delete your account ?</string>
+    <string name="map_zoom_preference">Map zoom</string>
+    <string name="search_radius_preference">Search radius</string>
+    <string name="notifications_preference">Enable notifications</string>
 
     <!-- Messages Preferences -->
     <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
+    <string name="reply_title" translatable="false">Default reply action</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="sync_title" translatable="false">Sync email periodically</string>
+    <string name="attachment_title" translatable="false">Download incoming attachments</string>
+    <string name="attachment_summary_on" translatable="false">Automatically download attachments for incoming emails</string>
+    <string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
 
     <!-- NOTIFICATIONS -->
     <string name="notification_title">your lunch !</string>
-    <string name="default_notification_channel_id">go_4_lunch_notifications</string>
+    <string name="default_notification_channel_id" translatable="false">go_4_lunch_notifications</string>
     <string name="alert_dialog_notifications_message">Would you like to receive a notification every day at noon to find out which workmates will be eating with you?</string>
     <string name="yes">yes</string>
     <string name="no">no</string>
     <string name="with">with</string>
-    <string name="notification_tag">GO4LUNCH</string>
+    <string name="notification_tag" translatable="false">GO4LUNCH</string>
 
     <!-- MAIN ACTIVITY -->
     <string name="no_restaurant_message">You haven\'t chosen any restaurant yet.</string>
+
+    <!-- ERROR -->
+    <string name="error_unknown_error">an unknown error occurred</string>
 </resources>

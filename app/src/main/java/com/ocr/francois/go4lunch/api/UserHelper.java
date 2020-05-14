@@ -28,6 +28,10 @@ public class UserHelper {
         UserHelper.getUsersCollection().document(id).set(userToCreate);
     }
 
+    public static Task<Void> deleteUser(String id) {
+        return UserHelper.getUsersCollection().document(id).delete();
+    }
+
     public static Task<DocumentSnapshot> getUser(String id) {
         return UserHelper.getUsersCollection().document(id).get();
     }

@@ -25,7 +25,6 @@ import com.ocr.francois.go4lunch.utils.LocationTracker;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 
@@ -109,7 +108,7 @@ public abstract class BaseFragment extends Fragment {
         this.users.addAll(users);
     }
 
-    protected void showProgressBar() {
+    private void showProgressBar() {
         ProgressBar progressBar = this.requireActivity().findViewById(getProgressBarId());
         if (progressBar != null) {
             progressBar.setVisibility(View.VISIBLE);

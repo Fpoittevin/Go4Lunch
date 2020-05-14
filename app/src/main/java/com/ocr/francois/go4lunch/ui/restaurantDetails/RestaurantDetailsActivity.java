@@ -44,8 +44,6 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class RestaurantDetailsActivity extends BaseActivity implements View.OnClickListener {
 
     private static final int PROGRESS_BAR_ID = R.id.activity_restaurant_details_progress_bar;
-    @BindView(R.id.activity_restaurant_details_frame_layout)
-    FrameLayout frameLayout;
     @BindView(R.id.activity_restaurant_details_toolbar)
     MaterialToolbar toolbar;
     @BindView(R.id.activity_restaurant_details_picture_image_view)
@@ -116,7 +114,7 @@ public class RestaurantDetailsActivity extends BaseActivity implements View.OnCl
     private void updateUi() {
         hideProgressBar(PROGRESS_BAR_ID);
 
-        getSupportActionBar().setTitle(restaurant.getName());
+        Objects.requireNonNull(getSupportActionBar()).setTitle(restaurant.getName());
         restaurantNameTextView.setText(restaurant.getName());
 
         if (restaurant.getPhotos() != null && !restaurant.getPhotos().isEmpty()) {

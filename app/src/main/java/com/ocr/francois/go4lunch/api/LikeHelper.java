@@ -1,5 +1,6 @@
 package com.ocr.francois.go4lunch.api;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -30,6 +31,18 @@ public class LikeHelper {
                 .whereEqualTo("restaurantPlaceId", restaurantPlaceId)
                 .whereEqualTo("userId", userId)
                 .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                            LikeHelper.getLikesCollection().document(document.getId()).delete();
+                        }
+                    }
+                });
+    }
+
+    public static void deleteAllLikesOfUser(String userId) {
+        LikeHelper.getLikesCollection()
+                .whereEqualTo("userId", userId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (DocumentSnapshot document : Objects.requireNonNull(task.getResult())) {

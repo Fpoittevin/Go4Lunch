@@ -1,7 +1,5 @@
 package com.ocr.francois.go4lunch.ui;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -38,7 +36,6 @@ import com.ocr.francois.go4lunch.ui.mapView.MapViewFragment;
 import com.ocr.francois.go4lunch.ui.restaurantDetails.RestaurantDetailsActivity;
 import com.ocr.francois.go4lunch.ui.settings.SettingsActivity;
 import com.ocr.francois.go4lunch.ui.settings.SettingsFragment;
-import com.ocr.francois.go4lunch.ui.signin.SignInActivity;
 import com.ocr.francois.go4lunch.ui.viewmodels.LunchViewModel;
 import com.ocr.francois.go4lunch.ui.workmates.WorkmatesAdapter;
 import com.ocr.francois.go4lunch.ui.workmates.WorkmatesFragment;

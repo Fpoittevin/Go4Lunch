@@ -1,7 +1,6 @@
 package com.ocr.francois.go4lunch.ui.listView;
 
 import android.content.Context;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,11 +38,9 @@ import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class ListViewFragment extends BaseFragment {
 
-    static int AUTOCOMPLETE_REQUEST_CODE = 123;
     @BindView(R.id.fragment_list_view_recycler_view)
     RecyclerView recyclerView;
     private RestaurantAdapter restaurantAdapter;
@@ -109,13 +105,10 @@ public class ListViewFragment extends BaseFragment {
 
     private void observeLocation() {
 
-        locationTracker.getLocation().observe(this, new Observer<Location>() {
-            @Override
-            public void onChanged(Location newLocation) {
-                if (newLocation != null) {
-                    currentLocation = newLocation;
-                    getRestaurants();
-                }
+        locationTracker.getLocation().observe(this, newLocation -> {
+            if (newLocation != null) {
+                currentLocation = newLocation;
+                getRestaurants();
             }
         });
     }
@@ -217,7 +210,9 @@ public class ListViewFragment extends BaseFragment {
     }
 
     @Override
-    protected int getProgressBarId() { return R.id.fragment_list_view_progress_bar; }
+    protected int getProgressBarId() {
+        return R.id.fragment_list_view_progress_bar;
+    }
 
     private enum SortMethod {
         DISTANCE,

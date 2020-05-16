@@ -92,7 +92,7 @@ public abstract class BaseFragment extends Fragment {
         if (users == null) {
             users = new ArrayList<>();
         }
-        lunchViewModel.getUsers().observe(this, users -> {
+        lunchViewModel.getUsers().observe(getViewLifecycleOwner(), users -> {
             setUsers(users);
             updateUiWhenDataChange();
         });

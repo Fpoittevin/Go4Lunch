@@ -1,15 +1,17 @@
 package com.ocr.francois.go4lunch.api;
 
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.ocr.francois.go4lunch.events.FailureEvent;
 import com.ocr.francois.go4lunch.models.Like;
 
 import java.util.Objects;
 
-public class LikeHelper {
+import de.greenrobot.event.EventBus;
+
+public class LikeHelper{
 
     private static final String COLLECTION_NAME = "likes";
 
@@ -23,11 +25,12 @@ public class LikeHelper {
 
     public static void createLike(String restaurantPlaceId, String userId) {
         Like likeToCreate = new Like(restaurantPlaceId, userId);
-        LikeHelper.getLikesCollection().add(likeToCreate);
+        LikeHelper.getLikesCollection().add(likeToCreate)
+                .addOnFailureListener(e -> EventBus.getDefault().post(new FailureEvent(e.getMessage())));
     }
 
     public static void deleteLike(String restaurantPlaceId, String userId) {
-        LikeHelper.getLikesCollection()
+            LikeHelper.getLikesCollection()
                 .whereEqualTo("restaurantPlaceId", restaurantPlaceId)
                 .whereEqualTo("userId", userId)
                 .get()
@@ -37,11 +40,12 @@ public class LikeHelper {
                             LikeHelper.getLikesCollection().document(document.getId()).delete();
                         }
                     }
-                });
+                })
+                    .addOnFailureListener(e -> EventBus.getDefault().post(new FailureEvent(e.getMessage())));
     }
 
     public static void deleteAllLikesOfUser(String userId) {
-        LikeHelper.getLikesCollection()
+            LikeHelper.getLikesCollection()
                 .whereEqualTo("userId", userId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -49,7 +53,8 @@ public class LikeHelper {
                             LikeHelper.getLikesCollection().document(document.getId()).delete();
                         }
                     }
-                });
+                })
+                    .addOnFailureListener(e -> EventBus.getDefault().post(new FailureEvent(e.getMessage())));
     }
 
     public static Query getLikesByRestaurant(String placeId) {

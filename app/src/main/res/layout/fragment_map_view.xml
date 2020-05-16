@@ -14,7 +14,7 @@
         android:indeterminate="true"
         app:elevation="10dp" />
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_map_view_map_fragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"

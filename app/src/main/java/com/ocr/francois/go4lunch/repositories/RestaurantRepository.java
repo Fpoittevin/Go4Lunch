@@ -1,18 +1,19 @@
 package com.ocr.francois.go4lunch.repositories;
 
 import android.location.Location;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.ocr.francois.go4lunch.api.PlacesService;
+import com.ocr.francois.go4lunch.events.FailureEvent;
 import com.ocr.francois.go4lunch.models.GoogleDetailResult;
 import com.ocr.francois.go4lunch.models.GoogleSearchResults;
 import com.ocr.francois.go4lunch.models.Restaurant;
 
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -51,8 +52,7 @@ public class RestaurantRepository {
 
             @Override
             public void onFailure(@NonNull Call<GoogleSearchResults> call, @NonNull Throwable t) {
-
-                Log.d("repo", "onFailure: ");
+                EventBus.getDefault().post(new FailureEvent(t.getMessage()));
             }
         });
         return restaurants;
@@ -68,15 +68,13 @@ public class RestaurantRepository {
             public void onResponse(@NonNull Call<GoogleDetailResult> call, @NonNull Response<GoogleDetailResult> response) {
 
                 if (response.body() != null) {
-                    Log.d("repo", "onResponse: " + response);
                     restaurant.setValue(response.body().getRestaurant());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<GoogleDetailResult> call, @NonNull Throwable t) {
-
-                Log.d("repo", "onFailure: ");
+                EventBus.getDefault().post(new FailureEvent(t.getMessage()));
             }
         });
 

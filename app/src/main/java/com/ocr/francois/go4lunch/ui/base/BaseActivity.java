@@ -14,12 +14,15 @@ import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.common.eventbus.Subscribe;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ocr.francois.go4lunch.R;
+import com.ocr.francois.go4lunch.events.FailureEvent;
 import com.ocr.francois.go4lunch.ui.signin.SignInActivity;
 
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -30,6 +33,24 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(this.getLayoutId());
         ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onFailureEvent(FailureEvent failureEvent) {
+        Log.e("ERROR", "onFailure: " + failureEvent.getFailureMessage());
+        Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
     }
 
     protected void getSharedPreferences() {
@@ -73,9 +94,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         return true;
     }
 
-    protected OnFailureListener onFailureListener(){
+    protected OnFailureListener onFailureListener() {
         return e -> {
-            Log.e("ERROR", "onFailure: " + e.getMessage() );
+            Log.e("ERROR", "onFailure: " + e.getMessage());
             Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
         };
     }

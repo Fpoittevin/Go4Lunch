@@ -36,13 +36,13 @@
             android:id="@+id/sign_in_activity_fake_facebook_sign_in_button"
             style="@style/SignInButton"
             android:backgroundTint="@color/colorFacebookSignIn"
-            android:drawableLeft="@drawable/com_facebook_button_icon"
+            android:drawableStart="@drawable/com_facebook_button_icon"
             android:text="@string/facebook_sign_in_button_text" />
 
         <Button
             android:id="@+id/sign_in_activity_google_sign_in_button"
             style="@style/SignInButton"
-            android:drawableLeft="@drawable/common_google_signin_btn_icon_light"
+            android:drawableStart="@drawable/common_google_signin_btn_icon_light"
             android:text="@string/google_sign_in_button_text"
             app:backgroundTint="@color/colorGoogleSignIn" />
 

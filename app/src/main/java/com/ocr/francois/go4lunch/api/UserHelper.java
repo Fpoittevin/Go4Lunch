@@ -6,10 +6,13 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.ocr.francois.go4lunch.events.FailureEvent;
 import com.ocr.francois.go4lunch.models.User;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import de.greenrobot.event.EventBus;
 
 public class UserHelper {
 
@@ -25,15 +28,18 @@ public class UserHelper {
 
     public static void createUser(String id, String userName, String urlPicture) {
         User userToCreate = new User(id, userName, urlPicture);
-        UserHelper.getUsersCollection().document(id).set(userToCreate);
+        UserHelper.getUsersCollection().document(id).set(userToCreate)
+                .addOnFailureListener(e -> EventBus.getDefault().post(new FailureEvent(e.getMessage())));
     }
 
     public static Task<Void> deleteUser(String id) {
-        return UserHelper.getUsersCollection().document(id).delete();
+        return UserHelper.getUsersCollection().document(id).delete()
+                .addOnFailureListener(e -> EventBus.getDefault().post(new FailureEvent(e.getMessage())));
     }
 
     public static Task<DocumentSnapshot> getUser(String id) {
-        return UserHelper.getUsersCollection().document(id).get();
+        return UserHelper.getUsersCollection().document(id).get()
+                .addOnFailureListener(e -> EventBus.getDefault().post(new FailureEvent(e.getMessage())));
     }
 
     public static void insertLunch(String userId, String lunchRestaurantPlaceId, String lunchRestaurantName) {
@@ -41,7 +47,10 @@ public class UserHelper {
         lunchData.put("lunchRestaurantPlaceId", lunchRestaurantPlaceId);
         lunchData.put("lunchRestaurantName", lunchRestaurantName);
         lunchData.put("lunchTimestamp", Timestamp.now());
-        UserHelper.getUsersCollection().document(userId).update(lunchData);
+        UserHelper.getUsersCollection()
+                .document(userId)
+                .update(lunchData)
+                .addOnFailureListener(e -> EventBus.getDefault().post(new FailureEvent(e.getMessage())));
     }
 
     public static void deleteLunch(String userId) {
@@ -49,6 +58,9 @@ public class UserHelper {
         lunchData.put("lunchRestaurantPlaceId", null);
         lunchData.put("lunchRestaurantName", null);
         lunchData.put("lunchTimestamp", null);
-        UserHelper.getUsersCollection().document(userId).update(lunchData);
+        UserHelper.getUsersCollection()
+                .document(userId)
+                .update(lunchData)
+                .addOnFailureListener(e -> EventBus.getDefault().post(new FailureEvent(e.getMessage())));
     }
 }

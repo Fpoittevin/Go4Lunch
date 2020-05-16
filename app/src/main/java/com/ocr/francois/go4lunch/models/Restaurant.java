@@ -3,7 +3,6 @@ package com.ocr.francois.go4lunch.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class Restaurant {
     private String vicinity;
     @SerializedName("photos")
     @Expose
-    private List<Photo> photos = null;
+    private List<Photo> photos;
     @SerializedName("website")
     @Expose
     private String website;
@@ -31,18 +30,30 @@ public class Restaurant {
     @Expose
     private String internationalPhoneNumber;
 
-    private List<User> participants = new ArrayList<>();
-    private int numberOfParticipants = 0;
+    private List<User> participants;
+    private int numberOfParticipants;
 
-    private int note = 0;
-    private double distance = 0;
+    private int note;
+    private double distance;
+
+    public Restaurant(Geometry geometry, String name, String placeId, String vicinity, List<Photo> photos, String website, String internationalPhoneNumber, List<User> participants, int numberOfParticipants, int note, double distance) {
+        this.geometry = geometry;
+        this.name = name;
+        this.placeId = placeId;
+        this.vicinity = vicinity;
+        this.photos = photos;
+        this.website = website;
+        this.internationalPhoneNumber = internationalPhoneNumber;
+        this.participants = participants;
+        this.numberOfParticipants = numberOfParticipants;
+        this.note = note;
+        this.distance = distance;
+    }
+
+    public Restaurant() { }
 
     public Geometry getGeometry() {
         return geometry;
-    }
-
-    public void setGeometry(Geometry geometry) {
-        this.geometry = geometry;
     }
 
     public String getName() {
@@ -65,32 +76,16 @@ public class Restaurant {
         return vicinity;
     }
 
-    public void setVicinity(String vicinity) {
-        this.vicinity = vicinity;
-    }
-
     public List<Photo> getPhotos() {
         return photos;
-    }
-
-    public void setPhotos(List<Photo> photos) {
-        this.photos = photos;
     }
 
     public String getInternationalPhoneNumber() {
         return internationalPhoneNumber;
     }
 
-    public void setInternationalPhoneNumber(String internationalPhoneNumber) {
-        this.internationalPhoneNumber = internationalPhoneNumber;
-    }
-
     public String getWebsite() {
         return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
     }
 
     public List<User> getParticipants() {

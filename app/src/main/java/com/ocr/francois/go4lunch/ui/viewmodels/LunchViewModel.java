@@ -124,7 +124,8 @@ public class LunchViewModel extends ViewModel {
             for (Restaurant restaurant : restaurants) {
                 restaurant.setNote(0);
                 if (notes.containsKey(restaurant.getPlaceId())) {
-                    restaurant.setNote(notes.get(restaurant.getPlaceId()));
+                    Integer integer = notes.get(restaurant.getPlaceId());
+                    restaurant.setNote((integer != null) ? integer : 0);
                 }
             }
         }
@@ -184,8 +185,10 @@ public class LunchViewModel extends ViewModel {
                 for (Like like : likes) {
                     String placeId = like.getRestaurantPlaceId();
 
-                    if (nbOfLikesByRestaurant.containsKey(placeId)) {
-                        nbOfLikesByRestaurant.put(placeId, nbOfLikesByRestaurant.get(placeId) + 1);
+                    if (nbOfLikesByRestaurant.containsKey(placeId) && nbOfLikesByRestaurant.get(placeId) != null) {
+                        Integer integer = nbOfLikesByRestaurant.get(placeId);
+                        nbOfLikesByRestaurant.put(placeId, (integer != null) ? integer + 1 : 1);
+
                     } else {
                         nbOfLikesByRestaurant.put(placeId, 1);
                     }

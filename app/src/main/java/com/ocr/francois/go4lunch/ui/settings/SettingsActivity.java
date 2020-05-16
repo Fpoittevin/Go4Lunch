@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -62,11 +61,12 @@ public class SettingsActivity extends BaseActivity {
         dialogBuilder.setMessage(getString(R.string.delete_account_dialog_text))
                 .setPositiveButton(getString(R.string.yes), (dialog, which) -> {
                     if (getCurrentUser() != null) {
-                        userViewModel.deleteUser(getCurrentUser().getUid()).addOnFailureListener(onFailureListener());
-                        AuthUI.getInstance().delete(getApplicationContext()).addOnSuccessListener(aVoid -> startSignInActivity());
+                        userViewModel.deleteUser(getCurrentUser().getUid())
+                                .addOnSuccessListener(this, aVoid -> AuthUI.getInstance()
+                                        .delete(getApplicationContext())
+                                        .addOnSuccessListener(bVoid -> startSignInActivity()));
 
-                        //TODO : delete all likes of current user
-
+                        //TODO : delete all likes of current users
                     }
                 })
                 .setNegativeButton(getString(R.string.no), null)

@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.common.eventbus.Subscribe;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,7 +47,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void onFailureEvent(FailureEvent failureEvent) {
+    public void onEvent(FailureEvent failureEvent) {
         Log.e("ERROR", "onFailure: " + failureEvent.getFailureMessage());
         Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
     }
@@ -92,13 +91,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 .replace(layout, fragment)
                 .commit();
         return true;
-    }
-
-    protected OnFailureListener onFailureListener() {
-        return e -> {
-            Log.e("ERROR", "onFailure: " + e.getMessage());
-            Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
-        };
     }
 
     protected void startSignInActivity() {

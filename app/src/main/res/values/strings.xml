@@ -26,9 +26,9 @@
     <string name="list_button_title">List View</string>
     <string name="workmates_button_title">Workmates</string>
 
-    <string name="is_eating_at">\ is eating at \</string>
-    <string name="hasnt_decided_yet">\ hasn\'t decided yet</string>
-    <string name="is_joining">\ is joining!</string>
+    <string name="is_eating_at">\u0020is eating at\u0020</string>
+    <string name="hasnt_decided_yet">\u0020hasn\'t decided yet</string>
+    <string name="is_joining">\u0020is joining!</string>
 
     <string name="call_button">CALL</string>
     <string name="like_button">LIKE</string>

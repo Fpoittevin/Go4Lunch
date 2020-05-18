@@ -2,36 +2,21 @@ package com.ocr.francois.go4lunch.ui.listView;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.AutocompletePrediction;
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.RectangularBounds;
-import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
-import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.maps.android.SphericalUtil;
-import com.ocr.francois.go4lunch.BuildConfig;
 import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.models.Restaurant;
 import com.ocr.francois.go4lunch.ui.base.BaseFragment;
-import com.ocr.francois.go4lunch.ui.settings.SettingsFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,12 +24,11 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class ListViewFragment extends BaseFragment {
+public class ListViewFragment extends BaseFragment implements BaseFragment.OnSearchResultsListener {
 
     @BindView(R.id.fragment_list_view_recycler_view)
     RecyclerView recyclerView;
     private RestaurantAdapter restaurantAdapter;
-    private PlacesClient placesClient;
 
     private SortMethod sortMethod = SortMethod.DISTANCE;
 
@@ -58,8 +42,8 @@ public class ListViewFragment extends BaseFragment {
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
         configureLunchViewModel();
-        configureLocationTracker();
         configureRecyclerView();
+        configureLocationTracker();
         setHasOptionsMenu(true);
 
         return view;
@@ -74,8 +58,7 @@ public class ListViewFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        Places.initialize(requireContext(), BuildConfig.GOOGLE_API_KEY);
-        placesClient = Places.createClient(requireContext());
+        locationTracker.startLocationUpdates();
         observeLocation();
         getUsers();
     }
@@ -92,19 +75,7 @@ public class ListViewFragment extends BaseFragment {
         locationTracker.stopLocationUpdates();
     }
 
-    private void configureRecyclerView() {
-        restaurantAdapter = new RestaurantAdapter(
-                new ArrayList<>(),
-                (RestaurantAdapter.RestaurantItemClickCallback) getActivity());
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setAdapter(restaurantAdapter);
-        recyclerView.setLayoutManager(layoutManager);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
-    }
-
     private void observeLocation() {
-
         locationTracker.getLocation().observe(this, newLocation -> {
             if (newLocation != null) {
                 currentLocation = newLocation;
@@ -125,66 +96,33 @@ public class ListViewFragment extends BaseFragment {
             case LIKE:
                 Collections.sort(restaurants, new Restaurant.RestaurantNotesComparator());
         }
-
         restaurantAdapter.updateRestaurants(restaurants);
+    }
+
+    private void configureRecyclerView() {
+        restaurantAdapter = new RestaurantAdapter(
+                new ArrayList<>(),
+                (RestaurantAdapter.RestaurantItemClickCallback) getActivity());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setAdapter(restaurantAdapter);
+        recyclerView.setLayoutManager(layoutManager);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.sort_and_search_toolbar_menu, menu);
+        this.menu = menu;
         super.onCreateOptionsMenu(menu, inflater);
+        configureSearchPlaces(this);
+    }
 
-        MenuItem searchItem = menu.findItem(R.id.search_toolbar_menu);
-        SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (newText.isEmpty()) {
-                    restaurantAdapter.updateRestaurants(restaurants);
-                } else {
-
-                    AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-                    LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-
-                    int searchRadius = sharedPreferences.getInt(SettingsFragment.SEARCH_RADIUS_KEY_PREFERENCES, SettingsFragment.DEFAULT_SEARCH_RADIUS);
-
-                    LatLng latLng1 = SphericalUtil.computeOffset(latLng, searchRadius, 45);
-                    LatLng latLng2 = SphericalUtil.computeOffset(latLng, searchRadius, 225);
-                    RectangularBounds bounds = RectangularBounds.newInstance(latLng2, latLng1);
-                    FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                            .setQuery(newText)
-                            .setOrigin(latLng)
-                            .setLocationRestriction(bounds)
-                            .setTypeFilter(TypeFilter.ESTABLISHMENT)
-                            .setSessionToken(token)
-                            .build();
-                    placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
-                        List<Restaurant> restaurantsSuggestions = new ArrayList<>();
-                        for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
-                            if (prediction.getPlaceTypes().contains(Place.Type.RESTAURANT)) {
-                                for (Restaurant restaurant : restaurants) {
-                                    if (restaurant.getPlaceId().equals(prediction.getPlaceId())) {
-                                        restaurantsSuggestions.add(restaurant);
-                                    }
-                                }
-                            }
-                        }
-                        restaurantAdapter.updateRestaurants(restaurantsSuggestions);
-                    }).addOnFailureListener((exception) -> {
-                        if (exception instanceof ApiException) {
-                            ApiException apiException = (ApiException) exception;
-                            Log.e("GOOGLE AUTO COMPLETE", "Place not found: " + apiException.getStatusCode());
-                        }
-                    });
-                }
-                return false;
-            }
-        });
+    @Override
+    public void onSearchResults(List<Restaurant> restaurantsSearchResult) {
+        if (!restaurantsSearchResult.isEmpty()) {
+            restaurantAdapter.updateRestaurants(restaurantsSearchResult);
+        }
     }
 
     @Override

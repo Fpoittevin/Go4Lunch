@@ -65,8 +65,6 @@ public class SettingsActivity extends BaseActivity {
                                 .addOnSuccessListener(this, aVoid -> AuthUI.getInstance()
                                         .delete(getApplicationContext())
                                         .addOnSuccessListener(bVoid -> startSignInActivity()));
-
-                        //TODO : delete all likes of current users
                     }
                 })
                 .setNegativeButton(getString(R.string.no), null)

@@ -19,9 +19,9 @@
     <string name="map_button_title">Vue Carte</string>
     <string name="list_button_title">Vue Liste</string>
     <string name="workmates_button_title">Collègues</string>
-    <string name="is_eating_at">" mange à \\"</string>
-    <string name="hasnt_decided_yet">" n'a pas encore décidé"</string>
-    <string name="is_joining">" se joint!"</string>
+    <string name="is_eating_at">"\u0020mange à\u0020"</string>
+    <string name="hasnt_decided_yet">"\u0020n'a pas encore décidé"</string>
+    <string name="is_joining">"\u0020se joint!"</string>
     <string name="call_button">APPEL</string>
     <string name="like_button">J\'AIME</string>
     <string name="website_button">SITE WEB</string>

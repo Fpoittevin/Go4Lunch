@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.SearchView;
 
 import androidx.annotation.Nullable;
@@ -52,8 +51,8 @@ public abstract class BaseFragment extends Fragment {
     protected SharedPreferences sharedPreferences;
     protected List<Restaurant> restaurants = new ArrayList<>();
     protected List<User> users = new ArrayList<>();
-    private LunchViewModel lunchViewModel;
     protected Menu menu;
+    private LunchViewModel lunchViewModel;
     private PlacesClient placesClient;
 
     @Nullable
@@ -61,14 +60,12 @@ public abstract class BaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(getLayoutId(), container, false);
         ButterKnife.bind(this, view);
-        showProgressBar();
+        showProgressBar(true);
 
         return view;
     }
 
     protected abstract int getLayoutId();
-
-    protected abstract int getProgressBarId();
 
     protected abstract void updateUiWhenDataChange();
 
@@ -77,7 +74,6 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void configureLunchViewModel() {
-
         ViewModelFactory viewModelFactory = Injection.provideViewModelFactory();
         lunchViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(LunchViewModel.class);
     }
@@ -95,9 +91,6 @@ public abstract class BaseFragment extends Fragment {
     protected void getRestaurants() {
         getSharedPreferences();
         int radius = sharedPreferences.getInt(SettingsFragment.SEARCH_RADIUS_KEY_PREFERENCES, SettingsFragment.DEFAULT_SEARCH_RADIUS);
-        if (restaurants == null) {
-            restaurants = new ArrayList<>();
-        }
 
         if (currentLocation != null) {
             lunchViewModel.getRestaurants(currentLocation, radius).observe(this, restaurantsList -> {
@@ -108,9 +101,6 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void getUsers() {
-        if (users == null) {
-            users = new ArrayList<>();
-        }
         lunchViewModel.getUsers().observe(getViewLifecycleOwner(), users -> {
             setUsers(users);
             updateUiWhenDataChange();
@@ -127,23 +117,15 @@ public abstract class BaseFragment extends Fragment {
         this.users.addAll(users);
     }
 
-    private void showProgressBar() {
-        ProgressBar progressBar = this.requireActivity().findViewById(getProgressBarId());
-        if (progressBar != null) {
-            progressBar.setVisibility(View.VISIBLE);
-        }
-    }
-
-    protected void hideProgressBar() {
-        ProgressBar progressBar = this.requireActivity().findViewById(getProgressBarId());
-        if (progressBar != null) {
-            progressBar.setVisibility(View.INVISIBLE);
+    protected void showProgressBar(Boolean visible) {
+        if (getActivity() instanceof BaseActivity) {
+            ((BaseActivity) getActivity()).showProgressBar(visible);
         }
     }
 
     protected void configureSearchPlaces(OnSearchResultsListener onSearchResultsListener) {
 
-        Places.initialize(requireContext(), BuildConfig.GOOGLE_API_KEY);
+        Places.initialize(requireContext(), BuildConfig.GOOGLE_MAPS_API_KEY);
         placesClient = Places.createClient(requireContext());
 
         MenuItem searchItem = menu.findItem(R.id.search_toolbar_menu);
@@ -194,7 +176,7 @@ public abstract class BaseFragment extends Fragment {
                         }
                     });
                 }
-                return false;
+                return true;
             }
         });
     }

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.ocr.francois.go4lunch.BuildConfig;
 import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.models.Photo;
 import com.ocr.francois.go4lunch.models.Restaurant;
@@ -17,8 +18,8 @@ import com.ocr.francois.go4lunch.models.Restaurant;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RestaurantViewHolder extends RecyclerView.ViewHolder {
-    protected View view;
+class RestaurantViewHolder extends RecyclerView.ViewHolder {
+    final View view;
     @BindView(R.id.fragment_list_view_restaurant_item_name_text_view)
     TextView nameTextView;
     @BindView(R.id.fragment_list_view_restaurant_item_address_text_view)
@@ -59,16 +60,21 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
         String participantText = "(" + restaurant.getNumberOfParticipants() + ")";
         participantsNumberTextView.setText(participantText);
 
-        if (restaurant.getPhotos() != null) {
-            if (!restaurant.getPhotos().isEmpty()) {
-                Photo photo = restaurant.getPhotos().get(0);
-                String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&key=AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE&photoreference=" + photo.getPhotoReference();
-                Glide
-                        .with(view)
-                        .load(photoUrl)
-                        .apply(RequestOptions.centerCropTransform())
-                        .into(photoImageView);
-            }
+        if (restaurant.getPhotos() != null && !restaurant.getPhotos().isEmpty()) {
+            Photo photo = restaurant.getPhotos().get(0);
+            String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&key=" + BuildConfig.GOOGLE_MAPS_API_KEY + "&photoreference=" + photo.getPhotoReference();
+            Glide
+                    .with(view)
+                    .load(photoUrl)
+                    .apply(RequestOptions.centerCropTransform())
+                    .into(photoImageView);
+        } else {
+            Glide
+                    .with(view)
+                    .load(R.drawable.ic_photo_black_24dp)
+                    .apply(RequestOptions.centerCropTransform())
+                    .into(photoImageView);
         }
+
     }
 }

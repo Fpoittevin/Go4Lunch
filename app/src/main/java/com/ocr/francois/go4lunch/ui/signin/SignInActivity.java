@@ -3,7 +3,6 @@ package com.ocr.francois.go4lunch.ui.signin;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.lifecycle.ViewModelProviders;
@@ -19,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -34,17 +34,15 @@ import com.ocr.francois.go4lunch.ui.viewmodels.UserViewModel;
 
 import butterknife.BindView;
 
-import static com.ocr.francois.go4lunch.R.id.activity_sign_in_progress_bar;
-
 public class SignInActivity extends BaseActivity {
 
     private static final int RC_GOOGLE_SIGN_IN = 123;
     @BindView(R.id.sign_in_activity_facebook_sign_in_button)
     LoginButton facebookSignInButton;
     @BindView(R.id.sign_in_activity_fake_facebook_sign_in_button)
-    Button fakeFacebookSignInButton;
+    MaterialButton fakeFacebookSignInButton;
     @BindView(R.id.sign_in_activity_google_sign_in_button)
-    Button googleSignInButton;
+    MaterialButton googleSignInButton;
     private FirebaseAuth auth;
     private GoogleSignInClient googleSignInClient;
     private CallbackManager callbackManager;
@@ -71,6 +69,8 @@ public class SignInActivity extends BaseActivity {
                 .build();
 
         googleSignInClient = GoogleSignIn.getClient(this, gso);
+        googleSignInButton.setBackgroundColor(getResources().getColor(R.color.colorGoogleSignIn));
+        googleSignInButton.setIcon(getResources().getDrawable(R.drawable.ic_google_logo));
         googleSignInButton.setOnClickListener(v -> {
             Intent signInIntent = googleSignInClient.getSignInIntent();
             startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
@@ -79,6 +79,8 @@ public class SignInActivity extends BaseActivity {
 
     private void configureFacebookSignIn() {
         fakeFacebookSignInButton.setOnClickListener(v -> facebookSignInButton.performClick());
+        fakeFacebookSignInButton.setBackgroundColor(getResources().getColor(R.color.com_facebook_button_background_color));
+        fakeFacebookSignInButton.setIcon(getResources().getDrawable(R.drawable.com_facebook_button_icon));
         callbackManager = CallbackManager.Factory.create();
         facebookSignInButton.setPermissions("email", "public_profile");
         facebookSignInButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -123,7 +125,7 @@ public class SignInActivity extends BaseActivity {
     }
 
     private void authWithFirebase(AuthCredential credential) {
-        showProgressBar(activity_sign_in_progress_bar);
+        showProgressBar(true);
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
@@ -131,7 +133,7 @@ public class SignInActivity extends BaseActivity {
                     } else {
                         Toast.makeText(this, R.string.auth_error, Toast.LENGTH_LONG).show();
                     }
-                    hideProgressBar(activity_sign_in_progress_bar);
+                    showProgressBar(false);
                 });
     }
 

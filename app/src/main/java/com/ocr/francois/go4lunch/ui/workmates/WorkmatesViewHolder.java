@@ -22,7 +22,7 @@ class WorkmatesViewHolder extends RecyclerView.ViewHolder {
     TextView textView;
     @BindView(R.id.recycler_view_workmates_item_picture_image_view)
     ImageView pictureImageView;
-    private View view;
+    private final View view;
 
     WorkmatesViewHolder(@NonNull View itemView) {
         super(itemView);

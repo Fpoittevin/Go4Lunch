@@ -66,12 +66,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
             enableNotificationsSwitch.setChecked(sharedPreferences.getBoolean(ENABLE_NOTIFICATIONS_KEY_PREFERENCES, false));
             enableNotificationsSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
-                if ((Boolean) newValue) {
+
+                if ((boolean) newValue) {
                     alarmNotifications.start();
                 } else {
                     alarmNotifications.stop();
                 }
-                return true;
+                return (boolean) newValue;
             });
         }
     }

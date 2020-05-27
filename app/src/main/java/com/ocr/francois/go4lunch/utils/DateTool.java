@@ -11,7 +11,7 @@ public class DateTool {
         DateTime now = new DateTime();
         DateTime todayMidnight = new DateTime(now.getYear(), now.getMonthOfYear(), now.getDayOfMonth(), 0, 0, 0);
 
-        return new com.google.firebase.Timestamp(todayMidnight.toDate());
+        return new Timestamp(todayMidnight.toDate());
     }
 
     public static boolean isToday(Timestamp timestamp) {

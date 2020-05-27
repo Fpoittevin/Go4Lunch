@@ -14,8 +14,8 @@ import java.util.List;
 
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder> {
 
-    private List<Restaurant> restaurants;
-    private RestaurantItemClickCallback restaurantItemClickCallback;
+    private final List<Restaurant> restaurants;
+    private final RestaurantItemClickCallback restaurantItemClickCallback;
 
     RestaurantAdapter(List<Restaurant> restaurants, RestaurantItemClickCallback restaurantItemClickCallback) {
         this.restaurants = restaurants;
@@ -39,7 +39,6 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RestaurantViewHolder holder, int position) {
-
         Restaurant restaurant = restaurants.get(position);
         holder.updateUi(restaurant);
         holder.view.setOnClickListener(v -> restaurantItemClickCallback.onRestaurantItemClick(restaurant.getPlaceId()));

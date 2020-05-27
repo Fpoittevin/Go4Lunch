@@ -64,7 +64,7 @@ public class WorkmatesFragment extends BaseFragment {
     }
 
     protected void updateUiWhenDataChange() {
-        hideProgressBar();
+        showProgressBar(false);
         if (!users.isEmpty()) {
             sortWorkmatesList();
             workmatesAdapter.updatesWorkmates(users, getCurrentUser().getUid());
@@ -72,7 +72,6 @@ public class WorkmatesFragment extends BaseFragment {
     }
 
     private void sortWorkmatesList() {
-
         Collections.sort(users, (user1, user2) -> {
             if (user1.choseARestaurant() == user2.choseARestaurant()) {
                 return 0;
@@ -83,14 +82,6 @@ public class WorkmatesFragment extends BaseFragment {
             }
         });
     }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.fragment_workmates;
-    }
-
-    @Override
-    protected int getProgressBarId() { return R.id.fragment_workmates_progress_bar; }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
@@ -110,5 +101,10 @@ public class WorkmatesFragment extends BaseFragment {
                 return false;
             }
         });
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_workmates;
     }
 }

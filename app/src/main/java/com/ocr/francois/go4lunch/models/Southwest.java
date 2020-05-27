@@ -3,7 +3,7 @@ package com.ocr.francois.go4lunch.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Southwest {
+class Southwest {
 
     @SerializedName("lat")
     @Expose

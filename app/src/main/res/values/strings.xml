@@ -1,17 +1,47 @@
 <resources>
     <string name="app_name">Go4Lunch</string>
 
-    <string name="facebook_app_id" translatable="false">984895895260473</string>
-    <string name="fb_login_protocol_scheme" translatable="false">fb984895895260473</string>
+    <!-- MAIN ACTIVITY -->
+    <string name="no_restaurant_message">You haven\'t chosen any restaurant yet.</string>
+    <string name="need_location_permissions_message">Go4Lunch need your location to work</string>
 
-    // SIGN IN
+    <!-- SIGN IN ACTIVITY -->
+    <string name="activity_sign_in_second_title">Find a nice restaurant and invite your co-workers for lunch!</string>
     <string name="facebook_sign_in_button_text">sign in with Facebook</string>
     <string name="google_sign_in_button_text">sign in with Google</string>
     <string name="auth_error">Authentication Failed</string>
     <string name="google_sign_in_error">Google sign in failed</string>
     <string name="facebook_sign_in_error">Facebook sign in failed</string>
+    <string name="background_content_description" translatable="false">restaurant picture background</string>
+    <string name="logo_content_description" translatable="false">Go4Lunch logo</string>
+    <string name="facebook_app_id" translatable="false">984895895260473</string>
+    <string name="navigation_drawer_picture_description" translatable="false">restaurant picture background</string>
+    <string name="user_picture_description" translatable="false">user picture</string>
 
-    //titles buttons menus
+    <!-- RESTAURANT DETAILS ACTIVITY -->
+    <string name="call_button">CALL</string>
+    <string name="like_button">LIKE</string>
+    <string name="website_button">WEBSITE</string>
+
+    <!-- PREFERENCES ACTIVITY -->
+    <string name="delete_account_btn_text">delete account</string>
+    <string name="delete_account_dialog_text">Are you sure you want to delete your account ?</string>
+    <string name="map_zoom_preference">Map zoom</string>
+    <string name="search_radius_preference">Search radius</string>
+    <string name="notifications_preference">Enable notifications</string>
+
+    <!-- FRAGMENTS LIST VIEW -->
+    <string name="restaurant_picture_description" translatable="false">restaurant picture</string>
+
+    <!-- NOTIFICATIONS -->
+    <string name="notification_title">your lunch !</string>
+    <string name="default_notification_channel_id" translatable="false">go_4_lunch_notifications</string>
+    <string name="alert_dialog_notifications_message">Would you like to receive a notification every day at noon to find out which workmates will be eating with you?</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+    <string name="with">with</string>
+
+    <!-- TITLES BUTTONS MENU -->
     <string name="search_button_title">search</string>
     <string name="sort_button_title">sort</string>
     <string name="sort_by_distance">sort by distance</string>
@@ -26,52 +56,15 @@
     <string name="list_button_title">List View</string>
     <string name="workmates_button_title">Workmates</string>
 
+    <!-- WORKMATES PLACEHOLDER -->
     <string name="is_eating_at">\u0020is eating at\u0020</string>
     <string name="hasnt_decided_yet">\u0020hasn\'t decided yet</string>
     <string name="is_joining">\u0020is joining!</string>
 
-    <string name="call_button">CALL</string>
-    <string name="like_button">LIKE</string>
-    <string name="website_button">WEBSITE</string>
-
-    <string name="need_location_permissions_message">Go4Lunch need your location to work</string>
-
-    <string name="title_activity_settings">Settings</string>
-
-    <!-- Activities Titles -->
+    <!-- ACTIVITIES TITLES -->
     <string name="i_am_hungry_title">I\'m Hungry!</string>
     <string name="available_workmates_title">Available workmates</string>
-
-    <!-- Preference Titles -->
-    <string name="messages_header" translatable="false">Messages</string>
-    <string name="sync_header" translatable="false">Sync</string>
-    <string name="delete_account_btn_text">delete account</string>
-    <string name="delete_account_dialog_text">Are you sure you want to delete your account ?</string>
-    <string name="map_zoom_preference">Map zoom</string>
-    <string name="search_radius_preference">Search radius</string>
-    <string name="notifications_preference">Enable notifications</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title" translatable="false">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title" translatable="false">Sync email periodically</string>
-    <string name="attachment_title" translatable="false">Download incoming attachments</string>
-    <string name="attachment_summary_on" translatable="false">Automatically download attachments for incoming emails</string>
-    <string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
-
-    <!-- NOTIFICATIONS -->
-    <string name="notification_title">your lunch !</string>
-    <string name="default_notification_channel_id" translatable="false">go_4_lunch_notifications</string>
-    <string name="alert_dialog_notifications_message">Would you like to receive a notification every day at noon to find out which workmates will be eating with you?</string>
-    <string name="yes">yes</string>
-    <string name="no">no</string>
-    <string name="with">with</string>
-    <string name="notification_tag" translatable="false">GO4LUNCH</string>
-
-    <!-- MAIN ACTIVITY -->
-    <string name="no_restaurant_message">You haven\'t chosen any restaurant yet.</string>
+    <string name="settings_activity_title">Settings</string>
 
     <!-- ERROR -->
     <string name="error_unknown_error">an unknown error occurred</string>

@@ -40,11 +40,22 @@
                     android:theme="@style/ToolbarStyle" />
             </com.google.android.material.appbar.AppBarLayout>
 
-            <ImageView
-                android:id="@+id/activity_restaurant_details_picture_image_view"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:src="@drawable/ic_photo_black_24dp" />
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/activity_restaurant_details_picture_image_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:contentDescription="@string/restaurant_picture_description"
+                    android:src="@drawable/ic_photo_black_24dp" />
+
+                <include
+                    layout="@layout/progress_bar_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -54,19 +65,25 @@
 
                 <TextView
                     android:id="@+id/activity_restaurant_details_name_text_view"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
+                    android:ellipsize="end"
+                    android:padding="@dimen/default_small_margin"
+                    android:singleLine="true"
                     android:textColor="@color/colorWhite"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toTopOf="@+id/activity_restaurant_details_infos_text_view"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_max="wrap"
+                    app:layout_constraintWidth_percent="0.7" />
 
                 <RatingBar
                     android:id="@+id/activity_restaurant_details_note_rating_bar"
                     style="?android:attr/ratingBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:numStars="3"
                     android:theme="@style/RatingBarStyle"
                     app:layout_constraintBottom_toTopOf="@+id/activity_restaurant_details_infos_text_view"
                     app:layout_constraintLeft_toRightOf="@+id/activity_restaurant_details_name_text_view"
@@ -114,13 +131,11 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <ProgressBar
-                android:id="@+id/activity_restaurant_details_progress_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:indeterminate="true"
-                app:elevation="10dp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/default_margin"
+                android:background="@color/colorLightGrey" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/activity_restaurant_details_recycler_view"

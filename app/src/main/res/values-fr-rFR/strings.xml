@@ -26,12 +26,11 @@
     <string name="like_button">J\'AIME</string>
     <string name="website_button">SITE WEB</string>
     <string name="need_location_permissions_message">Go4Lunch a besoin de ta localisation pour fonctionner</string>
-    <string name="title_activity_settings">Réglages</string>
+    <string name="settings_activity_title">Réglages</string>
     <string name="i_am_hungry_title">J\'ai faim!</string>
     <string name="available_workmates_title">collègues disponibles</string>
     <string name="delete_account_btn_text">supprimer le compte</string>
     <string name="delete_account_dialog_text">Es-tu certain de vouloir supprimer ton compte ?</string>
-    <string name="signature_title">Ta signature</string>
     <string name="notification_title">ton déjeuner !</string>
     <string name="alert_dialog_notifications_message">Souhaites-tu recevoir une notification tous les jours à midi pour savoir quels collègues mangeront avec toi?</string>
     <string name="yes">oui</string>
@@ -45,4 +44,5 @@
 
     <!-- ERROR -->
     <string name="error_unknown_error">une erreur inconnue s\'est produite</string>
+    <string name="activity_sign_in_second_title">Trouve un bon restaurant et invite tes collègues pour le déjeuner!</string>
 </resources>

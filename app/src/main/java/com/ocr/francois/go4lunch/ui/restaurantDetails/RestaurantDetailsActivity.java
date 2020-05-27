@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.ocr.francois.go4lunch.BuildConfig;
 import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.injection.Injection;
 import com.ocr.francois.go4lunch.injection.ViewModelFactory;
@@ -42,7 +43,6 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class RestaurantDetailsActivity extends BaseActivity implements View.OnClickListener {
 
-    private static final int PROGRESS_BAR_ID = R.id.activity_restaurant_details_progress_bar;
     @BindView(R.id.activity_restaurant_details_toolbar)
     MaterialToolbar toolbar;
     @BindView(R.id.activity_restaurant_details_picture_image_view)
@@ -91,7 +91,7 @@ public class RestaurantDetailsActivity extends BaseActivity implements View.OnCl
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
 
-    protected void configureLunchViewModel() {
+    private void configureLunchViewModel() {
         ViewModelFactory viewModelFactory = Injection.provideViewModelFactory();
         lunchViewModel = ViewModelProviders.of(this, viewModelFactory).get(LunchViewModel.class);
     }
@@ -111,14 +111,14 @@ public class RestaurantDetailsActivity extends BaseActivity implements View.OnCl
     }
 
     private void updateUi() {
-        hideProgressBar(PROGRESS_BAR_ID);
+        showProgressBar(false);
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(restaurant.getName());
         restaurantNameTextView.setText(restaurant.getName());
 
         if (restaurant.getPhotos() != null && !restaurant.getPhotos().isEmpty()) {
             Photo photo = restaurant.getPhotos().get(0);
-            String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&key=AIzaSyAwcLs-t_e1sfK1Fjkfwo3Ndr2AeJBu7JE&photoreference=" + photo.getPhotoReference();
+            String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&key=" + BuildConfig.GOOGLE_MAPS_API_KEY + "&photoreference=" + photo.getPhotoReference();
             Glide
                     .with(this)
                     .load(photoUrl)
@@ -138,7 +138,8 @@ public class RestaurantDetailsActivity extends BaseActivity implements View.OnCl
         configureFab();
         configureLikeButton();
 
-        workmatesAdapter.updatesWorkmates(restaurant.getParticipants(), Objects.requireNonNull(getCurrentUser()).getUid());
+        workmatesAdapter.updatesWorkmates(restaurant.getParticipants(),
+                Objects.requireNonNull(getCurrentUser()).getUid());
 
         noteRatingBar.setVisibility(View.INVISIBLE);
         if (restaurant.getNote() > 0) {
@@ -162,7 +163,7 @@ public class RestaurantDetailsActivity extends BaseActivity implements View.OnCl
         Drawable starBorder = getResources().getDrawable(R.drawable.ic_star_border_orange_24dp);
 
         lunchViewModel.getLikesByRestaurant(restaurant.getPlaceId()).observe(this, likes -> {
-            hideProgressBar(PROGRESS_BAR_ID);
+            showProgressBar(false);
             likeButton.setClickable(true);
             currentUserLikeRestaurant = false;
             for (Like like : likes) {
@@ -224,7 +225,7 @@ public class RestaurantDetailsActivity extends BaseActivity implements View.OnCl
                 break;
 
             case R.id.activity_restaurant_details_like_button:
-                showProgressBar(PROGRESS_BAR_ID);
+                showProgressBar(true);
                 likeButton.setClickable(false);
                 if (currentUserLikeRestaurant) {
                     lunchViewModel.deleteLike(restaurant.getPlaceId(), Objects.requireNonNull(getCurrentUser()).getUid());
@@ -238,14 +239,13 @@ public class RestaurantDetailsActivity extends BaseActivity implements View.OnCl
                 break;
 
             case R.id.activity_restaurant_details_floating_action_button:
-                showProgressBar(PROGRESS_BAR_ID);
+                showProgressBar(true);
                 fab.setClickable(false);
                 if (currentUserIsParticipant) {
                     lunchViewModel.deleteLunch(Objects.requireNonNull(getCurrentUser()).getUid());
                 } else {
                     lunchViewModel.saveLunch(Objects.requireNonNull(getCurrentUser()).getUid(), restaurant.getPlaceId(), restaurant.getName());
                 }
-
         }
     }
 

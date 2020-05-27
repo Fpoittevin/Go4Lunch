@@ -25,8 +25,10 @@ import com.ocr.francois.go4lunch.ui.settings.SettingsFragment;
 
 import java.util.List;
 
-public class MapViewFragment extends BaseFragment
-        implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, BaseFragment.OnSearchResultsListener {
+public class MapViewFragment extends BaseFragment implements
+        OnMapReadyCallback,
+        GoogleMap.OnMarkerClickListener,
+        BaseFragment.OnSearchResultsListener {
 
     private GoogleMap map;
     private int mapZoom;
@@ -93,7 +95,7 @@ public class MapViewFragment extends BaseFragment
     }
 
     protected void updateUiWhenDataChange() {
-        hideProgressBar();
+        showProgressBar(false);
         map.clear();
         if (!restaurants.isEmpty()) {
             addMarkers(restaurants);
@@ -137,7 +139,7 @@ public class MapViewFragment extends BaseFragment
 
     @Override
     public void onSearchResults(List<Restaurant> restaurantsSearchResult) {
-        hideProgressBar();
+        showProgressBar(false);
         map.clear();
         if (!restaurantsSearchResult.isEmpty()) {
             addMarkers(restaurantsSearchResult);
@@ -159,11 +161,6 @@ public class MapViewFragment extends BaseFragment
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_map_view;
-    }
-
-    @Override
-    protected int getProgressBarId() {
-        return R.id.fragment_map_view_progress_bar;
     }
 
     public interface MarkerClickCallback {

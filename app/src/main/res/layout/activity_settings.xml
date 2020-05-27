@@ -17,8 +17,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/ToolbarStyle"
-            app:title="@string/title_activity_settings" />
+            app:title="@string/settings_activity_title" />
     </com.google.android.material.appbar.AppBarLayout>
+
+    <include
+        layout="@layout/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <FrameLayout
         android:id="@+id/activity_settings_frame_layout"

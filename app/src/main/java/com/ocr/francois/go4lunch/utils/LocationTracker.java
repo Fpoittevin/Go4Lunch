@@ -20,11 +20,11 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class LocationTracker implements OnSuccessListener<Location> {
 
-    private Context context;
-    private MutableLiveData<Location> location;
-    private FusedLocationProviderClient fusedLocationClient;
-    private LocationCallback locationCallback;
-    private LocationRequest locationRequest;
+    private final Context context;
+    private final MutableLiveData<Location> location;
+    private final FusedLocationProviderClient fusedLocationClient;
+    private final LocationCallback locationCallback;
+    private final LocationRequest locationRequest;
 
     private static final int LOCATION_REQUEST_INTERVAL = 30000;
     private static final int LOCATION_REQUEST_SMALLEST_DISPLACEMENT = 100;

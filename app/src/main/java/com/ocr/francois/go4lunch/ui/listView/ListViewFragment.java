@@ -24,7 +24,8 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class ListViewFragment extends BaseFragment implements BaseFragment.OnSearchResultsListener {
+public class ListViewFragment extends BaseFragment implements
+        BaseFragment.OnSearchResultsListener {
 
     @BindView(R.id.fragment_list_view_recycler_view)
     RecyclerView recyclerView;
@@ -60,7 +61,6 @@ public class ListViewFragment extends BaseFragment implements BaseFragment.OnSea
         super.onStart();
         locationTracker.startLocationUpdates();
         observeLocation();
-        getUsers();
     }
 
     @Override
@@ -85,7 +85,7 @@ public class ListViewFragment extends BaseFragment implements BaseFragment.OnSea
     }
 
     protected void updateUiWhenDataChange() {
-        hideProgressBar();
+        showProgressBar(false);
         switch (sortMethod) {
             case DISTANCE:
                 Collections.sort(restaurants, new Restaurant.RestaurantDistanceComparator());
@@ -120,9 +120,7 @@ public class ListViewFragment extends BaseFragment implements BaseFragment.OnSea
 
     @Override
     public void onSearchResults(List<Restaurant> restaurantsSearchResult) {
-        if (!restaurantsSearchResult.isEmpty()) {
-            restaurantAdapter.updateRestaurants(restaurantsSearchResult);
-        }
+        restaurantAdapter.updateRestaurants(restaurantsSearchResult);
     }
 
     @Override
@@ -145,11 +143,6 @@ public class ListViewFragment extends BaseFragment implements BaseFragment.OnSea
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_list_view;
-    }
-
-    @Override
-    protected int getProgressBarId() {
-        return R.id.fragment_list_view_progress_bar;
     }
 
     private enum SortMethod {

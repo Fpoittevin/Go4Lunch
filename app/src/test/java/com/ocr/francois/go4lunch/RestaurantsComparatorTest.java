@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertSame;
 
-public class RestaurantsComparatorTest {
+class RestaurantsComparatorTest {
 
     private List<Restaurant> restaurants;
 

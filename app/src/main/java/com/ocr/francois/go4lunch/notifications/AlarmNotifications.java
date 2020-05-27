@@ -9,8 +9,8 @@ import java.util.Calendar;
 
 public class AlarmNotifications {
 
-    private AlarmManager alarmManager;
-    private PendingIntent alarmIntent;
+    private final AlarmManager alarmManager;
+    private final PendingIntent alarmIntent;
 
     public AlarmNotifications(Context context) {
         this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

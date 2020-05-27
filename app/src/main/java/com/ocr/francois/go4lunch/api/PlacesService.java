@@ -17,9 +17,9 @@ public interface PlacesService {
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
-    @GET("nearbysearch/json?type=restaurant&key=" + BuildConfig.GOOGLE_API_KEY)
+    @GET("nearbysearch/json?type=restaurant&key=" + BuildConfig.GOOGLE_MAPS_API_KEY)
     Call<GoogleSearchResults> getNearbyPlaces(@Query("location") String location, @Query("radius") int radius);
 
-    @GET("details/json?fields=name,vicinity,international_phone_number,website,photo,place_id&key=" + BuildConfig.GOOGLE_API_KEY)
+    @GET("details/json?fields=name,vicinity,international_phone_number,website,photo,place_id&key=" + BuildConfig.GOOGLE_MAPS_API_KEY)
     Call<GoogleDetailResult> getPlaceDetails(@Query("place_id") String placeId);
 }

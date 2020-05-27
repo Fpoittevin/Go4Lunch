@@ -22,9 +22,9 @@ import java.util.Map;
 
 public class LunchViewModel extends ViewModel {
 
-    private RestaurantRepository restaurantRepository;
-    private UserRepository userRepository;
-    private LikeRepository likeRepository;
+    private final RestaurantRepository restaurantRepository;
+    private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
 
     public LunchViewModel(RestaurantRepository restaurantRepository, UserRepository userRepository, LikeRepository likeRepository) {
         this.restaurantRepository = restaurantRepository;
@@ -80,7 +80,7 @@ public class LunchViewModel extends ViewModel {
 
     class RestaurantsListLiveData extends MediatorLiveData<List<Restaurant>> {
 
-        private List<Restaurant> restaurants = new ArrayList<>();
+        private final List<Restaurant> restaurants = new ArrayList<>();
         private List<User> users = new ArrayList<>();
         private HashMap<String, Integer> notes = new HashMap<>();
 
@@ -134,7 +134,7 @@ public class LunchViewModel extends ViewModel {
     class RestaurantMediatorLiveData extends MediatorLiveData<Restaurant> {
         private Restaurant restaurant;
         private int note = 0;
-        private List<User> participants = new ArrayList<>();
+        private final List<User> participants = new ArrayList<>();
 
         RestaurantMediatorLiveData(String placeId) {
             this.addSource(restaurantRepository.getRestaurant(placeId), newRestaurant -> {
@@ -171,8 +171,8 @@ public class LunchViewModel extends ViewModel {
     class NotesListLiveData extends MediatorLiveData<HashMap<String, Integer>> {
 
         private int nbUsers = 0;
-        private HashMap<String, Integer> nbOfLikesByRestaurant = new HashMap<>();
-        private HashMap<String, Integer> notesList = new HashMap<>();
+        private final HashMap<String, Integer> nbOfLikesByRestaurant = new HashMap<>();
+        private final HashMap<String, Integer> notesList = new HashMap<>();
 
         NotesListLiveData() {
             this.addSource(userRepository.getUsers(), users -> {

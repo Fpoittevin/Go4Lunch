@@ -5,7 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -70,27 +71,24 @@ public abstract class BaseActivity extends AppCompatActivity {
         return (this.getCurrentUser() != null);
     }
 
-    protected void showProgressBar(int resId) {
-        ProgressBar progressBar = findViewById(resId);
-        if (progressBar != null) {
-            progressBar.setVisibility(View.VISIBLE);
+    public void showProgressBar(Boolean visible) {
+        FrameLayout progressBarContainer = this.findViewById(R.id.progress_bar_container);
+        if (progressBarContainer != null) {
+
+            ViewGroup.LayoutParams layoutParams = progressBarContainer.getLayoutParams();
+            if (visible) {
+                progressBarContainer.setVisibility(View.VISIBLE);
+            } else {
+                progressBarContainer.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
-    protected void hideProgressBar(int resId) {
-        ProgressBar progressBar = findViewById(resId);
-        if (progressBar != null) {
-            progressBar.setVisibility(View.INVISIBLE);
-        }
-    }
-
-
-    protected boolean displayFragment(int layout, Fragment fragment) {
+    protected void displayFragment(int layout, Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(layout, fragment)
                 .commit();
-        return true;
     }
 
     protected void startSignInActivity() {

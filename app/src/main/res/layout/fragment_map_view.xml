@@ -3,16 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.mapView.MapViewFragment">
-
-    <ProgressBar
-        android:id="@+id/fragment_map_view_progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:indeterminate="true"
-        app:elevation="10dp" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_map_view_map_fragment"

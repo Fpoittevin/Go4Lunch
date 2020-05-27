@@ -21,7 +21,7 @@ import retrofit2.Response;
 public class RestaurantRepository {
 
     private MutableLiveData<List<Restaurant>> restaurants;
-    private PlacesService placesService;
+    private final PlacesService placesService;
 
     public RestaurantRepository() {
         this.placesService = PlacesService.retrofit.create(PlacesService.class);
@@ -36,7 +36,7 @@ public class RestaurantRepository {
             @Override
             public void onResponse(@NonNull Call<GoogleSearchResults> call, @NonNull Response<GoogleSearchResults> response) {
 
-                if (response.body() != null) {
+                if (response.isSuccessful() && response.body() != null) {
                     List<Restaurant> restaurantsList = response.body().getRestaurants();
                     for (Restaurant restaurant : restaurantsList) {
                         Location restaurantLocation = new Location("restaurant location");
@@ -67,7 +67,7 @@ public class RestaurantRepository {
             @Override
             public void onResponse(@NonNull Call<GoogleDetailResult> call, @NonNull Response<GoogleDetailResult> response) {
 
-                if (response.body() != null) {
+                if (response.isSuccessful() && response.body() != null) {
                     restaurant.setValue(response.body().getRestaurant());
                 }
             }

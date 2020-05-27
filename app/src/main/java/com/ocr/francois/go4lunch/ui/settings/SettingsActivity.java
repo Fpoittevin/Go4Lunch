@@ -27,7 +27,7 @@ public class SettingsActivity extends BaseActivity {
     @BindView(R.id.activity_settings_delete_account_button)
     MaterialButton deleteAccountButton;
 
-    UserViewModel userViewModel;
+    private UserViewModel userViewModel;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -15,7 +15,7 @@ import java.util.List;
 
 public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesViewHolder> {
 
-    private List<User> workmates;
+    private final List<User> workmates;
     private WorkmateItemClickCallback workmateItemClickCallback;
 
     public WorkmatesAdapter(List<User> users) {
@@ -49,7 +49,6 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull WorkmatesViewHolder holder, int position) {
-
         User workmate = workmates.get(position);
         holder.updateUi(workmate);
         if (holder.itemView.getContext() instanceof MainActivity) {

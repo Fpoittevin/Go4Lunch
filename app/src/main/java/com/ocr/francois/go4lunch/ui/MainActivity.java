@@ -57,10 +57,10 @@ public class MainActivity extends BaseActivity implements RestaurantAdapter.Rest
     @BindView(R.id.activity_main_navigation_view)
     NavigationView navigationView;
 
-    View navigationViewHeader;
-    ImageView userPictureImageView;
-    TextView userNameTextView;
-    TextView userEmailTextView;
+    private View navigationViewHeader;
+    private ImageView userPictureImageView;
+    private TextView userNameTextView;
+    private TextView userEmailTextView;
 
     private MapViewFragment mapViewFragment;
     private ListViewFragment listViewFragment;
@@ -104,19 +104,24 @@ public class MainActivity extends BaseActivity implements RestaurantAdapter.Rest
                     if (mapViewFragment == null) {
                         mapViewFragment = MapViewFragment.newInstance();
                     }
-                    return displayFragment(frameLayoutId, mapViewFragment);
+                    displayFragment(frameLayoutId, mapViewFragment);
+                    break;
                 case R.id.bottom_navigation_menu_list_button:
                     if (listViewFragment == null) {
                         listViewFragment = ListViewFragment.newInstance();
                     }
-                    return displayFragment(frameLayoutId, listViewFragment);
+                    displayFragment(frameLayoutId, listViewFragment);
+                    break;
                 case R.id.bottom_navigation_menu_workmates_button:
                     if (workmatesFragment == null) {
                         workmatesFragment = WorkmatesFragment.newInstance();
                     }
-                    return displayFragment(frameLayoutId, workmatesFragment);
+                    displayFragment(frameLayoutId, workmatesFragment);
+                    break;
+                default:
+                    return false;
             }
-            return false;
+            return true;
         });
     }
 
@@ -150,7 +155,6 @@ public class MainActivity extends BaseActivity implements RestaurantAdapter.Rest
     }
 
     private void updateUi() {
-
         if (currentUser.getUrlPicture() != null) {
             Glide.with(navigationViewHeader)
                     .load(currentUser.getUrlPicture())
@@ -179,6 +183,8 @@ public class MainActivity extends BaseActivity implements RestaurantAdapter.Rest
                 case R.id.drawer_menu_logout_button:
                     logOut();
                     break;
+                default:
+                    return false;
             }
             return true;
         });
@@ -226,8 +232,7 @@ public class MainActivity extends BaseActivity implements RestaurantAdapter.Rest
                                 .build();
 
                         GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
-                        googleSignInClient.signOut().addOnCompleteListener(this,
-                                task -> startSignInActivity());
+                        googleSignInClient.signOut();
                         break;
                     case "facebook.com":
                         LoginManager.getInstance().logOut();
@@ -236,6 +241,7 @@ public class MainActivity extends BaseActivity implements RestaurantAdapter.Rest
                 }
             }
         }
+        startSignInActivity();
     }
 
     @Override

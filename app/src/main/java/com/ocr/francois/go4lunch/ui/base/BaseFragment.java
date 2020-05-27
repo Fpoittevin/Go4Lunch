@@ -50,7 +50,7 @@ public abstract class BaseFragment extends Fragment {
     protected Location currentLocation = null;
     protected SharedPreferences sharedPreferences;
     protected final List<Restaurant> restaurants = new ArrayList<>();
-    protected List<Restaurant> restaurantsSearchResult = new ArrayList<>();
+    protected final List<Restaurant> restaurantsSearchResult = new ArrayList<>();
     protected final List<User> users = new ArrayList<>();
     protected Menu menu;
     private LunchViewModel lunchViewModel;

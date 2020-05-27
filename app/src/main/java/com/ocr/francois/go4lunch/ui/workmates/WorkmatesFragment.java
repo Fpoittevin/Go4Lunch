@@ -107,4 +107,7 @@ public class WorkmatesFragment extends BaseFragment {
     protected int getLayoutId() {
         return R.layout.fragment_workmates;
     }
+
+    @Override
+    protected void onSearchResults() {}
 }

@@ -11,6 +11,7 @@ import androidx.preference.SwitchPreferenceCompat;
 import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.notifications.AlarmNotifications;
 
+@SuppressWarnings({"SameReturnValue"})
 public class SettingsFragment extends PreferenceFragmentCompat {
 
     public static final int DEFAULT_MAP_ZOOM = 15;

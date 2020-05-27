@@ -49,8 +49,9 @@ public abstract class BaseFragment extends Fragment {
     protected LocationTracker locationTracker;
     protected Location currentLocation = null;
     protected SharedPreferences sharedPreferences;
-    protected List<Restaurant> restaurants = new ArrayList<>();
-    protected List<User> users = new ArrayList<>();
+    protected final List<Restaurant> restaurants = new ArrayList<>();
+    protected List<Restaurant> restaurantsSearchResult = new ArrayList<>();
+    protected final List<User> users = new ArrayList<>();
     protected Menu menu;
     private LunchViewModel lunchViewModel;
     private PlacesClient placesClient;
@@ -123,7 +124,7 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
-    protected void configureSearchPlaces(OnSearchResultsListener onSearchResultsListener) {
+    protected void configureSearchPlaces() {
 
         Places.initialize(requireContext(), BuildConfig.GOOGLE_MAPS_API_KEY);
         placesClient = Places.createClient(requireContext());
@@ -158,17 +159,17 @@ public abstract class BaseFragment extends Fragment {
                             .setSessionToken(token)
                             .build();
                     placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
-                        List<Restaurant> restaurantsSuggestions = new ArrayList<>();
+                        restaurantsSearchResult.clear();
                         for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
                             if (prediction.getPlaceTypes().contains(Place.Type.RESTAURANT)) {
                                 for (Restaurant restaurant : restaurants) {
                                     if (restaurant.getPlaceId().equals(prediction.getPlaceId())) {
-                                        restaurantsSuggestions.add(restaurant);
+                                        restaurantsSearchResult.add(restaurant);
                                     }
                                 }
                             }
                         }
-                        onSearchResultsListener.onSearchResults(restaurantsSuggestions);
+                        onSearchResults();
                     }).addOnFailureListener((exception) -> {
                         if (exception instanceof ApiException) {
                             ApiException apiException = (ApiException) exception;
@@ -181,7 +182,5 @@ public abstract class BaseFragment extends Fragment {
         });
     }
 
-    public interface OnSearchResultsListener {
-        void onSearchResults(List<Restaurant> restaurantsSearchResult);
-    }
+    protected abstract void onSearchResults();
 }

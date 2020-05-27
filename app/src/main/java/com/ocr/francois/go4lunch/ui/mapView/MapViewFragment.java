@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ocr.francois.go4lunch.R;
 import com.ocr.francois.go4lunch.models.Restaurant;
 import com.ocr.francois.go4lunch.ui.base.BaseFragment;
@@ -25,11 +26,14 @@ import com.ocr.francois.go4lunch.ui.settings.SettingsFragment;
 
 import java.util.List;
 
+import butterknife.BindView;
+
 public class MapViewFragment extends BaseFragment implements
         OnMapReadyCallback,
-        GoogleMap.OnMarkerClickListener,
-        BaseFragment.OnSearchResultsListener {
+        GoogleMap.OnMarkerClickListener {
 
+    @BindView(R.id.fragment_map_view_location_fab)
+    FloatingActionButton locationFab;
     private GoogleMap map;
     private int mapZoom;
     private MarkerClickCallback markerClickCallback;
@@ -50,6 +54,7 @@ public class MapViewFragment extends BaseFragment implements
         configureLunchViewModel();
         configureMap();
         configureLocationTracker();
+        configureLocationFab();
         setHasOptionsMenu(true);
 
         return view;
@@ -86,9 +91,7 @@ public class MapViewFragment extends BaseFragment implements
         locationTracker.getLocation().observe(this, newLocation -> {
             if (newLocation != null) {
                 currentLocation = newLocation;
-                LatLng latLngLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                map.moveCamera(CameraUpdateFactory.newLatLng(latLngLocation));
-                map.moveCamera(CameraUpdateFactory.zoomTo(mapZoom));
+                moveCameraOnCurrentLocation();
                 getRestaurants();
             }
         });
@@ -108,6 +111,21 @@ public class MapViewFragment extends BaseFragment implements
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+    }
+
+    private void configureLocationFab() {
+        locationFab.setImageResource(R.drawable.ic_my_location_black_24dp);
+        locationFab.setOnClickListener(v -> {
+            if (currentLocation != null) {
+                moveCameraOnCurrentLocation();
+            }
+        });
+    }
+
+    private void moveCameraOnCurrentLocation() {
+        LatLng latLngLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        map.moveCamera(CameraUpdateFactory.newLatLng(latLngLocation));
+        map.moveCamera(CameraUpdateFactory.zoomTo(mapZoom));
     }
 
     private void addMarkers(List<Restaurant> restaurantsList) {
@@ -134,11 +152,11 @@ public class MapViewFragment extends BaseFragment implements
         inflater.inflate(R.menu.search_toolbar_menu, menu);
         this.menu = menu;
         super.onCreateOptionsMenu(menu, inflater);
-        configureSearchPlaces(this);
+        configureSearchPlaces();
     }
 
     @Override
-    public void onSearchResults(List<Restaurant> restaurantsSearchResult) {
+    public void onSearchResults() {
         showProgressBar(false);
         map.clear();
         if (!restaurantsSearchResult.isEmpty()) {

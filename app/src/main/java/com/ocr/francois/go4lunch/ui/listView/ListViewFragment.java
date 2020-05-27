@@ -20,12 +20,10 @@ import com.ocr.francois.go4lunch.ui.base.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import butterknife.BindView;
 
-public class ListViewFragment extends BaseFragment implements
-        BaseFragment.OnSearchResultsListener {
+public class ListViewFragment extends BaseFragment {
 
     @BindView(R.id.fragment_list_view_recycler_view)
     RecyclerView recyclerView;
@@ -115,11 +113,11 @@ public class ListViewFragment extends BaseFragment implements
         inflater.inflate(R.menu.sort_and_search_toolbar_menu, menu);
         this.menu = menu;
         super.onCreateOptionsMenu(menu, inflater);
-        configureSearchPlaces(this);
+        configureSearchPlaces();
     }
 
     @Override
-    public void onSearchResults(List<Restaurant> restaurantsSearchResult) {
+    public void onSearchResults() {
         restaurantAdapter.updateRestaurants(restaurantsSearchResult);
     }
 

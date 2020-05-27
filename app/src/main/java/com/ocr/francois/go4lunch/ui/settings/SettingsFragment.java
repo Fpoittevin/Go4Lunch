@@ -2,6 +2,7 @@ package com.ocr.francois.go4lunch.ui.settings;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
@@ -61,19 +62,22 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     private void configureEnableNotificationsSwitch() {
-        AlarmNotifications alarmNotifications = new AlarmNotifications(requireContext());
+
         SwitchPreferenceCompat enableNotificationsSwitch = findPreference(ENABLE_NOTIFICATIONS_KEY_PREFERENCES);
         if (enableNotificationsSwitch != null) {
-
-            enableNotificationsSwitch.setChecked(sharedPreferences.getBoolean(ENABLE_NOTIFICATIONS_KEY_PREFERENCES, false));
             enableNotificationsSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
 
+                AlarmNotifications alarmNotifications = new AlarmNotifications(requireContext());
+
                 if ((boolean) newValue) {
+                    Log.e("EnableNotifications", "START");
                     alarmNotifications.start();
                 } else {
+                    Log.e("EnableNotifications", "STOP");
                     alarmNotifications.stop();
                 }
-                return (boolean) newValue;
+
+                return true;
             });
         }
     }

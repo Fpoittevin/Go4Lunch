@@ -15,7 +15,6 @@
         app:title="@string/search_radius_preference" />
 
     <SwitchPreferenceCompat
-        app:allowDividerAbove="true"
         app:allowDividerBelow="true"
         app:key="enableNotifications"
         app:title="@string/notifications_preference" />

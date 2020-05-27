@@ -35,7 +35,6 @@ import com.ocr.francois.go4lunch.ui.listView.RestaurantAdapter;
 import com.ocr.francois.go4lunch.ui.mapView.MapViewFragment;
 import com.ocr.francois.go4lunch.ui.restaurantDetails.RestaurantDetailsActivity;
 import com.ocr.francois.go4lunch.ui.settings.SettingsActivity;
-import com.ocr.francois.go4lunch.ui.settings.SettingsFragment;
 import com.ocr.francois.go4lunch.ui.viewmodels.LunchViewModel;
 import com.ocr.francois.go4lunch.ui.workmates.WorkmatesAdapter;
 import com.ocr.francois.go4lunch.ui.workmates.WorkmatesFragment;
@@ -45,6 +44,8 @@ import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
+
+import static com.ocr.francois.go4lunch.ui.settings.SettingsFragment.ENABLE_NOTIFICATIONS_KEY_PREFERENCES;
 
 public class MainActivity extends BaseActivity implements RestaurantAdapter.RestaurantItemClickCallback, MapViewFragment.MarkerClickCallback, WorkmatesAdapter.WorkmateItemClickCallback {
 
@@ -149,8 +150,10 @@ public class MainActivity extends BaseActivity implements RestaurantAdapter.Rest
 
     private void getCurrentUserInFirestore() {
         lunchViewModel.getCurrentUserInFirestore(Objects.requireNonNull(getCurrentUser()).getUid()).observe(this, user -> {
-            currentUser = user;
-            updateUi();
+            if (user != null) {
+                currentUser = user;
+                updateUi();
+            }
         });
     }
 
@@ -198,11 +201,11 @@ public class MainActivity extends BaseActivity implements RestaurantAdapter.Rest
             MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(this);
             dialogBuilder.setMessage(getString(R.string.alert_dialog_notifications_message))
                     .setPositiveButton(getString(R.string.yes), (dialog, which) -> {
-                        sharedPreferencesEditor.putBoolean(SettingsFragment.ENABLE_NOTIFICATIONS_KEY_PREFERENCES, true).apply();
+                        sharedPreferencesEditor.putBoolean(ENABLE_NOTIFICATIONS_KEY_PREFERENCES, true).apply();
                         AlarmNotifications alarmNotifications = new AlarmNotifications(getApplicationContext());
                         alarmNotifications.start();
                     })
-                    .setNegativeButton(getString(R.string.no), (dialog, which) -> sharedPreferencesEditor.putBoolean(SettingsFragment.ENABLE_NOTIFICATIONS_KEY_PREFERENCES, false).apply());
+                    .setNegativeButton(getString(R.string.no), (dialog, which) -> sharedPreferencesEditor.putBoolean(ENABLE_NOTIFICATIONS_KEY_PREFERENCES, false).apply());
             dialogBuilder.create().show();
         }
     }

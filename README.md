@@ -4,6 +4,10 @@
 
 Go4Lunch is an application that allows you to list the restaurants around you, display them on a map, give them a note, display their details with Google Places. It also allows you to see in which restaurants your colleagues are having lunch.
 
+## Requirements
+
+This application run on the API 19 or more.
+
 ## Installation
 
 * Clone or Download the project from https://github.com/Fpoittevin/Go4Lunch.git
